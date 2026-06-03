@@ -14,6 +14,7 @@ import MuleSoftExperience from './MuleSoftExperience.jsx';
 import PegaExperience from './PegaExperience.jsx';
 import WebDevExperience from './WebDevExperience.jsx';
 import ServiceExperience from './ServiceExperience.jsx';
+import SiteFooter from '../SiteFooter.jsx';
 
 function FloatingGlow({ accent }) {
   const items = [
@@ -205,6 +206,10 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
             scrollRef={scrollRef}
           />
         )}
+
+        {/* Footer at the bottom of every service page (inside the overlay's
+            own scroll area so it shows above the fixed backdrop). */}
+        <SiteFooter />
       </div>
     </motion.div>
   );

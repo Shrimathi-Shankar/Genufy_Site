@@ -622,9 +622,10 @@ export default function Products() {
             We ship slowly, deliberately, and only when it earns the Genufy name.
           </motion.p>
         </section>
+
+        <SiteFooter />
       </main>
 
-      <SiteFooter />
       <div className="noise" aria-hidden />
     </>
   );

@@ -28,17 +28,24 @@ const SCENES = [
   },
 ];
 
-function Scene({ data, range, scrollYProgress }) {
+function Scene({ data, range, scrollYProgress, isLast }) {
   const [start, end] = range;
-  const mid = (start + end) / 2;
-  const enter = start + (end - start) * 0.18;
-  const settle = start + (end - start) * 0.45;
-  const fade = start + (end - start) * 0.78;
+  const len = end - start;
+  /* Stage windows inside this scene's scroll slice:
+       start → enter : slide / fade / un-blur IN
+       enter → hold  : fully settled & STABLE in the centre (the hold time)
+       hold  → end   : slide / fade / blur OUT
+     y and scale stay locked at their settled values across the whole
+     enter→hold window, so the scene doesn't drift the instant it arrives.
+     The last scene holds far longer (until ~85% of its range) so it stays
+     put until near the end of the scroll before exiting smoothly. */
+  const enter = start + len * 0.2;
+  const hold = start + len * (isLast ? 0.85 : 0.7);
 
-  const opacity = useTransform(scrollYProgress, [start, enter, settle, fade, end], [0, 1, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [start, settle, end], [80, 0, -80]);
-  const scale = useTransform(scrollYProgress, [start, mid, end], [0.94, 1, 1.04]);
-  const blur = useTransform(scrollYProgress, [start, enter, fade, end], ['12px', '0px', '0px', '10px']);
+  const opacity = useTransform(scrollYProgress, [start, enter, hold, end], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [start, enter, hold, end], [70, 0, 0, -70]);
+  const scale = useTransform(scrollYProgress, [start, enter, hold, end], [0.95, 1, 1, 1.03]);
+  const blur = useTransform(scrollYProgress, [start, enter, hold, end], ['12px', '0px', '0px', '10px']);
   const filter = useTransform(blur, (b) => `blur(${b})`);
 
   return (
@@ -122,8 +129,8 @@ export default function SalesforcePartnership() {
   /* Each scene gets a non-overlapping slice of scroll progress. */
   const ranges = [
     [0.00, 0.34],
-    [0.34, 0.68],
-    [0.68, 1.00],
+    [0.34, 0.50],
+    [0.50, 1.00],
   ];
 
   /* Aurora pulses subtly as we scroll through */

@@ -6,7 +6,7 @@ export const SERVICES = [
     title: 'AI & ML',
     subtitle: 'Generative AI · Agents · MLOps',
     body:
-      'Enterprise AI and ML — generative copilots, autonomous agents, computer vision, NLP, and production MLOps.',
+      'Enterprise AI solutions engineered to automate workflows, optimize operations, and accelerate business growth.',
     image:
       'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1800&q=80',
     accent: '#90eb61',
@@ -178,7 +178,7 @@ export const SERVICES = [
     title: 'MuleSoft',
     subtitle: 'API-Led · Anypoint',
     body:
-      'Composable integration architectures — API-led connectivity that unifies CRMs, ERPs, and bespoke systems into one resilient nervous system.',
+      'API-led connectivity that unifies CRMs, ERPs, and custom systems into a scalable, resilient digital backbone.',
     image:
       'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1800&q=80',
     accent: '#90eb61',
@@ -212,7 +212,7 @@ export const SERVICES = [
     title: 'Pega',
     subtitle: 'BPM · CRM · AI · RPA',
     body:
-      'Pega-based BPM, CRM, AI decisioning, and RPA — streamline processes, automate workflows, and elevate customer engagement.',
+      'Pega-based BPM, CRM, AI decisioning, and RPA - streamline processes and elevate customer engagement.',
     image:
       'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1800&q=80',
     accent: '#24baac',
@@ -247,12 +247,12 @@ export const SERVICES = [
     title: 'Web Development',
     subtitle: 'React · Next.js · WebGL',
     body:
-      'Award-calibre digital products — performance-first, motion-rich, and built to convert from the first frame.',
+      'Award-calibre digital products - performance-first, motion-rich, and built to convert from the first frame.',
     image:
       'https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=1800&q=80',
     accent: '#24baac',
     description:
-      'Premium web experiences engineered on modern stacks — every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',
+      'Premium web experiences engineered on modern stacks - every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',
     features: [
       'React & Next.js architecture',
       'Edge rendering & ISR',

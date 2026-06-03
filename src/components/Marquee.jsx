@@ -2,29 +2,42 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 /* ------------------------------------------------------------------
-   Trusted Clients — the only data the marquee renders.
+   Trusted Clients — fully dynamic.
 
-   1) Save each logo file in:  public/clients/
-   2) Point each entry's `src` at it via an absolute path
-      (everything under public/ is served from the site root).
-
-   These are real brand logos (dark marks on light backgrounds), so the
-   cards use a light "logo chip" background for legibility. Logos are
-   object-contain with padding — never stretched.
+   Every image in  public/clients/  is auto-imported at build time via
+   Vite's import.meta.glob. There is NO hardcoded list: drop a new logo
+   into that folder (png/jpg/jpeg/webp/svg/avif) and it appears here
+   automatically — name and order derived from the filename.
 ------------------------------------------------------------------- */
-const CLIENTS = [
-  { label: 'WillScot', src: '/clients/Willscot.png' },
-  { label: 'AbbVie', src: '/clients/abbvie.jpg' },
-  { label: 'Cedars-Sinai', src: '/clients/Cedars.png' },
-  { label: 'Enquo', src: '/clients/enquo.jpg' },
-];
+const logoModules = import.meta.glob(
+  '../../public/clients/*.{png,jpg,jpeg,webp,svg,avif,PNG,JPG,JPEG,WEBP,SVG}',
+  { eager: true, query: '?url', import: 'default' }
+);
+
+/* Turn a file path into a clean display label, e.g.
+   '.../Cedars.png' -> 'Cedars', '.../web-dev.png' -> 'Web Dev'. */
+function labelFromPath(path) {
+  const file = path.split('/').pop().replace(/\.[^.]+$/, '');
+  return file
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
+const CLIENTS = Object.entries(logoModules)
+  .map(([path, src]) => ({ src, label: labelFromPath(path) }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+
+/* Scroll speed scales with how many logos there are, so the pace stays
+   comfortable whether there are 4 logos or 40. */
+const SCROLL_DURATION = Math.max(24, CLIENTS.length * 2.6);
 
 function ClientLogo({ src, alt = '' }) {
   const [failed, setFailed] = useState(false);
 
   if (failed) {
     return (
-      <span className="text-sm font-bold tracking-widest text-ink/40 uppercase">
+      <span className="text-xs font-bold tracking-widest text-ink/50 uppercase text-center px-2">
         {alt}
       </span>
     );
@@ -36,14 +49,14 @@ function ClientLogo({ src, alt = '' }) {
       alt={alt}
       loading="lazy"
       onError={() => setFailed(true)}
-      className="max-h-[60px] max-w-[150px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+      className="max-h-[56px] max-w-[150px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
     />
   );
 }
 
 export default function Marquee() {
-  // Repeat the client set so the row stays full and loops seamlessly at -50%.
-  const loopClients = [...CLIENTS, ...CLIENTS, ...CLIENTS, ...CLIENTS];
+  // Duplicate the set once so the -50% animation loops seamlessly.
+  const loopClients = [...CLIENTS, ...CLIENTS];
 
   return (
     <section
@@ -58,13 +71,13 @@ export default function Marquee() {
       <div
         className="absolute inset-0 pointer-events-none opacity-25 blur-3xl z-0"
         style={{
-          background: 'radial-gradient(circle at center, rgba(36,186,172,0.06) 0%, transparent 65%)'
+          background: 'radial-gradient(circle at center, rgba(36,186,172,0.06) 0%, transparent 65%)',
         }}
       />
 
       {/* Fade masks for smooth left/right edges */}
-      <div className="absolute inset-y-0 left-0 w-24 md:w-48 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-24 md:w-48 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-48 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-16 sm:w-24 md:w-48 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
       {/* Integrated title inside the same marquee container */}
       <div className="relative z-10 flex flex-col items-center mb-8 md:mb-10 px-6 text-center">
@@ -73,21 +86,17 @@ export default function Marquee() {
         </h2>
       </div>
 
-      {/* Infinite scrolling container */}
+      {/* Infinite auto-scrolling marquee */}
       <div className="relative z-10 flex w-full">
         <motion.div
-          className="flex gap-6 whitespace-nowrap"
+          className="flex gap-4 sm:gap-6 whitespace-nowrap"
           animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: 25, ease: 'linear', repeat: Infinity }}
+          transition={{ duration: SCROLL_DURATION, ease: 'linear', repeat: Infinity }}
         >
           {loopClients.map((c, i) => (
             <div
               key={`${c.label}-${i}`}
-              className="group flex items-center justify-center shrink-0 h-[100px] w-[200px] px-6 rounded-2xl border border-white/[0.06] backdrop-blur-md transition-all duration-500 hover:border-teal/30 hover:shadow-[0_0_24px_rgba(36,186,172,0.16)] hover:-translate-y-0.5"
-              style={{
-                background:
-                  'linear-gradient(135deg, rgba(144,235,97,0.03) 0%, rgba(36,186,172,0.05) 100%)',
-              }}
+              className="group flex items-center justify-center shrink-0 h-[88px] w-[170px] sm:h-[100px] sm:w-[200px] px-5 sm:px-6 rounded-2xl border border-white/10 bg-white/95 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 hover:bg-white hover:border-teal/40 hover:shadow-[0_0_26px_rgba(36,186,172,0.28)] hover:-translate-y-0.5"
             >
               <ClientLogo src={c.src} alt={c.label} />
             </div>

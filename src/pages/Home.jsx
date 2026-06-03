@@ -28,11 +28,11 @@ export default function Home() {
         {/* Act 2 — Manifesto reveal */}
         <Manifesto />
 
-        {/* Act 3 — Cinematic portal transition (Hero → Partnership / Vision / Mission triad) */}
-        <PortalTransition />
-
-        {/* Act 4 — Trusted Partners marquee */}
+        {/* Act 3 — Trusted Clients marquee */}
         <Marquee />
+
+        {/* Act 4 — Official Salesforce Partner (cinematic portal transition) */}
+        <PortalTransition />
 
         {/* Act 7 — Horizontal capabilities scroll */}
         <HorizontalCapabilities />

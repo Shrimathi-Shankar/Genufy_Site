@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica) ---------------- */
@@ -23,7 +25,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +38,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +247,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +262,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="AI and ML"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[18vw] md:text-[12vw] lg:text-[10.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +281,7 @@ function HeroScene({ service }) {
                   className={i < 4 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 4 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 4 ? 'none' : 'none',
                   }}
                 >
                   {ch === ' ' ? ' ' : ch}
@@ -293,15 +294,17 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Generative AI, Autonomous Agents, and Production MLOps for the Modern Enterprise"
+              text="AI Systems That Don't Just Generate — They Execute"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="We design, build, and operationalize enterprise-grade AI and ML systems — from LLM-powered copilots and agent platforms to computer vision, NLP, and predictive models."
+              text="At Genufy TechWorks, we bridge the gap between AI potential and real-world business impact. 
+Our enterprise-grade solutions are secure, built for production - not just pilots. 
+"
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="Every system ships with the MLOps backbone, governance, and observability needed to stay accurate, compliant, and trusted in production."
+              text="From strategy and solution design to deployment and continuous optimization, we build AI systems that are reliable, scalable, and engineered to deliver consistent business value in production environments."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
           </div>
@@ -856,7 +859,7 @@ function HealthcareAIVisual({ accent }) {
 
 function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -879,7 +882,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -1031,6 +1034,406 @@ function ScrollDots({ scrollRef }) {
 
 /* ---------------- Main ---------------- */
 
+/* ============================================================
+   Section — Our Promise (AI Pillars)
+============================================================ */
+
+function PillarIcon({ type }) {
+  const p = {
+    width: 26, height: 26, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round',
+  };
+  switch (type) {
+    case 'lifecycle':
+      return (<svg {...p}><path d="M21 12a9 9 0 1 1-2.64-6.36" /><path d="M21 4v5h-5" /><circle cx="12" cy="12" r="2.3" /></svg>);
+    case 'outcomes':
+      return (<svg {...p}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4.6" /><circle cx="12" cy="12" r="0.7" fill="currentColor" /></svg>);
+    case 'secure':
+      return (<svg {...p}><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></svg>);
+    case 'roi':
+      return (<svg {...p}><path d="M4 5v14h16" /><path d="M7 15l4-5 3 3 5-7" /><path d="M19 6h-3.5M19 6v3.5" /></svg>);
+    default: return null;
+  }
+}
+
+const PILLARS = [
+  {
+    icon: 'lifecycle',
+    title: 'Full AI Lifecycle Ownership',
+    body: 'From data strategy and model design to deployment, monitoring, and continuous optimization — we own the entire journey.',
+  },
+  {
+    icon: 'outcomes',
+    title: 'Business Outcomes First',
+    body: 'Every model is engineered around measurable business goals, not novelty — AI that moves the metrics that matter.',
+  },
+  {
+    icon: 'secure',
+    title: 'Secure & Compliant Deployment',
+    body: 'Privacy-first, audited, and compliant by design — deployed safely across cloud and on-premise environments.',
+  },
+  {
+    icon: 'roi',
+    title: 'Measurable ROI Focus',
+    body: 'Clear baselines, tracked impact, and transparent reporting so every AI investment proves its value.',
+  },
+];
+
+function PillarCard({ pillar, i, accent }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 26, filter: 'blur(8px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-7"
+    >
+      {/* Hover gradient wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: `radial-gradient(80% 60% at 30% 0%, ${accent}22, transparent 70%)` }}
+      />
+      {/* Hover glow ring */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ boxShadow: `inset 0 0 60px -22px ${accent}66, 0 0 44px -14px ${accent}55` }}
+      />
+      {/* Index watermark */}
+      <span className="absolute top-5 right-6 font-display text-2xl font-bold text-white/[0.06]">
+        0{i + 1}
+      </span>
+
+      <div
+        className="relative grid h-14 w-14 place-items-center rounded-2xl text-black transition-transform duration-500 group-hover:scale-105"
+        style={{
+          background: `linear-gradient(135deg, #90eb61, ${accent})`,
+          boxShadow: `0 12px 30px -12px ${accent}aa, inset 0 1px 0 rgba(255,255,255,0.35)`,
+        }}
+      >
+        <PillarIcon type={pillar.icon} />
+      </div>
+
+      <h3 className="relative mt-5 font-display text-lg md:text-xl font-semibold tracking-tight text-white">
+        {pillar.title}
+      </h3>
+      <p className="relative mt-2.5 text-sm text-white/65 leading-relaxed">{pillar.body}</p>
+    </motion.div>
+  );
+}
+
+function AIPillars({ accent }) {
+  return (
+    <section className="relative px-6 md:px-12 py-28 md:py-36 overflow-hidden">
+      <FloatingOrbs accent={accent} />
+      <GridBackdrop />
+
+      <div className="relative max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center max-w-2xl mx-auto"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[10px] tracking-[0.4em] uppercase text-white/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
+            Our Promise
+          </span>
+          <h2 className="mt-6 font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+            The pillars behind every{' '}
+            <span className="text-gradient-gt">AI system</span> we ship.
+          </h2>
+          <p className="mt-5 mx-auto max-w-xl text-sm md:text-base text-white/60 leading-relaxed">
+            Enterprise AI you can trust — engineered for outcomes, security, and measurable impact from day one.
+          </p>
+        </motion.div>
+
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {PILLARS.map((p, i) => (
+            <PillarCard key={p.title} pillar={p} i={i} accent={accent} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Section — Industries We Serve (interactive AI explorer)
+============================================================ */
+
+function IndustryIcon({ type }) {
+  const p = {
+    width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round',
+  };
+  switch (type) {
+    case 'health':
+      return (<svg {...p}><path d="M12 21s-7-4.3-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.7-7 10-7 10z" /><path d="M8.5 11.5H11l1-2 1.5 4 1-2h1.5" /></svg>);
+    case 'finance':
+      return (<svg {...p}><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M3 10h18" /><path d="M7 14.5h3" /></svg>);
+    case 'retail':
+      return (<svg {...p}><path d="M6.5 8h11l-1 12h-9z" /><path d="M9 8a3 3 0 0 1 6 0" /></svg>);
+    case 'factory':
+      return (<svg {...p}><path d="M3 21V11l5 3V11l5 3V9l5 3v6z" /><path d="M3 21h18" /><path d="M8 17h0M13 17h0M18 17h0" /></svg>);
+    case 'truck':
+      return (<svg {...p}><rect x="2.5" y="7" width="11" height="9" rx="1" /><path d="M13.5 10h3.6l3 3v3h-6.6" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" /></svg>);
+    case 'people':
+      return (<svg {...p}><circle cx="9" cy="8" r="2.7" /><path d="M3.5 19a5.5 5.5 0 0 1 11 0" /><circle cx="16.6" cy="9" r="2" /><path d="M20.5 18.5A4.3 4.3 0 0 0 15 14.9" /></svg>);
+    case 'legal':
+      return (<svg {...p}><path d="M12 4v16" /><path d="M6 21h12" /><path d="M5 8h14" /><path d="M5 8l-2 5a2.8 2.8 0 0 0 5 0z" /><path d="M19 8l-2 5a2.8 2.8 0 0 0 5 0z" /></svg>);
+    case 'saas':
+      return (<svg {...p}><path d="M7.5 18a4 4 0 0 1-.5-7.97 5 5 0 0 1 9.6-1.2A3.6 3.6 0 0 1 17.5 18z" /></svg>);
+    default: return null;
+  }
+}
+
+const INDUSTRIES = [
+  { id: 'healthcare', name: 'Healthcare', icon: 'health', tag: 'Clinical-grade AI for safer, faster, and more predictive care.', uses: ['Medical imaging', 'Patient risk prediction', 'Clinical NLP', 'EHR intelligence', 'Drug discovery'] },
+  { id: 'fintech', name: 'FinTech', icon: 'finance', tag: 'Real-time intelligence that protects, scores, and personalizes finance.', uses: ['Fraud detection', 'AML', 'Risk modeling', 'Personalized banking', 'Algorithmic trading'] },
+  { id: 'retail', name: 'Retail & E-commerce', icon: 'retail', tag: 'AI that anticipates demand and converts every interaction.', uses: ['Recommendation engines', 'Demand forecasting', 'Visual search', 'Dynamic pricing'] },
+  { id: 'manufacturing', name: 'Manufacturing', icon: 'factory', tag: 'Self-optimizing factories powered by predictive intelligence.', uses: ['Predictive maintenance', 'Quality inspection', 'Supply chain optimization', 'Digital twins'] },
+  { id: 'logistics', name: 'Logistics', icon: 'truck', tag: 'Intelligent movement across every route, warehouse, and fleet.', uses: ['Route optimization', 'Demand planning', 'Warehouse automation', 'Fleet intelligence'] },
+  { id: 'hr', name: 'HR & Talent', icon: 'people', tag: 'AI that finds, ranks, and retains the right people.', uses: ['Resume screening', 'Candidate ranking', 'Employee retention prediction'] },
+  { id: 'legal', name: 'Legal & Compliance', icon: 'legal', tag: 'Contract and regulatory intelligence at machine speed.', uses: ['Contract intelligence', 'Clause extraction', 'Regulatory monitoring'] },
+  { id: 'saas', name: 'SaaS & Enterprise', icon: 'saas', tag: 'Embedded AI that makes every product smarter and stickier.', uses: ['AI copilots', 'Product intelligence', 'Usage analytics', 'Churn prediction'] },
+];
+
+function IndustriesExplorer({ accent }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const count = INDUSTRIES.length;
+
+  useEffect(() => {
+    if (paused) return undefined;
+    const t = setInterval(() => setActive((a) => (a + 1) % count), 4600);
+    return () => clearInterval(t);
+  }, [paused, count]);
+
+  const ind = INDUSTRIES[active];
+
+  return (
+    <section
+      className="relative px-6 md:px-12 py-28 md:py-36 overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <FloatingOrbs accent={accent} />
+      <GridBackdrop />
+
+      <div className="relative max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center max-w-2xl mx-auto"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[10px] tracking-[0.4em] uppercase text-white/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
+            Industries We Serve
+          </span>
+          <h2 className="mt-6 font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">
+            AI intelligence, tuned to{' '}
+            <span className="text-gradient-gt">your industry</span>.
+          </h2>
+          <p className="mt-5 mx-auto max-w-xl text-sm md:text-base text-white/60 leading-relaxed">
+            Explore how we apply AI across sectors — each with battle-tested use cases engineered for real impact.
+          </p>
+        </motion.div>
+
+        <div className="mt-14 grid gap-6 lg:gap-10 lg:grid-cols-[0.85fr_1.5fr] items-stretch">
+          {/* Industry selector — horizontal scroll on mobile, vertical list on desktop */}
+          <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-1 px-1 [scrollbar-width:none]">
+            {INDUSTRIES.map((it, i) => {
+              const isActive = i === active;
+              return (
+                <button
+                  key={it.id}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  className={`group relative flex items-center gap-3 shrink-0 rounded-2xl border pl-4 pr-5 py-3 text-left transition-all duration-300 ${
+                    isActive
+                      ? 'border-white/20 bg-white/[0.07]'
+                      : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05]'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="ind-active-bar"
+                      className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full hidden lg:block"
+                      style={{ background: 'linear-gradient(180deg,#90eb61,#24baac)' }}
+                    />
+                  )}
+                  <span
+                    className={`grid h-9 w-9 flex-none place-items-center rounded-xl transition-colors duration-300 ${
+                      isActive ? 'text-black' : 'text-white/60'
+                    }`}
+                    style={
+                      isActive
+                        ? { background: `linear-gradient(135deg,#90eb61,${accent})` }
+                        : { background: 'rgba(255,255,255,0.04)' }
+                    }
+                  >
+                    <IndustryIcon type={it.icon} />
+                  </span>
+                  <span
+                    className={`whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-300 ${
+                      isActive ? 'text-white' : 'text-white/55'
+                    }`}
+                  >
+                    {it.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Detail panel — stretches to match the industry list height */}
+          <div className="relative flex h-full min-h-[440px] flex-col rounded-[28px] border border-white/10 bg-white/[0.025] backdrop-blur-xl p-7 md:p-9 overflow-hidden">
+            {/* ambient corner glows */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -top-24 -right-20 h-80 w-80 rounded-full blur-[100px] opacity-60"
+              style={{ background: `radial-gradient(circle, ${accent}55, transparent 70%)` }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full blur-[110px] opacity-40"
+              style={{ background: 'radial-gradient(circle, rgba(144,235,97,0.4), transparent 70%)' }}
+            />
+            {/* grid texture */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+                backgroundSize: '40px 40px',
+                maskImage: 'radial-gradient(ellipse at top right, black 10%, transparent 75%)',
+                WebkitMaskImage: 'radial-gradient(ellipse at top right, black 10%, transparent 75%)',
+              }}
+            />
+            {/* top gradient hairline */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 h-px"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(144,235,97,0.6), rgba(36,186,172,0.5), transparent)' }}
+            />
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={ind.id}
+                initial={{ opacity: 0, y: 22, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -16, filter: 'blur(10px)' }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="relative flex flex-1 flex-col"
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="grid h-16 w-16 flex-none place-items-center rounded-2xl text-black"
+                      style={{
+                        background: `linear-gradient(135deg,#90eb61,${accent})`,
+                        boxShadow: `0 16px 38px -16px ${accent}, inset 0 1px 0 rgba(255,255,255,0.35)`,
+                      }}
+                    >
+                      <IndustryIcon type={ind.icon} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] tracking-[0.4em] uppercase text-white/45">
+                        Industry {String(active + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+                      </div>
+                      <h3 className="mt-1 font-display text-2xl md:text-3xl lg:text-[2.2rem] font-bold tracking-tight leading-tight text-gradient-gt">
+                        {ind.name}
+                      </h3>
+                    </div>
+                  </div>
+                  {/* ghost index */}
+                  <span className="font-display text-5xl md:text-6xl font-bold leading-none text-white/[0.05] select-none">
+                    {String(active + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                {/* tagline */}
+                <p className="mt-4 max-w-md text-sm md:text-[15px] text-white/55 leading-relaxed">
+                  {ind.tag}
+                </p>
+
+                {/* AI capability timeline — fills the available height */}
+                <div className="mt-7 flex flex-1 flex-col justify-center">
+                  <div className="mb-4 text-[10px] tracking-[0.4em] uppercase text-white/35">
+                    AI Capabilities
+                  </div>
+                  <div className="relative pl-1">
+                    <span
+                      aria-hidden
+                      className="absolute left-[7px] top-3 bottom-3 w-px"
+                      style={{ background: 'linear-gradient(180deg, rgba(144,235,97,0.55), rgba(36,186,172,0.35), transparent)' }}
+                    />
+                    <div className="space-y-2.5">
+                      {ind.uses.map((u, k) => (
+                        <motion.div
+                          key={u}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.18 + k * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                          className="group/cap relative flex items-center gap-4"
+                        >
+                          <span
+                            className="relative z-10 h-3.5 w-3.5 flex-none rounded-full ring-4 ring-black/50"
+                            style={{ background: accent, boxShadow: `0 0 12px ${accent}` }}
+                          />
+                          <div className="flex flex-1 items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.025] px-4 py-3 transition-all duration-300 group-hover/cap:border-white/15 group-hover/cap:bg-white/[0.05]">
+                            <span className="text-sm md:text-[15px] text-white/85">{u}</span>
+                            <span className="font-mono text-[10px] tracking-[0.2em] text-white/30">
+                              {String(k + 1).padStart(2, '0')}
+                            </span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Footer — pagination + auto-explore label */}
+            <div className="relative mt-6 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                {INDUSTRIES.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    aria-label={`Show industry ${i + 1}`}
+                    className="h-1.5 rounded-full transition-all duration-500"
+                    style={{
+                      width: i === active ? 24 : 7,
+                      background:
+                        i === active
+                          ? 'linear-gradient(90deg,#90eb61,#24baac)'
+                          : 'rgba(255,255,255,0.18)',
+                    }}
+                  />
+                ))}
+              </div>
+              <span className="text-[10px] tracking-[0.35em] uppercase text-white/35">
+                Auto-explore
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function AIMLExperience({ service, onClose, scrollRef }) {
   const accent = service.accent || '#90eb61';
 
@@ -1043,9 +1446,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Generative AI Solutions"
-          title="Build Intelligent AI Systems That Generate, Automate, and Transform Business Workflows."
-          description="Enterprise copilots powered by large language models. Retrieval-augmented answers grounded on your data. Secure private deployment across cloud and on-prem."
+          eyebrow="Creating Content, Code, and Conversations at Scale"
+          title="Generative AI Solutions"
+          description="Build intelligent systems that generate high-quality text, images, code, and complete workflows 
+using state-of-the-art LLMs — securely integrated into your enterprise environment. We go 
+beyond chatbots to deliver production-grade generative systems tied to your business logic.."
           features={[
             'Custom LLM applications and enterprise AI copilots',
             'Retrieval-Augmented Generation (RAG) implementations',
@@ -1066,9 +1471,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="AI Agent Development"
-          title="Deploy Autonomous AI Agents That Reason, Execute, and Deliver Outcomes."
-          description="Autonomous agents that plan, reason, and execute. Memory, context, and human-in-the-loop guardrails. CRM, ERP, and ticketing integrations included."
+          eyebrow="Autonomous Agents That Reason, Plan & Execute "
+          title="AI Agent Dvelopment"
+          description="We build goal-oriented AI agents capable of complex multi-step reasoning, tool usage, API 
+integration, and autonomous workflow execution — with full observability, human-in-the-loop 
+controls, and audit trails built in. "
           features={[
             'Multi-agent orchestration and autonomous task execution',
             'Memory and contextual reasoning capabilities',
@@ -1090,9 +1497,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Natural Language Processing"
-          title="Transform Human Language into Actionable Business Intelligence."
-          description="Conversational AI and intelligent chatbots at scale. Sentiment, intent, and classification across languages. Document intelligence with OCR and layout understanding."
+          eyebrow="Turning Language into Actionable Intelligence "
+          title="Natural Language Processing"
+          description="Enable machines to truly understand human language — intent, emotion, context, and nuance 
+— from text, documents, and speech. Our NLP solutions power intelligent experiences that 
+scale across customer, employee, and partner interactions. ."
           features={[
             'Conversational AI and intelligent chatbot development',
             'Sentiment analysis and opinion mining solutions',
@@ -1113,9 +1522,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Predictive Analytics & Forecasting"
-          title="Anticipate Trends, Reduce Risks, and Make Data-Driven Decisions."
-          description="Demand, churn, revenue, and risk models tuned to outcomes. Predictive maintenance and scenario simulation built in. Real-time scoring wired into decisions."
+          eyebrow="Anticipate the Future. Act with Confidence."
+          title="Predictive Analytics & Forecasting"
+          description="Turn historical data into accurate forecasts and proactive decisions. Our predictive intelligence 
+solutions use advanced machine learning to surface risks, opportunities, and trends before they 
+happen — giving your teams an unfair competitive advantage.."
           features={[
             'Demand forecasting and trend prediction models',
             'Predictive maintenance and asset intelligence systems',
@@ -1137,9 +1548,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="Computer Vision Solutions"
-          title="Enable Machines to See, Analyze, and Understand Visual Data."
-          description="Object detection and image classification at scale. Video analytics and quality inspection automation. OCR and intelligent document understanding."
+          eyebrow="Teach Machines to See and Understand  "
+          title="Computer Vision Solutions."
+          description="Deploy AI that can perceive, analyze, and act on visual data at scale. From manufacturing 
+quality control to retail intelligence and medical imaging, our computer vision solutions deliver 
+real-time visual understanding across industries."
           features={[
             'Object detection and image classification systems',
             'Video analytics and surveillance intelligence',
@@ -1160,9 +1573,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="06"
-          eyebrow="MLOps & AI Engineering"
-          title="Operationalize AI with Scalable, Reliable, and Governed Infrastructure."
-          description="CI/CD pipelines purpose-built for ML and LLM workloads. Drift detection, monitoring, and automated retraining. Governance and audit frameworks built in."
+          eyebrow="Operationalizing AI at Enterprise Scale "
+          title="MLOps & AI Engineering."
+          description="Bridge the gap between AI experimentation and reliable, production-grade systems. We design 
+and implement the infrastructure, pipelines, and governance needed for AI to perform 
+consistently at scale — across cloud, on-prem, and hybrid environments. ."
           features={[
             'Automated CI/CD pipelines for machine learning workflows',
             'Model monitoring, drift detection, and retraining pipelines',
@@ -1184,9 +1599,10 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="07"
-          eyebrow="Multimodal AI"
-          title="Build AI Systems That Understand Text, Images, Audio, and Video Together."
-          description="Vision-language systems across text and image. Audio, speech, and video understanding pipelines. Multimodal RAG for richer enterprise intelligence."
+          eyebrow="Understanding Text, Image, Audio & Video Together "
+          title="Multimodal AI."
+          description="Next-generation AI that processes and reasons across multiple data modalities simultaneously 
+— enabling richer, more contextual intelligence than any single-modal system can achieve. ."
           features={[
             'Vision-language AI systems for text and image understanding',
             'Audio and speech intelligence processing solutions',
@@ -1207,9 +1623,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="08"
-          eyebrow="AI for Healthcare & Life Sciences"
-          title="Deliver Precision Intelligence for Better Healthcare Outcomes."
-          description="Medical imaging AI for radiology and pathology. Clinical NLP and EHR intelligence at scale. HIPAA and HL7 compliant architectures by default."
+          eyebrow="Precision Intelligence for Patient Outcomes "
+          title="AI for Healthcare & Life Sciences"
+          description="Purpose-built AI solutions for healthcare providers, pharmaceutical companies, health-tech 
+startups, and medical device manufacturers — designed to improve outcomes, reduce costs, 
+and accelerate discovery while meeting strict regulatory and privacy standards."
           features={[
             'Medical imaging AI for radiology and pathology analysis',
             'Clinical NLP and electronic health record intelligence',
@@ -1228,6 +1646,10 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
           accent={accent}
           flip
         />
+
+        <AIPillars accent={accent} />
+
+        <IndustriesExplorer accent={accent} />
 
         <FinalCTA accent={accent} onClose={onClose} />
       </div>

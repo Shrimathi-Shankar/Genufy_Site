@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
 
 /* ============================================================
    PortalTransition (Parallax edition)
@@ -133,7 +133,7 @@ function StreamBand({ band, scrollYProgress }) {
 }
 
 /* ------------ main component ------------ */
-export default function PortalTransition({ height = '150vh' }) {
+export default function PortalTransition({ height = '300vh' }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
 
@@ -142,16 +142,19 @@ export default function PortalTransition({ height = '150vh' }) {
     offset: ['start start', 'end end'],
   });
 
+  /* Smooth the raw scroll so the caption fades glide instead of snapping. */
+  const progress = useSpring(scrollYProgress, { stiffness: 70, damping: 30, mass: 0.5 });
+
   /* Backdrop layers drift slowly */
-  const blobX1 = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
-  const blobX2 = useTransform(scrollYProgress, [0, 1], ['8%', '-8%']);
+  const blobX1 = useTransform(progress, [0, 1], ['-8%', '8%']);
+  const blobX2 = useTransform(progress, [0, 1], ['8%', '-8%']);
 
-  const gridY = useTransform(scrollYProgress, [0, 1], ['0%', '-25%']);
+  const gridY = useTransform(progress, [0, 1], ['0%', '-25%']);
 
-  /* Caption rotation */
-  const cap1Op = useTransform(scrollYProgress, [0.00, 0.10, 0.28, 0.36], [0, 1, 1, 0]);
-  const cap2Op = useTransform(scrollYProgress, [0.32, 0.42, 0.58, 0.66], [0, 1, 1, 0]);
-  const cap3Op = useTransform(scrollYProgress, [0.62, 0.72, 0.84, 0.92], [0, 1, 1, 0]);
+  /* Caption rotation — wider fade/hold windows for a slower, smoother change. */
+  const cap1Op = useTransform(progress, [0.00, 0.12, 0.30, 0.40], [0, 1, 1, 0]);
+  const cap2Op = useTransform(progress, [0.36, 0.46, 0.60, 0.70], [0, 1, 1, 0]);
+  const cap3Op = useTransform(progress, [0.66, 0.76, 0.88, 0.98], [0, 1, 1, 0]);
 
   if (reduce) {
     return <div className="h-[40vh] bg-black" aria-hidden />;

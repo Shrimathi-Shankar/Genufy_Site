@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica / AI&ML) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="DevOps"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[18vw] md:text-[12vw] lg:text-[10.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 3 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 3 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 3 ? 'none' : 'none',
                   }}
                 >
                   {ch}
@@ -293,21 +293,21 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Accelerate Delivery, Modernize Infrastructure, and Elevate Operational Excellence"
+              text="Accelerating Innovation Through Modern Infrastructure"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="At Genufy, we empower organizations to accelerate software delivery, modernize infrastructure, and enhance operational efficiency through advanced DevOps and Platform Engineering services."
+              text="At Genufy, we help organizations accelerate software delivery, modernize infrastructure, and improve operational efficiency through DevOps and Platform Engineering."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
               text="From CI/CD pipelines and cloud-native infrastructure to Kubernetes orchestration and observability, we help businesses deliver applications faster, improve resilience, and achieve scalable digital growth."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="Our solutions focus on automation, scalability, reliability, and continuous innovation across the entire software delivery lifecycle."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -662,7 +662,7 @@ function ObservabilityVisual({ accent }) {
 
 function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -685,7 +685,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -849,9 +849,9 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="DevOps Consulting & Transformation"
-          title="Assess, Design, and Implement Enterprise-Grade DevOps Strategies."
-          description="Assess DevOps maturity and design transformation strategy. Process and tooling change across the full SDLC. Golden paths that scale without slowing teams."
+          eyebrow="DevOps Transformation"
+          title="DevOps Consulting & Transformation"
+          description="Transform software delivery with modern DevOps practices, automation frameworks, and cloud-native strategies that improve collaboration, accelerate releases, and enhance operational efficiency."
           features={[
             'DevOps maturity assessment',
             'Process transformation strategy',
@@ -872,9 +872,9 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="CI/CD Engineering Services"
-          title="Design Automated CI/CD Pipelines for Faster, Safer Software Delivery."
-          description="Automated build, test, and deploy pipelines with quality gates. Multi-stage workflows with safe rollback strategies. Pipeline observability that catches issues early."
+          eyebrow="Continuous Delivery Automation"
+          title="CI/CD Engineering Services"
+          description="Design and implement robust CI/CD pipelines that automate code integration, testing, and deployment, enabling faster releases, improved software quality, and reliable delivery across environments."
           features={[
             'Automated build and deployment pipelines',
             'Continuous testing integration',
@@ -896,9 +896,9 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Cloud & Infrastructure Automation"
-          title="Automate Provisioning and Cloud Resource Management with Infrastructure as Code."
-          description="Codified, version-controlled IaC across every major cloud. Terraform and Pulumi provisioning at scale. Policy-as-code and reusable patterns out of the box."
+          eyebrow="Cloud-Native Infrastructure"
+          title="Cloud & Infrastructure Automation"
+          description="Automate cloud infrastructure provisioning, configuration, and management using Infrastructure as Code (IaC) and cloud-native practices, enabling greater scalability, consistency, and operational efficiency."
           features={[
             'Infrastructure as Code (IaC) implementation',
             'Automated environment provisioning',
@@ -919,9 +919,9 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Kubernetes & Container Platform Services"
-          title="Build Scalable, Resilient Containerized Platforms with Kubernetes."
-          description="Production clusters with autoscaling and self-healing. Docker, Helm, and GitOps with ArgoCD or Flux. Paved roads that developers actually use."
+          eyebrow="Container Platform Engineering"
+          title="Kubernetes Platform Services."
+          description="Build and manage scalable Kubernetes and container platforms that streamline application deployment, improve resource utilization, and deliver resilient, cloud-native operations across environments."
           features={[
             'Docker containerization',
             'Kubernetes cluster setup',
@@ -943,9 +943,9 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="Monitoring, SRE & Observability"
-          title="Engineer Reliability with Proactive Monitoring and Observability."
-          description="Centralized logs, metrics, and traces with OpenTelemetry. SLO-driven alerts and incident workflows. SRE practices that measurably lower MTTR."
+          eyebrow="Observability & Reliability"
+          title="Monitoring, SRE & Observability."
+          description="Implement comprehensive monitoring, Site Reliability Engineering (SRE), and observability solutions to gain real-time visibility, improve system reliability, reduce downtime, and ensure optimal application performance."
           features={[
             'Centralized logging and monitoring',
             'Real-time alerts and notifications',

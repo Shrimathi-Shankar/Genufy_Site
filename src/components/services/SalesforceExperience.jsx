@@ -6,6 +6,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 import SalesforceCloudsStory from './SalesforceCloudsStory.jsx';
 
@@ -25,7 +26,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -42,7 +43,7 @@ function RevealWords({ text, className, once = true }) {
           style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
         >
           <motion.span
-            variants={wordIn}
+            variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined}
             style={{ display: 'inline-block', whiteSpace: 'pre' }}
           >
             {w}
@@ -238,7 +239,7 @@ function HeroScene({ service }) {
         {/* Massive layered title with letter reveal */}
         <h1
           aria-label="Salesforce"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[20vw] md:text-[14vw] lg:text-[12.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -271,7 +272,7 @@ function HeroScene({ service }) {
                     display: 'inline-block',
                     textShadow:
                       i < 5
-                        ? '0 0 60px rgba(36,186,172,0.35), 0 0 120px rgba(144,235,97,0.2)'
+                        ? 'none'
                         : 'none',
                   }}
                 >
@@ -285,7 +286,7 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Enterprise Salesforce Solutions Built for Scale, Automation, and Customer Success"
+              text="Salesforce solutions for scale and customer success."
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
@@ -750,7 +751,7 @@ function ExperienceSection({
   flip = false,
 }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -773,7 +774,7 @@ function ExperienceSection({
         <div className={`grid gap-14 lg:gap-16 lg:grid-cols-12 items-start`}>
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -1154,7 +1155,7 @@ function CloudCard({ cloud, i, accent }) {
 
 function SalesforceCloudsGrid({ accent }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -1324,9 +1325,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Implementation & Custom Development"
-          title="Tailored Salesforce Solutions for Unique Business Needs."
-          description="Custom Salesforce solutions tailored to your organization. Internal tools and customer-facing portals built right. Precision delivery from blueprint to go-live."
+          eyebrow="Salesforce Delivery Excellence"
+          title="Implementation & Custom Development"
+          description="We deliver end-to-end Salesforce implementation tailored to your business needs. From initial setup to advanced customization, we build scalable and high-performing Salesforce solutions that streamline operations and enhance customer engagement."
           features={[
             'Custom Objects designed for unique business processes',
             'Advanced Apex logic including asynchronous & batch processing',
@@ -1347,9 +1348,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="Automation & Optimization"
-          title="Streamline Operations with Intelligent Salesforce Automation."
-          description="Salesforce Flow and Apex automation at enterprise scale. Routing, approvals, and case lifecycle handled cleanly. Einstein next-best-action wired in."
+          eyebrow="Smart Workflow Automation"
+          title="Automation & Optimization"
+          description="We automate and optimize business processes to improve efficiency, reduce manual effort, and enhance overall system performance. This helps organizations streamline workflows, increase productivity, and deliver faster, more reliable business outcomes."
           features={[
             'Record-triggered and scheduled flows for automated actions',
             'End-to-end flow orchestration for seamless process automation',
@@ -1371,9 +1372,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Multi-Cloud & Industry Cloud Expertise"
-          title="Seamlessly Integrate Salesforce Clouds to Drive Growth and Customer Success."
-          description="Sales, Service, Marketing, Experience, and Data Cloud unified. Customer profiles connected across every channel. Composable patterns that grow with you."
+          eyebrow="Enterprise Cloud Solutions"
+          title="Multi-Cloud & Industry Cloud Expertise."
+          description="We deliver expertise across Salesforce multi-cloud and industry cloud platforms to build scalable, connected, and industry-specific solutions. This enables businesses to unify data, improve collaboration, and accelerate digital transformation with tailored cloud capabilities."
           features={[
             'Sales Cloud: Intelligent lead routing, opportunity lifecycle management, and accurate forecasting',
             'Service Cloud: Robust case management, omnichannel support, and CTI telephony integration',
@@ -1394,9 +1395,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Integration & API Management"
-          title="Powerful API Management to Drive Seamless Enterprise Connectivity."
-          description="Connect Salesforce to legacy and cloud systems seamlessly. API-led contracts with retry, replay, and observability. Real-time and batch sync at scale."
+          eyebrow="Connected Enterprise Systems"
+          title="Integration & API Management"
+          description="We enable seamless integration and API management to connect Salesforce with enterprise systems, ensuring secure, real-time data exchange and end-to-end automation across platforms."
           features={[
             'REST & SOAP API integrations with legacy and cloud platforms',
             'Middleware expertise: MuleSoft, Boomi, Informatica, AWS Lambda',
@@ -1418,9 +1419,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="Security, Governance & DevOps"
-          title="Secure, Govern, and Scale Your Salesforce Environment with Confidence."
-          description="Enterprise-grade security with Shield and field-level audit. Identity, SSO, and external user governance built in. DevOps backbone with CI/CD."
+          eyebrow="Secure & Scalable Delivery"
+          title="Security, Governance & DevOps"
+          description="We implement robust security, governance, and DevOps practices to ensure Salesforce environments are secure, compliant, and continuously optimized for performance and reliability."
           features={[
             'Fine-grained access with Role Hierarchies, Sharing Rules, and Shield Encryption',
             'Secure authentication with SSO, MFA, and OAuth2-based connected apps',
@@ -1440,9 +1441,9 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="06"
-          eyebrow="Reporting, Analytics & AI"
-          title="Smarter Reporting, Predictive Analytics, and Clean Data for Confident Decisions."
-          description="CRM Analytics and Tableau dashboards for every persona. Einstein forecasting, scoring, and predictive insights. Data Cloud activations across the experience layer."
+          eyebrow="Data-Driven Intelligence"
+          title="Reporting, Analytics & AI"
+          description="We enable advanced reporting, analytics, and AI capabilities to deliver actionable insights and support smarter business decisions."
           features={[
             'Dynamic, interactive dashboards and custom report types tailored to your KPIs',
             'Advanced analytics with CRM Analytics (formerly Tableau CRM) & Einstein Discovery',

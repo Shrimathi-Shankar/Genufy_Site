@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -39,7 +40,7 @@ function RevealWords({ text, className, once = true }) {
           key={i}
           style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
         >
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -437,13 +438,6 @@ function HeroScene({ service }) {
     my.set((e.clientY - r.top) / r.height - 0.5);
   };
 
-  // Letter font size scales with title length so long titles still fit
-  const titleSize =
-    letters.length > 14
-      ? 'text-[12vw] md:text-[8vw] lg:text-[7rem]'
-      : letters.length > 9
-      ? 'text-[16vw] md:text-[10vw] lg:text-[9rem]'
-      : 'text-[18vw] md:text-[12vw] lg:text-[10.5rem]';
 
   return (
     <section
@@ -459,7 +453,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -475,7 +468,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label={service.title}
-          className={`font-display font-bold leading-[0.9] tracking-tight ${titleSize}`}
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -505,7 +498,7 @@ function HeroScene({ service }) {
                     display: 'inline-block',
                     textShadow:
                       i < Math.ceil(letters.length / 2)
-                        ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)'
+                        ? 'none'
                         : 'none',
                   }}
                 >
@@ -554,7 +547,7 @@ function HeroScene({ service }) {
 
 function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -577,7 +570,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
