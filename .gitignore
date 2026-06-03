@@ -4,3 +4,6 @@ dist
 .env
 .env.local
 *.log
+
+# Nested duplicate project copy — not part of the site source
+New_Gen_Web/
