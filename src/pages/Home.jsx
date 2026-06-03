@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Genufy"
+        title="Genufy TechWorks"
         description="Genufy — engineering the next generation of intelligent experiences."
         path="/"
       />

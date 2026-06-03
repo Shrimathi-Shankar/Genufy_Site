@@ -1,11 +1,5 @@
 import { useRef, useState } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const TEXT =
   'Genufy transforms complex business challenges into seamless digital experiences. We design intelligent platforms, automation systems, and AI-driven solutions that help businesses scale efficiently and operate smarter.';
@@ -241,23 +235,6 @@ function GlowBackdrop() {
 }
 
 function HolographicMesh() {
-  const ref = useRef(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [4, -4]), { stiffness: 80, damping: 18 });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 80, damping: 18 });
-
-  const onMouseMove = (e) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    mx.set((e.clientX - r.left) / r.width - 0.5);
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  };
-  const onMouseLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
   const CENTER = { x: NETWORK_CX, y: NETWORK_CY };
   // Radial edges — each service connects to the centre point.
   const radialEdges = NETWORK_SERVICES.map((s) => ({
@@ -271,18 +248,12 @@ function HolographicMesh() {
   const allEdges = [...radialEdges, ...ringEdges];
 
   return (
-    <div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      className="relative h-full w-full"
-    >
+    <div className="relative h-full w-full">
       {/* ===== LAYER 1 — Background gradients, grid, particles, scanline.
-          Only this layer receives the 3D tilt from mouse movement. ===== */}
-      <motion.div
+          Static (no mouse tilt). ===== */}
+      <div
         aria-hidden
-        style={{ rotateX: rx, rotateY: ry, transformPerspective: 1200 }}
-        className="absolute inset-0 will-change-transform pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
       >
         <motion.div
           aria-hidden
@@ -311,15 +282,15 @@ function HolographicMesh() {
           }}
         />
 
-        {/* Floating glyphs live with the tilted background */}
-        <div aria-hidden className="absolute inset-0 font-mono text-[10px] tracking-widest text-white/35">
+        {/* Floating ambient labels — subtle on-brand capability words */}
+        <div aria-hidden className="absolute inset-0 font-mono text-[10px] tracking-[0.35em] uppercase text-white/25">
           {[
-            { x: '12%', y: '20%', t: '01101', d: 9, dl: 0 },
-            { x: '78%', y: '38%', t: '10011', d: 11, dl: 1 },
-            { x: '22%', y: '70%', t: '11000', d: 10, dl: 2 },
-            { x: '70%', y: '78%', t: '01110', d: 12, dl: 0.5 },
-            { x: '46%', y: '14%', t: '◆ AI', d: 13, dl: 1.5 },
-            { x: '60%', y: '60%', t: '◇ DATA', d: 14, dl: 0.8 },
+            { x: '12%', y: '20%', t: 'Innovate', d: 9, dl: 0 },
+            { x: '78%', y: '38%', t: 'Automate', d: 11, dl: 1 },
+            { x: '20%', y: '72%', t: 'Integrate', d: 10, dl: 2 },
+            { x: '70%', y: '80%', t: 'Scale', d: 12, dl: 0.5 },
+            { x: '46%', y: '13%', t: 'Transform', d: 13, dl: 1.5 },
+            { x: '62%', y: '62%', t: 'Connect', d: 14, dl: 0.8 },
           ].map((g, i) => (
             <motion.span
               key={i} className="absolute" style={{ left: g.x, top: g.y }}
@@ -339,7 +310,7 @@ function HolographicMesh() {
           animate={{ y: ['-10%', '120%', '-10%'] }}
           transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         />
-      </motion.div>
+      </div>
 
       {/* ===== LAYER 2 — Network lines (locked, never transformed) ===== */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden>

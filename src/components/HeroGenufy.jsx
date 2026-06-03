@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import AuroraBackground from './AuroraBackground.jsx';
+import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
 // ==========================================
 // 1. Interactive Canvas Particles Component
@@ -486,6 +487,7 @@ function HeadlineLine({ text, delay = 0, accent = false, dimmed = false }) {
 // ==========================================
 export default function HeroGenufy() {
   useHeroSnap();
+  const { openContact } = useContactModal();
   return (
     <>
       {/* 3D background / parallax stage layers */}
@@ -561,12 +563,13 @@ export default function HeroGenufy() {
                 Explore Solutions
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
-              <a
-                href="#contact"
+              <button
+                type="button"
+                onClick={openContact}
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-medium text-white/75 backdrop-blur-sm transition-all duration-300 hover:border-teal/40 hover:bg-white/[0.05] hover:text-white"
               >
                 Talk to Us
-              </a>
+              </button>
             </motion.div>
           </div>
 

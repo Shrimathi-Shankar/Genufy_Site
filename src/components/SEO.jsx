@@ -1,7 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 
+const BRAND = 'Genufy TechWorks';
+
 export default function SEO({ title, description, path = '/' }) {
-  const fullTitle = title ? `${title} — New Gen Web` : 'New Gen Web';
+  const fullTitle = title && title !== BRAND ? `${title} — ${BRAND}` : BRAND;
   return (
     <Helmet>
       <title>{fullTitle}</title>
