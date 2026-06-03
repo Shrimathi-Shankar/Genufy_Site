@@ -1064,7 +1064,7 @@ function ExperienceSection({
   flip = false,
 }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 

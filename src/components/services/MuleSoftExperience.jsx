@@ -690,7 +690,7 @@ function CloudHubVisual({ accent }) {
 
 function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+    <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 

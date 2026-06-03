@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { pageTransition } from '../animations/variants.js';
 import SEO from '../components/SEO.jsx';
+import SiteFooter from '../components/SiteFooter.jsx';
 
 export default function NotFound() {
   return (
@@ -12,6 +13,8 @@ export default function NotFound() {
         <p className="text-white/70 mt-4">This page drifted into the void.</p>
         <Link to="/" className="btn-primary mt-8 inline-flex">Return Home</Link>
       </section>
+
+      <SiteFooter />
     </motion.div>
   );
 }

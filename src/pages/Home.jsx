@@ -7,6 +7,7 @@ import HorizontalCapabilities from '../components/HorizontalCapabilities.jsx';
 import PinnedShowcase from '../components/PinnedShowcase.jsx';
 import PortalTransition from '../components/PortalTransition.jsx';
 import ClosingCTA from '../components/ClosingCTA.jsx';
+import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
 
 export default function Home() {

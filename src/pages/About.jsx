@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { pageTransition } from '../animations/variants.js';
 import Reveal from '../components/Reveal.jsx';
 import SEO from '../components/SEO.jsx';
+import SiteFooter from '../components/SiteFooter.jsx';
 
 export default function About() {
   return (
@@ -33,6 +34,8 @@ export default function About() {
           ))}
         </div>
       </section>
+
+      <SiteFooter />
     </motion.div>
   );
 }

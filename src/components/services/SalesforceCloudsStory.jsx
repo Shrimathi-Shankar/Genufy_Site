@@ -1,32 +1,21 @@
-import { useRef } from 'react';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 /**
- * SalesforceCloudsStory — Zig-zag river layout
+ * SalesforceCloudsStory — "Cloud Ecosystem" bento mosaic
  *
- * Vertical normal-scroll section (no pinning, no horizontal lock). The 16
- * clouds form a winding "river" that snakes down the page, alternating
- * left and right along a glowing central spine. The spine draws itself as
- * the user scrolls. Compact glassmorphism cards arrive diagonally from
- * their respective side with a soft rotate+blur entry.
- *
- * The four storytelling categories are stamped along the spine as
- * eyebrow markers between groups of 4 clouds.
- *
- * Design goals
- *  • Visually distinct from the Certifications marquee (which is
- *    pinned-horizontal) and from any horizontal slider — this is purely
- *    page-scroll with side-alternating reveals.
- *  • Compact cards (~340px max), premium glass styling, minimal chrome.
- *  • GPU-only transforms: translate / opacity / rotate / scale / filter.
- *  • Lightweight: no measurement loops, no pin math, no large card heights.
+ * The 16 Salesforce Clouds are presented as a modern asymmetric bento grid
+ * instead of a uniform card row. Each cloud owns its brand gradient (glow,
+ * glyph chip, accent bar) so every tile reads distinctly. The lead cloud of
+ * each of the four ecosystem categories is promoted to a wide "anchor" tile
+ * that carries the category label + a one-line description, giving the grid a
+ * deliberate, editorial rhythm while staying fully responsive.
  */
 
 const CATEGORIES = [
-  { label: 'Business Growth',          tag: 'Sell · Serve · Engage',      color: '#24baac' },
-  { label: 'Commerce & Revenue',       tag: 'Storefronts · Pricing · Data', color: '#F59E0B' },
-  { label: 'Industry Solutions',       tag: 'Healthcare · Finance · Auto',  color: '#A78BFA' },
-  { label: 'Operations & Sustainability', tag: 'Make · Serve · Care · ESG', color: '#90eb61' },
+  { label: 'Business Growth', color: '#24baac' },
+  { label: 'Commerce & Revenue', color: '#F59E0B' },
+  { label: 'Industry Solutions', color: '#A78BFA' },
+  { label: 'Operations & Sustainability', color: '#90eb61' },
 ];
 
 const CLOUDS = [
@@ -48,113 +37,7 @@ const CLOUDS = [
   { id: 'netzero',    name: 'Net Zero Cloud',           tag: 'Carbon · ESG',            desc: 'Emissions tracking across scope 1, 2, and 3.',           glyph: '◍', from: '#10B981', to: '#24baac', cat: 3 },
 ];
 
-/* ---------------- Compact card ---------------- */
-
-function CompactCard({ cloud, side }) {
-  return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        x: side === 'left' ? -56 : 56,
-        rotate: side === 'left' ? -2.5 : 2.5,
-        filter: 'blur(6px)',
-      }}
-      whileInView={{ opacity: 1, x: 0, rotate: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -5 }}
-      className="group relative w-full max-w-[340px] rounded-2xl border border-white/12 bg-white/[0.025] backdrop-blur-xl overflow-hidden p-5"
-      style={{
-        boxShadow: `0 22px 50px -28px ${cloud.from}66, inset 0 1px 0 rgba(255,255,255,0.06)`,
-      }}
-    >
-      {/* corner halo */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full blur-2xl opacity-50 transition-opacity duration-500 group-hover:opacity-95"
-        style={{ background: `radial-gradient(circle, ${cloud.from}aa, transparent 70%)` }}
-      />
-      {/* subtle inner grid */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-
-      <div className="relative flex items-start gap-3.5">
-        <div
-          className="grid h-11 w-11 flex-none place-items-center rounded-xl font-display text-lg text-white"
-          style={{
-            background: `linear-gradient(135deg, ${cloud.from}, ${cloud.to})`,
-            boxShadow: `0 10px 22px -10px ${cloud.from}, inset 0 1px 0 rgba(255,255,255,0.3)`,
-          }}
-        >
-          {cloud.glyph}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[9px] tracking-[0.45em] uppercase text-white/45">
-            Salesforce
-          </div>
-          <div className="mt-0.5 font-display text-base md:text-lg text-white leading-snug">
-            {cloud.name}
-          </div>
-          <div className="mt-1 text-[10px] tracking-[0.3em] uppercase text-white/55">
-            {cloud.tag}
-          </div>
-        </div>
-      </div>
-
-      <p className="relative mt-3 text-xs md:text-sm text-white/65 leading-relaxed">
-        {cloud.desc}
-      </p>
-
-      <div
-        aria-hidden
-        className="absolute bottom-0 left-0 right-0 h-[2px]"
-        style={{ background: `linear-gradient(90deg, ${cloud.from}, ${cloud.to})` }}
-      />
-    </motion.div>
-  );
-}
-
-/* ---------------- Category marker (sits on the spine) ---------------- */
-
-function CategoryMarker({ cat, index }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.85 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="relative z-10 self-center flex flex-col items-center my-2 md:my-4"
-    >
-      <div
-        className="rounded-full px-5 py-2 border backdrop-blur-md text-[10px] tracking-[0.5em] uppercase font-medium"
-        style={{
-          borderColor: `${cat.color}55`,
-          background: `linear-gradient(135deg, ${cat.color}1a, rgba(0,0,0,0.4))`,
-          color: '#fff',
-          boxShadow: `0 0 24px -6px ${cat.color}88`,
-        }}
-      >
-        <span style={{ color: cat.color }}>
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <span className="mx-2 text-white/30">·</span>
-        <span>{cat.label}</span>
-      </div>
-      <div className="mt-1.5 text-[9px] tracking-[0.4em] uppercase text-white/45">
-        {cat.tag}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ---------------- Ambient backdrop (light) ---------------- */
+/* ---------------- Ambient backdrop ---------------- */
 
 function AmbientDecor() {
   return (
@@ -173,168 +56,156 @@ function AmbientDecor() {
         animate={{ x: [0, -40, 0], y: [0, -20, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
-        aria-hidden
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[360px] w-[360px] rounded-full blur-3xl opacity-20 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #6366F1 0%, transparent 65%)' }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.3, 0.15] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-      />
     </>
+  );
+}
+
+/* ---------------- Bento tile ---------------- */
+
+function CloudTile({ cloud, i, wide }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.6, delay: (i % 5) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4 }}
+      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-5 ${
+        wide ? 'col-span-2' : 'col-span-1'
+      }`}
+      style={{ boxShadow: `0 22px 50px -30px ${cloud.from}77, inset 0 1px 0 rgba(255,255,255,0.05)` }}
+    >
+      {/* Unique brand corner glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full blur-2xl opacity-40 transition-opacity duration-500 group-hover:opacity-95"
+        style={{ background: `radial-gradient(circle, ${cloud.from}, transparent 70%)` }}
+      />
+      {/* Gradient border on hover */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background: `linear-gradient(135deg, ${cloud.from}, ${cloud.to})`,
+          padding: 1,
+          WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
+        }}
+      />
+
+      <div className="relative flex h-full flex-col">
+        <div className="flex items-start justify-between">
+          <div
+            className="grid h-11 w-11 flex-none place-items-center rounded-xl font-display text-lg text-white transition-transform duration-500 group-hover:scale-110"
+            style={{
+              background: `linear-gradient(135deg, ${cloud.from}, ${cloud.to})`,
+              boxShadow: `0 10px 22px -10px ${cloud.from}, inset 0 1px 0 rgba(255,255,255,0.3)`,
+            }}
+          >
+            {cloud.glyph}
+          </div>
+          <span className="font-mono text-[10px] tracking-[0.2em] text-white/25">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+        </div>
+
+        <div className="mt-auto pt-4">
+          {wide && (
+            <div
+              className="mb-1.5 text-[9px] font-semibold tracking-[0.35em] uppercase"
+              style={{ color: cloud.from }}
+            >
+              {CATEGORIES[cloud.cat].label}
+            </div>
+          )}
+          <div className="font-display text-base md:text-lg text-white leading-snug">
+            {cloud.name}
+          </div>
+          <div className="mt-1 text-[9px] tracking-[0.3em] uppercase text-white/45">
+            {cloud.tag}
+          </div>
+          {wide && (
+            <p className="mt-2 max-w-md text-xs text-white/55 leading-relaxed line-clamp-2">
+              {cloud.desc}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Brand accent bar */}
+      <div
+        aria-hidden
+        className="absolute bottom-0 inset-x-0 h-[2px]"
+        style={{ background: `linear-gradient(90deg, ${cloud.from}, ${cloud.to})` }}
+      />
+    </motion.div>
   );
 }
 
 /* ---------------- Main ---------------- */
 
-export default function SalesforceCloudsStory({ scrollContainer }) {
-  const sectionRef = useRef(null);
-
-  // Only the spine line uses scroll progress — light, single useTransform
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    container: scrollContainer,
-    offset: ['start end', 'end start'],
-  });
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 24,
-    mass: 0.4,
-  });
-  const spineFill = useTransform(smooth, [0.08, 0.92], [0, 1]);
-
-  // Build the interleaved sequence: insert a category marker each time we cross a cat boundary
-  const items = [];
-  CLOUDS.forEach((c, i) => {
-    const isBoundary = i === 0 || c.cat !== CLOUDS[i - 1].cat;
-    if (isBoundary) {
-      items.push({ kind: 'marker', cat: CATEGORIES[c.cat], catIndex: c.cat });
-    }
-    items.push({ kind: 'card', cloud: c, sideIndex: i });
-  });
-
+export default function SalesforceCloudsStory() {
   return (
     <section
-      ref={sectionRef}
-      aria-label="Salesforce Clouds — zig-zag storytelling"
+      aria-label="Salesforce Clouds — ecosystem mosaic"
       className="relative px-6 md:px-12 py-24 md:py-36 overflow-hidden"
     >
       <AmbientDecor />
 
-      {/* Heading */}
-      <div className="relative max-w-7xl mx-auto mb-16 md:mb-24 text-center">
-        <div className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-5">
-          <span className="h-px w-10 bg-white/30" />
-          The Cloud Ecosystem
-          <span className="h-px w-10 bg-white/30" />
-        </div>
-        <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-          <span className="text-gradient-gt">16 clouds.</span>{' '}
-          <span className="text-white/85">One winding story.</span>
-        </h2>
-        <p className="mt-5 max-w-2xl mx-auto text-sm md:text-base text-white/65 leading-relaxed">
-          Follow the river — each cloud drifts in from its own side as you scroll, grouped into four storytelling currents.
-        </p>
-      </div>
+      <div className="relative max-w-7xl mx-auto">
+        {/* Heading */}
+        <div className="mb-14 md:mb-20 text-center">
+          <div className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-5">
+            <span className="h-px w-10 bg-white/30" />
+            The Cloud Ecosystem
+            <span className="h-px w-10 bg-white/30" />
+          </div>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+            <span className="text-gradient-gt">16 clouds.</span>{' '}
+            <span className="text-white/85">One connected ecosystem.</span>
+          </h2>
+          <p className="mt-5 max-w-2xl mx-auto text-sm md:text-base text-white/65 leading-relaxed">
+            Every Salesforce Cloud, mapped as one fabric — each tile carries its own
+            identity, grouped into four currents that power growth, commerce, industry, and operations.
+          </p>
 
-      {/* River */}
-      <div className="relative max-w-4xl mx-auto">
-        {/* Central spine (md+) */}
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-px hidden md:block"
-        >
-          {/* Background hairline */}
-          <div className="absolute inset-0 bg-white/8" />
-          {/* Scroll-drawn fill */}
-          <motion.div
-            style={{ scaleY: spineFill, transformOrigin: 'top' }}
-            className="absolute inset-0"
-          >
-            <div
-              className="h-full w-full"
-              style={{
-                background:
-                  'linear-gradient(180deg, rgba(144,235,97,0.9), rgba(36,186,172,0.9) 40%, rgba(167,139,250,0.7) 75%, rgba(144,235,97,0.6))',
-                boxShadow: '0 0 18px rgba(36,186,172,0.45)',
-              }}
-            />
-          </motion.div>
-          {/* Pulse beads */}
-          {[0.10, 0.30, 0.50, 0.70, 0.90].map((p, i) => (
-            <motion.span
-              key={i}
-              className="absolute left-1/2 -translate-x-1/2 h-2 w-2 rounded-full"
-              style={{
-                top: `${p * 100}%`,
-                background: 'linear-gradient(135deg, #90eb61, #24baac)',
-                boxShadow: '0 0 16px #90eb61',
-              }}
-              animate={{ scale: [1, 1.6, 1], opacity: [0.55, 1, 0.55] }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: i * 0.35,
-              }}
-            />
-          ))}
+          {/* Category legend */}
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {CATEGORIES.map((c) => (
+              <span key={c.label} className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-white/50">
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
+                />
+                {c.label}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* 2-column CSS grid — left/right groups cluster near the spine without crossing it */}
-        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-16 gap-y-8 md:gap-y-12">
-          {items.map((it) => {
-            if (it.kind === 'marker') {
-              return (
-                <div
-                  key={`m-${it.catIndex}`}
-                  className="md:col-span-2 flex justify-center"
-                >
-                  <CategoryMarker cat={it.cat} index={it.catIndex} />
-                </div>
-              );
-            }
-            // Side is determined by category — entire group stays on one side
-            const side = it.cloud.cat % 2 === 0 ? 'left' : 'right';
-            // Intra-group index (0..3) drives a subtle mini zig-zag inside the column
-            const k = it.sideIndex % 4;
-            const pushedOut = k % 2 === 0; // cards 1 & 3 (1-indexed) sit further from the spine
-            const colClass =
-              side === 'left'
-                ? 'md:col-start-1 md:justify-self-end'
-                : 'md:col-start-2 md:justify-self-start';
-            const offsetClass = pushedOut
-              ? side === 'left'
-                ? 'md:-translate-x-6 lg:-translate-x-10'
-                : 'md:translate-x-6 lg:translate-x-10'
-              : '';
-            return (
-              <div
-                key={it.cloud.id}
-                className={`w-full flex justify-center md:block ${colClass} ${offsetClass}`}
-              >
-                <CompactCard cloud={it.cloud} side={side} />
-              </div>
-            );
+        {/* Bento mosaic — wide anchor tile per category, dense flow fills the rest */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 grid-flow-dense auto-rows-[164px] sm:auto-rows-[182px]">
+          {CLOUDS.map((c, i) => {
+            const wide = i === 0 || c.cat !== CLOUDS[i - 1].cat;
+            return <CloudTile key={c.id} cloud={c} i={i} wide={wide} />;
           })}
         </div>
-      </div>
 
-      {/* Footer line */}
-      <div className="relative max-w-3xl mx-auto mt-20 md:mt-28 text-center">
-        <motion.div
-          aria-hidden
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto h-px max-w-sm mb-6 origin-center"
-          style={{
-            background:
-              'linear-gradient(90deg, transparent, rgba(36,186,172,0.7), transparent)',
-          }}
-        />
-        <div className="text-[10px] tracking-[0.5em] uppercase text-white/45">
-          16 clouds · 4 currents · one Salesforce
+        {/* Footer line */}
+        <div className="mt-16 md:mt-20 text-center">
+          <motion.div
+            aria-hidden
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto h-px max-w-sm mb-6 origin-center"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(36,186,172,0.7), transparent)' }}
+          />
+          <div className="text-[10px] tracking-[0.5em] uppercase text-white/45">
+            16 clouds · 4 currents · one Salesforce
+          </div>
         </div>
       </div>
     </section>

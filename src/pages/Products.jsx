@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import SEO from '../components/SEO.jsx';
 import Header from '../components/Header.jsx';
+import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
 import { products } from './products/productData.js';
 
@@ -621,6 +622,8 @@ export default function Products() {
             We ship slowly, deliberately, and only when it earns the Genufy name.
           </motion.p>
         </section>
+
+        <SiteFooter />
       </main>
 
       <div className="noise" aria-hidden />
