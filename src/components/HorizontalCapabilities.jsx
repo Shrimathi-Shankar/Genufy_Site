@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   AnimatePresence,
   motion,
-  useMotionValue,
   useScroll,
   useSpring,
   useTransform,
@@ -49,12 +48,8 @@ function CapabilityCard({ service, index, progress, onSelect }) {
   const scrollScale = useTransform(progress, [start - 0.1, mid, end + 0.1], [0.94, 1, 0.94]);
   const scrollOpacity = useTransform(progress, [start - 0.15, mid, end + 0.15], [0.55, 1, 0.55]);
 
-  // Mouse-follow light & tilt
+  // Mouse-follow light (soft spotlight only — no tilt/shake)
   const ref = useRef(null);
-  const mx = useMotionValue(0.5);
-  const my = useMotionValue(0.5);
-  const rx = useSpring(useTransform(my, [0, 1], [6, -6]), { stiffness: 120, damping: 14 });
-  const ry = useSpring(useTransform(mx, [0, 1], [-8, 8]), { stiffness: 120, damping: 14 });
   const [light, setLight] = useState({ x: 50, y: 50, opacity: 0 });
 
   const onMove = (e) => {
@@ -62,13 +57,9 @@ function CapabilityCard({ service, index, progress, onSelect }) {
     if (!r) return;
     const x = (e.clientX - r.left) / r.width;
     const y = (e.clientY - r.top) / r.height;
-    mx.set(x);
-    my.set(y);
     setLight({ x: x * 100, y: y * 100, opacity: 1 });
   };
   const onLeave = () => {
-    mx.set(0.5);
-    my.set(0.5);
     setLight((s) => ({ ...s, opacity: 0 }));
   };
 
@@ -93,9 +84,6 @@ function CapabilityCard({ service, index, progress, onSelect }) {
       style={{
         scale: scrollScale,
         opacity: scrollOpacity,
-        rotateX: rx,
-        rotateY: ry,
-        transformPerspective: 1200,
         willChange: 'transform',
       }}
       className="group relative w-[82vw] sm:w-[44vw] lg:w-[28vw] xl:w-[26vw] shrink-0 aspect-[4/5] cursor-pointer rounded-3xl focus:outline-none focus:ring-2 focus:ring-white/30"
@@ -307,7 +295,7 @@ export default function HorizontalCapabilities() {
 
         <div className="relative h-full flex flex-col">
           {/* Header */}
-          <div className="pt-28 md:pt-30 px-6 md:px-12 max-w-7xl mx-auto w-full">
+          <div className="pt-28 md:pt-30 pb-10 md:pb-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
             <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/40">
               <span className="h-px w-10 bg-white/30" />
               Services · 02

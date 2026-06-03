@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useReducedMotion,
-} from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /* ============================================================
    CinematicContact — single-screen premium contact form
@@ -34,12 +27,32 @@ import {
         EmailJS is used and FormSubmit is bypassed.
 
    Fallback — FormSubmit (no setup, but Reply-To only and may hit spam). */
-const INBOX = 'shrimathi@genufy.in';
+const INBOX = 'info@genufy.in';
 
+/* -----------------------------------------------------------------
+   EmailJS setup (one-time) — fill the three IDs below and the polished
+   HTML email is sent automatically (FormSubmit is bypassed):
+
+   1) Sign up at https://www.emailjs.com (free tier is fine).
+   2) Email Services → Add Service (Gmail / Zoho / Microsoft 365 / SMTP).
+      Copy the Service ID  → paste into `serviceId` below.
+   3) Email Templates → Create Template. In the template settings set:
+        To Email   : {{to_email}}
+        From Name  : {{from_name}}
+        Reply To   : {{reply_to}}
+        Subject    : {{subject}}
+      For the Content, switch the editor to the code/HTML view and paste
+      the block in EMAILJS_TEMPLATE_HTML (exported at the bottom of this
+      file). It uses {{name}}, {{email}}, {{phone}}, {{message}},
+      {{submitted_on}}, {{source}} — exactly the params we send.
+      Copy the Template ID → paste into `templateId` below.
+   4) Account → General → Public Key → paste into `publicKey` below.
+
+   That's it — no code changes needed after pasting the IDs. */
 const EMAILJS = {
-  serviceId: '',            // e.g. 'service_xxxxxxx'
-  templateId: '',           // e.g. 'template_xxxxxxx'
-  publicKey: '',            // e.g. 'XXXXxxxxXXXXxxxx'
+  serviceId: 'service_lcjx2d8',
+  templateId: 'template_dqb6si7',
+  publicKey: 'RqdS907OQ8LxoSUPb',
   endpoint: 'https://api.emailjs.com/api/v1.0/email/send',
 };
 
@@ -284,10 +297,10 @@ function SuccessScene({ onClose, inbox }) {
 
 /* ----------------------------- main modal ------------------------------ */
 export default function CinematicContact({ open, onClose, cta = "Let's Build Together" }) {
-  const reduce = useReducedMotion();
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // 'idle' | 'sending' | 'sent' | 'error'
+  const [errDetail, setErrDetail] = useState(''); // raw provider error, for debugging
 
   /* Reset state every time the dialog re-opens */
   useEffect(() => {
@@ -312,24 +325,6 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
-
-  /* Pointer-driven parallax */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 80, damping: 18 });
-  const sy = useSpring(my, { stiffness: 80, damping: 18 });
-  const bgX1 = useTransform(sx, [-1, 1], [-40, 40]);
-  const bgY1 = useTransform(sy, [-1, 1], [-20, 20]);
-  const bgX2 = useTransform(sx, [-1, 1], [25, -25]);
-  const bgY2 = useTransform(sy, [-1, 1], [15, -15]);
-  const panelRotX = useTransform(sy, [-1, 1], [3, -3]);
-  const panelRotY = useTransform(sx, [-1, 1], [-3, 3]);
-
-  const onPointerMove = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    mx.set(((e.clientX - r.left) / r.width) * 2 - 1);
-    my.set(((e.clientY - r.top) / r.height) * 2 - 1);
-  };
 
   const update = (e) => {
     const { name, value } = e.target;
@@ -365,7 +360,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
         timeStyle: 'short',
         timeZone: 'Asia/Kolkata',
       });
-      const subject = '🚀 New Business Inquiry from Genufy Website';
+      const subject = `New Inquiry from ${fullName} — Genufy Website`;
       const bodyText = buildBodyText({ fullName, email, phone, message, submittedDate });
       const bodyHtml = buildBodyHtml({ fullName, email, phone, message, submittedDate });
 
@@ -397,35 +392,28 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
           }),
         });
         ok = res.ok;
+        if (!ok) {
+          const detail = await res.text().catch(() => '');
+          throw new Error(`EmailJS ${res.status}: ${detail || 'request failed'}`);
+        }
       } else {
-        /* Fallback — FormSubmit. `_template: 'table'` renders the blue
-           Name/Value layout from the reference. Intro and closing
-           paragraphs are sent as extra rows so they appear in the email. */
-        const intro =
-          'Hello Team,\n\n' +
-          'A new visitor has submitted an inquiry through the Genufy website ' +
-          'and may be interested in learning more about our services.\n\n' +
-          'Please find the details below:';
-        const closing =
-          'This visitor has taken the time to reach out through our website ' +
-          'and may be interested in discussing potential opportunities, ' +
-          'services, partnerships, or digital transformation initiatives.\n\n' +
-          'Please follow up with them at the earliest convenience.';
+        /* Fallback — FormSubmit. We send ONLY clean, well-ordered fields (no
+           emoji keys, no paragraph-rows) so the received email is a tidy
+           Name/Value list. `_template: 'box'` is FormSubmit's cleanest layout.
+           FormSubmit builds its own email from these fields and ignores raw
+           HTML, so the polished buildBodyHtml is reserved for the EmailJS path. */
         const res = await fetch(FORM_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
-            '✉️ Message':       intro,
-            'Name':             fullName,
-            'Email':            email,
-            'Contact Number':   phone,
-            'Message':          message,
-            'Submitted Date':   submittedDate,
-            'Source':           'Genufy Website',
-            '📌 Next Step':     closing,
-            'Best Regards':     'Genufy Website Automation',
+            Name:             fullName,
+            Email:            email,
+            'Contact Number': phone,
+            Message:          message,
+            'Submitted On':   submittedDate,
+            Source:           'Genufy Website Contact Form',
             _subject:  subject,
-            _template: 'table',
+            _template: 'box',
             _captcha:  'false',
             _replyto:  email,
           }),
@@ -435,8 +423,10 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
 
       if (!ok) throw new Error('send failed');
       setStatus('sent');
+      setErrDetail('');
       setForm({ firstName: '', lastName: '', email: '', phone: '', message: '' });
-    } catch {
+    } catch (err) {
+      setErrDetail(err?.message || String(err));
       setStatus('error');
     }
   };
@@ -467,7 +457,6 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          onPointerMove={reduce ? undefined : onPointerMove}
           role="dialog"
           aria-modal="true"
           aria-label="Contact"
@@ -482,19 +471,17 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             exit={{ opacity: 0 }}
           />
 
-          {/* Parallax glow layers */}
-          <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ x: bgX1, y: bgY1 }}>
+          {/* Static glow layers */}
+          <div aria-hidden className="pointer-events-none absolute inset-0">
             <div
               className="absolute left-[10%] top-[15%] w-[520px] h-[520px] rounded-full blur-[150px] opacity-50"
               style={{ background: 'radial-gradient(circle, rgba(36,186,172,0.5), transparent 70%)' }}
             />
-          </motion.div>
-          <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ x: bgX2, y: bgY2 }}>
             <div
               className="absolute right-[8%] bottom-[10%] w-[560px] h-[560px] rounded-full blur-[160px] opacity-45"
               style={{ background: 'radial-gradient(circle, rgba(144,235,97,0.45), transparent 70%)' }}
             />
-          </motion.div>
+          </div>
 
           {/* Floating particles */}
           <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -547,8 +534,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.96 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            style={reduce ? undefined : { rotateX: panelRotX, rotateY: panelRotY, transformPerspective: 1400 }}
-            className="relative z-[1] w-[min(94vw,720px)] max-h-[92vh] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-black/60 backdrop-blur-2xl px-6 pt-12 pb-6 md:px-9 md:pt-14 md:pb-8 will-change-transform"
+            className="relative z-[1] w-[min(94vw,720px)] max-h-[92vh] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-black/60 backdrop-blur-2xl px-6 pt-12 pb-6 md:px-9 md:pt-14 md:pb-8"
           >
             {/* Brand-gradient ring */}
             <div
@@ -605,6 +591,9 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
                   {status === 'error' && (
                     <div className="text-xs text-rose-300">
                       Something went wrong. Please try again, or email us directly at {INBOX}.
+                      {errDetail && (
+                        <span className="mt-1 block break-words text-rose-400/80">{errDetail}</span>
+                      )}
                     </div>
                   )}
 
@@ -631,3 +620,56 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
     </AnimatePresence>
   );
 }
+
+/* ============================================================================
+   EMAILJS_TEMPLATE_HTML
+
+   Copy everything between the backticks below and paste it into your EmailJS
+   template's Content (switch the editor to the </> code / HTML view first).
+   It uses the same variables this form sends — {{name}}, {{email}}, {{phone}},
+   {{message}}, {{submitted_on}}, {{source}} — so no further wiring is needed.
+   The {{message}} cell uses `white-space:pre-line` so line breaks are kept.
+   EmailJS escapes these values, so it is safe against HTML injection.
+============================================================================ */
+export const EMAILJS_TEMPLATE_HTML = `
+<div style="margin:0;padding:24px;background:#f4f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#1f2937;">
+  <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+    <div style="background:linear-gradient(135deg,#90eb61,#24baac);padding:28px 32px;">
+      <h1 style="margin:0;font-size:20px;font-weight:700;color:#062019;letter-spacing:-0.2px;">New Website Inquiry</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#063b32;">Genufy — submitted {{submitted_on}}</p>
+    </div>
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#374151;">
+        A new visitor has reached out through the Genufy website. Their details are below.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;font-weight:600;color:#6b7280;width:34%;">Name</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;color:#111827;">{{name}}</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;font-weight:600;color:#6b7280;">Email</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;color:#111827;"><a href="mailto:{{email}}" style="color:#0f766e;text-decoration:none;">{{email}}</a></td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;font-weight:600;color:#6b7280;">Contact Number</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;color:#111827;">{{phone}}</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;font-weight:600;color:#6b7280;vertical-align:top;">Message</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eef1f4;color:#111827;white-space:pre-line;line-height:1.6;">{{message}}</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;font-weight:600;color:#6b7280;">Source</td>
+          <td style="padding:12px 0;color:#111827;">{{source}}</td>
+        </tr>
+      </table>
+      <div style="margin-top:24px;">
+        <a href="mailto:{{email}}" style="display:inline-block;background:linear-gradient(135deg,#90eb61,#24baac);color:#062019;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:999px;">Reply to {{name}}</a>
+      </div>
+    </div>
+    <div style="padding:16px 32px;background:#fafbfc;border-top:1px solid #eef1f4;">
+      <p style="margin:0;font-size:12px;color:#9ca3af;">Generated automatically by the Genufy website contact form.</p>
+    </div>
+  </div>
+</div>`;

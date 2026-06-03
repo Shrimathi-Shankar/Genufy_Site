@@ -234,7 +234,7 @@ function RadarVisual({ progress, step }) {
               className="text-center"
             >
               <div className="text-[10px] tracking-[0.5em] uppercase text-white/50">
-                Step
+                Chapter
               </div>
               <div className="mt-2 font-display text-5xl md:text-6xl text-gradient-gt">
                 {STEPS[step].code}
@@ -515,7 +515,7 @@ export default function PinnedShowcase() {
                   className="absolute inset-0 text-center"
                 >
                   <div className="text-[10px] tracking-[0.5em] uppercase text-white/50">
-                    Step 0{step + 1}
+                    Chapter 0{step + 1}
                   </div>
                   <h2 className="mt-3 font-display text-3xl font-bold leading-[1.1] tracking-tight">
                     {active.title}

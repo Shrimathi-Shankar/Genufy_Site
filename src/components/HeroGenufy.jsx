@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
+import AuroraBackground from './AuroraBackground.jsx';
 
 // ==========================================
 // 1. Interactive Canvas Particles Component
@@ -75,6 +76,8 @@ function Particles({ density = 60 }) {
 function ParallaxStage() {
   const ref = useRef(null);
   const { scrollY } = useScroll();
+  // Reduce particle count on mobile to save GPU memory
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
   const yFar = useTransform(scrollY, [0, 800], [0, -60]);
   const yMid = useTransform(scrollY, [0, 800], [0, -150]);
@@ -90,10 +93,7 @@ function ParallaxStage() {
       aria-hidden="true"
     >
       {/* Base radial wash */}
-      <motion.div
-        style={{ y: yFar }}
-        className="layer absolute inset-0"
-      >
+      <motion.div style={{ y: yFar }} className="layer absolute inset-0">
         <div
           className="absolute inset-0"
           style={{
@@ -119,12 +119,18 @@ function ParallaxStage() {
 
       {/* Glow orbs */}
       <motion.div style={{ y: yMid, rotate: rot }} className="layer absolute inset-0">
-        <div className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] opacity-50"
-          style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 60%)' }} />
-        <div className="absolute bottom-[-180px] right-[-120px] w-[600px] h-[600px] rounded-full blur-[140px] opacity-45"
-          style={{ background: 'radial-gradient(circle, #90eb61 0%, transparent 60%)' }} />
-        <div className="absolute top-[40%] left-[55%] w-[380px] h-[380px] rounded-full blur-[120px] opacity-30 animate-hueGlow"
-          style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 65%)' }} />
+        <div
+          className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] opacity-50"
+          style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 60%)' }}
+        />
+        <div
+          className="absolute bottom-[-180px] right-[-120px] w-[600px] h-[600px] rounded-full blur-[140px] opacity-45"
+          style={{ background: 'radial-gradient(circle, #90eb61 0%, transparent 60%)' }}
+        />
+        <div
+          className="absolute top-[40%] left-[55%] w-[380px] h-[380px] rounded-full blur-[120px] opacity-30 animate-hueGlow"
+          style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 65%)' }}
+        />
       </motion.div>
 
       {/* Concentric rings */}
@@ -152,9 +158,9 @@ function ParallaxStage() {
         />
       </div>
 
-      {/* Particles */}
+      {/* Particles — halved on mobile */}
       <motion.div style={{ y: yNear }} className="layer absolute inset-0">
-        <Particles density={70} />
+        <Particles density={isMobile ? 35 : 70} />
       </motion.div>
 
       {/* Vignette */}
@@ -193,10 +199,7 @@ function SplineRobot() {
 
   if (failed) {
     return (
-      <div
-        aria-hidden
-        className="absolute inset-0 grid place-items-center"
-      >
+      <div aria-hidden className="absolute inset-0 grid place-items-center">
         <div
           className="h-72 w-72 rounded-full opacity-40 blur-3xl"
           style={{ background: 'radial-gradient(circle, #24baac, #90eb61 60%, transparent 75%)' }}
@@ -263,9 +266,9 @@ function RobotHUD() {
         transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
       />
 
-      {/* SVG HUD */}
+      {/* SVG HUD — hidden on small phones where it adds visual noise */}
       <svg
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full hidden sm:block"
         viewBox="0 0 400 500"
         preserveAspectRatio="xMidYMid meet"
       >
@@ -286,7 +289,6 @@ function RobotHUD() {
           </linearGradient>
         </defs>
 
-        {/* Outer orbit ring + blips */}
         <motion.g
           style={{ transformOrigin: `${cx}px ${cy}px` }}
           animate={{ rotate: 360 }}
@@ -300,7 +302,6 @@ function RobotHUD() {
           <circle cx={cx - 120} cy={cy - 38} r={2.2} fill="#90eb61" filter="url(#hg1)" />
         </motion.g>
 
-        {/* Inner orbit ring + blip */}
         <motion.g
           style={{ transformOrigin: `${cx}px ${cy}px` }}
           animate={{ rotate: -360 }}
@@ -313,7 +314,6 @@ function RobotHUD() {
           <circle cx={cx + 112} cy={cy} r={2.6} fill="#90eb61" filter="url(#hg2)" />
         </motion.g>
 
-        {/* Centre pulse */}
         <motion.circle cx={cx} cy={cy} r={5}
           fill="none" stroke="#24baac" strokeWidth={1} filter="url(#hg1)"
           animate={{ r: [5, 14, 5], opacity: [0.9, 0, 0.9] }}
@@ -322,7 +322,6 @@ function RobotHUD() {
         <circle cx={cx} cy={cy} r={3} fill="#24baac" filter="url(#hg2)" opacity={0.9} />
         <circle cx={cx} cy={cy} r={1.2} fill="white" opacity={0.85} />
 
-        {/* Corner bracket reticles */}
         {[
           'M 110,152 L 88,152 L 88,174',
           'M 290,152 L 312,152 L 312,174',
@@ -336,13 +335,11 @@ function RobotHUD() {
           />
         ))}
 
-        {/* Sweep scan line */}
         <motion.line x1={68} x2={332} stroke="url(#sg)" strokeWidth={1.3} opacity={0.7}
           animate={{ y1: [160, 368], y2: [160, 368] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'linear', repeatDelay: 2.2 }}
         />
 
-        {/* Left data ticks */}
         {[0, 1, 2, 3, 4].map(i => (
           <motion.line key={i}
             y1={190 + i * 30} y2={190 + i * 30}
@@ -356,7 +353,6 @@ function RobotHUD() {
           />
         ))}
 
-        {/* Right data ticks */}
         {[0, 1, 2].map(i => (
           <motion.line key={i}
             y1={210 + i * 38} y2={210 + i * 38}
@@ -411,7 +407,6 @@ function useHeroSnap() {
       return () => lenis.off('scroll', handleScroll);
     }
 
-    // Lenis may not be ready yet — wait for it
     const t = setInterval(() => {
       lenis = window.__lenis;
       if (lenis) {
@@ -429,18 +424,14 @@ function useHeroSnap() {
 function HeroBackdrop() {
   return (
     <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
+      {/* Deep cool-charcoal base */}
       <div
         className="absolute inset-0"
         style={{ background: 'linear-gradient(160deg, #0b0e16 0%, #060810 55%, #020405 100%)' }}
       />
-      <div
-        className="absolute -top-24 left-1/2 -translate-x-1/2 h-[380px] w-[780px] rounded-full opacity-[0.14] blur-[110px]"
-        style={{ background: 'radial-gradient(ellipse, #1e2d7a, transparent 70%)' }}
-      />
-      <div
-        className="absolute right-0 top-1/3 h-[440px] w-[440px] rounded-full opacity-[0.09] blur-[100px]"
-        style={{ background: 'radial-gradient(circle, #24baac, transparent 70%)' }}
-      />
+      {/* Aurora animated layer */}
+      <AuroraBackground animationSpeed={10} />
+      {/* Fine dot grid */}
       <div
         className="absolute inset-0 opacity-[0.055]"
         style={{
@@ -450,11 +441,9 @@ function HeroBackdrop() {
           WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 80%)',
         }}
       />
-      <div
-        className="absolute inset-x-0 h-32 animate-scan opacity-[0.04]"
-        style={{ background: 'linear-gradient(to bottom, transparent, rgba(36,186,172,0.4), transparent)' }}
-      />
+      {/* Top fade for nav */}
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 to-transparent" />
+      {/* Bottom fade */}
       <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black to-transparent" />
     </div>
   );
@@ -502,30 +491,40 @@ export default function HeroGenufy() {
       {/* 3D background / parallax stage layers */}
       <ParallaxStage />
 
-      {/* Main hero presentation section */}
-      <section className="relative h-screen overflow-hidden isolate">
+      {/* Main hero section — h-screen with dvh override for mobile browser chrome */}
+      <section
+        className="relative h-screen overflow-hidden isolate"
+        style={{ height: '100dvh' }}
+      >
         <HeroBackdrop />
 
-        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 items-center px-6 pt-20 pb-6 lg:grid-cols-[1.1fr_0.9fr] lg:pt-16 lg:pb-4">
-          {/* Left Side: Messaging Content */}
-          <div className="flex flex-col items-start text-left overflow-hidden min-w-0">
+        {/*
+          Mobile layout: grid-rows-[auto_1fr] stacks text (auto height) above
+          the robot (fills remaining space). Desktop: 2-col single row.
+        */}
+        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-[auto_1fr] px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
+
+          {/* Left: text content — z-20 keeps the heading above the (larger) robot
+              if they overlap horizontally. */}
+          <div className="relative z-20 flex flex-col items-start text-left overflow-hidden min-w-0 pt-3 lg:pt-0">
             <motion.span
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6, ease }}
-              className="mb-0.5 font-brand text-lg font-semibold text-white/75 sm:text-xl lg:text-2xl"
+              className="mb-0.5 font-brand text-base font-semibold text-white/75 sm:text-xl lg:text-2xl"
             >
               We Build
             </motion.span>
 
             <h1 className="font-brand font-extrabold leading-none tracking-tight w-full">
-              <span className="block text-[8vw] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-3 lg:mb-4">
+              {/* clamp() sets a minimum size so text stays legible on 320px phones */}
+              <span className="block text-[clamp(28px,8vw,88px)] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-2 lg:mb-4">
                 <HeadlineLine text="Intelligent" delay={0.2} />
               </span>
-              <span className="block text-[8vw] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-3 lg:mb-4">
+              <span className="block text-[clamp(28px,8vw,88px)] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-2 lg:mb-4">
                 <HeadlineLine text="Digital Solutions" delay={0.7} accent />
               </span>
-              <span className="block text-[4.8vw] sm:text-[4.5vw] lg:text-[3.2vw] xl:text-[3vw]">
+              <span className="block text-[clamp(18px,4.8vw,52px)] sm:text-[4.5vw] lg:text-[3.2vw] xl:text-[3vw]">
                 <HeadlineLine text="That Scale." delay={1.35} dimmed />
               </span>
             </h1>
@@ -534,7 +533,7 @@ export default function HeroGenufy() {
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 1 }}
               transition={{ delay: 2.1, duration: 0.9, ease: 'easeOut' }}
-              className="mt-4 h-px w-28 origin-left md:w-40"
+              className="mt-3 h-px w-28 origin-left md:w-40 lg:mt-4"
               style={{ background: 'linear-gradient(90deg, #90eb61, transparent)' }}
             />
 
@@ -542,7 +541,7 @@ export default function HeroGenufy() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.4, duration: 0.75, ease }}
-              className="mt-8 max-w-sm text-sm leading-relaxed text-white/50 md:text-[0.93rem]"
+              className="mt-3 max-w-sm text-sm leading-relaxed text-white/50 md:text-[0.93rem] lg:mt-8"
             >
               Genufy transforms ideas into scalable digital ecosystems powered by
               AI, intelligent automation, and deep domain expertise.
@@ -552,11 +551,11 @@ export default function HeroGenufy() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.75, duration: 0.7 }}
-              className="mt-5 flex flex-wrap items-center gap-3"
+              className="mt-3 flex flex-wrap items-center gap-3 lg:mt-5"
             >
               <a
                 href="#services"
-                className="group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:brightness-110 active:scale-[0.97]"
+                className="group inline-flex items-center gap-2 rounded-full px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:brightness-110 active:scale-[0.97]"
                 style={{ background: 'linear-gradient(110deg, #90eb61 0%, #24baac 100%)' }}
               >
                 Explore Solutions
@@ -564,19 +563,21 @@ export default function HeroGenufy() {
               </a>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-white/75 backdrop-blur-sm transition-all duration-300 hover:border-teal/40 hover:bg-white/[0.05] hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-medium text-white/75 backdrop-blur-sm transition-all duration-300 hover:border-teal/40 hover:bg-white/[0.05] hover:text-white"
               >
                 Talk to Us
               </a>
             </motion.div>
           </div>
 
-          {/* Right Side: Spline Robot + HUD Display */}
+          {/* Right: Spline Robot + HUD — fills remaining height on mobile via grid-rows.
+              z-0 sits behind the heading; taller + negative top margin make the robot
+              larger and shifted upward. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 1.2, ease }}
-            className="relative h-[38vh] min-h-[280px] w-full min-w-0 lg:h-[78vh] lg:min-h-[480px]"
+            className="relative z-0 min-h-[200px] w-full min-w-0 lg:h-[100vh] lg:min-h-[640px] lg:-mt-[9vh] lg:w-[130%] lg:-ml-[18%]"
             style={{
               WebkitMaskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
               maskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
@@ -594,12 +595,12 @@ export default function HeroGenufy() {
           </motion.div>
         </div>
 
-        {/* Scroll indicator overlay */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 3.2, duration: 1 }}
-          className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1.5"
+          className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-6"
         >
           <span className="text-[9px] uppercase tracking-[0.25em] text-white/25">Scroll</span>
           <motion.div
