@@ -11,7 +11,7 @@ export default function ClosingCTA() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.6]);
 
   return (
-    <section ref={ref} className="relative py-40 md:py-56 px-6 md:px-12 overflow-hidden">
+    <section ref={ref} className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
       <motion.div
         aria-hidden
         style={{ y, scale }}
@@ -24,11 +24,7 @@ export default function ClosingCTA() {
       </motion.div>
 
       <motion.div style={{ opacity }} className="relative max-w-5xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[10px] tracking-[0.4em] uppercase text-white/70">
-          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
-          Let's build · 05
-        </div>
-        <h2 className="mt-8 font-display text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.02]">
+        <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.02]">
           Build the next era <br />
           with <span className="text-gradient-gt">Genufy</span>.
         </h2>

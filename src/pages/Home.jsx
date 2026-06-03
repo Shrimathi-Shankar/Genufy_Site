@@ -42,9 +42,13 @@ export default function Home() {
 
         {/* Act 9 — Closing CTA */}
         <ClosingCTA />
+
+        {/* Footer — kept INSIDE main so it shares the z-10 stacking context and
+            is not veiled by the fixed ParallaxStage overlay (which sits above
+            anything outside main). */}
+        <SiteFooter />
       </main>
 
-      <SiteFooter />
       <div className="noise" aria-hidden />
     </>
   );

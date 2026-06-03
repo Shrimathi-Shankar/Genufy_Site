@@ -307,7 +307,7 @@ export default function HorizontalCapabilities() {
 
         <div className="relative h-full flex flex-col">
           {/* Header */}
-          <div className="pt-28 md:pt-30 px-6 md:px-12 max-w-7xl mx-auto w-full">
+          <div className="pt-28 md:pt-30 pb-10 md:pb-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
             <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/40">
               <span className="h-px w-10 bg-white/30" />
               Services · 02
