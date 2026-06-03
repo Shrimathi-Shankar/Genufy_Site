@@ -10,7 +10,6 @@ import {
 } from 'framer-motion';
 import SEO from '../components/SEO.jsx';
 import Header from '../components/Header.jsx';
-import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
 import { products } from './products/productData.js';
 
@@ -624,7 +623,6 @@ export default function Products() {
         </section>
       </main>
 
-      <SiteFooter />
       <div className="noise" aria-hidden />
     </>
   );

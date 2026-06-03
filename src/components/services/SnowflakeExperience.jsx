@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="Snowflake"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[16vw] md:text-[11vw] lg:text-[10rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 4 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 4 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 4 ? 'none' : 'none',
                   }}
                 >
                   {ch}
@@ -293,7 +293,7 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Cloud-Native Data Platform for Modern Analytics, Sharing, and AI"
+              text="Modern Data Platform for Analytics and AI"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
@@ -304,10 +304,10 @@ function HeroScene({ service }) {
               text="From Snowflake migration and implementation to modern data engineering, ELT pipelines, and advanced analytics, we help businesses build scalable, secure, and high-performance data platforms."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="Our experts enable faster insights, optimized costs, and data-driven decision-making with cloud-native architecture and industry best practices."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -741,7 +741,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -905,9 +905,9 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Data Warehousing"
-          title="Build Modern, Scalable, Cloud-Native Data Warehouses on Snowflake."
-          description="Cloud-native warehouse for structured and semi-structured data. Compute and storage scale independently on demand. Operational overhead approaches zero with auto-scaling."
+          eyebrow="Cloud-Native Data Warehousing"
+          title="Data Warehousing"
+          description="Design and implement modern Snowflake data warehouses that centralize enterprise data, deliver high-performance analytics, and provide a scalable foundation for business intelligence, reporting, and AI-driven decision making."
           features={[
             'Separate compute and storage architecture for elastic scalability',
             'Support for structured and semi-structured data formats',
@@ -928,9 +928,9 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="Data Engineering & ELT Pipelines"
-          title="Design Scalable ELT Pipelines and Modern Data Engineering Workflows."
-          description="Stream and batch pipelines load data into Snowflake fast. Transformations run in-warehouse with Snowpark and dbt. Observability and lineage built into every flow."
+          eyebrow="Modern Data Engineering"
+          title="Data Engineering & ELT Pipelines."
+          description="Build robust data engineering frameworks and automated ELT pipelines that efficiently ingest, transform, and deliver data across your organization, enabling trusted analytics, reporting, and AI initiatives at scale."
           features={[
             'Automated ELT pipeline development',
             'Real-time and batch data ingestion',
@@ -952,9 +952,9 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Data Sharing & Collaboration"
-          title="Securely Share Live Data Across Teams, Partners, and Ecosystems."
-          description="Instant, governed data sharing across regions and clouds. No ETL, no file transfers, no stale copies. Live data wherever and whenever it's needed."
+          eyebrow="Secure Data Collaboration"
+          title="Data Sharing & Collaboration."
+          description="Enable secure, real-time data sharing across teams, partners, and business units without data duplication, accelerating collaboration, improving governance, and driving faster business decisions."
           features={[
             'Secure live data sharing capabilities',
             'Cross-cloud and cross-region replication',
@@ -975,9 +975,9 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Data Science & Machine Learning"
-          title="Accelerate AI and ML Initiatives Inside the Data Cloud."
-          description="Snowpark brings Python, Java, and Scala to your data. Train, serve, and ship ML inside the warehouse. Streamlit and Cortex AI accelerate every workflow."
+          eyebrow="AI-Powered Analytics"
+          title="Data Science & Machine Learning."
+          description="Accelerate data science and machine learning initiatives with a unified Snowflake platform that enables advanced analytics, model development, training, and deployment using trusted, real-time data."
           features={[
             'Snowpark integration for Python, Java, and Scala',
             'Integration with TensorFlow, PyTorch, and ML tools',
@@ -999,9 +999,9 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="Snowflake Migration & Modernization"
-          title="Modernize Legacy Platforms and Migrate to Snowflake Seamlessly."
-          description="Phased migrations from Teradata, Netezza, and Oracle. Object and row-level validation with zero data loss. Tuned, governed, and cost-optimized for cloud scale."
+          eyebrow="Cloud Data Modernization"
+          title="Snowflake Migration & Modernization"
+          description="Migrate legacy data warehouses and analytics platforms to Snowflake with minimal disruption, enabling improved scalability, performance, cost efficiency, and a future-ready cloud data architecture."
           features={[
             'Legacy data warehouse migration',
             'Cloud migration strategy and assessment',

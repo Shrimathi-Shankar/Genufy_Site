@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica / AI&ML / DevOps) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="MuleSoft"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[16vw] md:text-[11vw] lg:text-[9.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 4 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 4 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 4 ? 'none' : 'none',
                   }}
                 >
                   {ch}
@@ -293,21 +293,21 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="API-Led Connectivity, Enterprise Integration, and Secure Digital Transformation"
+              text="Enterprise Integration & API Connectivity"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="At Genufy, we deliver enterprise-grade MuleSoft integration solutions that seamlessly connect applications, data, and APIs across modern business ecosystems."
+              text="We deliver enterprise-grade MuleSoft solutions that connect applications, data, and APIs across cloud and on-premise environments."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="From Salesforce and ERP integrations to cloud-native API management and secure system orchestration, we build reliable integration frameworks that improve operational efficiency, eliminate data silos, and enable connected digital experiences."
+              text="With deep Salesforce and integration expertise, we enable API-led connectivity, automation, and seamless system interoperability."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="Our MuleSoft services simplify complex enterprise integrations while ensuring scalability, governance, security, and high-performance connectivity across cloud and on-premise environments."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -489,7 +489,7 @@ output application/xml
           transition={{ duration: 0.6 }}
           className="rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[10.5px] leading-snug text-emerald-200 overflow-hidden"
         >
-{inputJson}
+          {inputJson}
         </motion.pre>
         <motion.pre
           initial={{ opacity: 0, x: 20 }}
@@ -498,7 +498,7 @@ output application/xml
           transition={{ duration: 0.6, delay: 0.6 }}
           className="rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[10.5px] leading-snug text-sky-200 overflow-hidden"
         >
-{outputXml}
+          {outputXml}
         </motion.pre>
       </div>
       <motion.pre
@@ -509,7 +509,7 @@ output application/xml
         className="mt-3 rounded-xl border border-white/10 bg-black/70 p-3 font-mono text-[10.5px] leading-snug text-white/90 overflow-hidden"
         style={{ boxShadow: `0 0 30px -14px ${accent}cc` }}
       >
-{transform}
+        {transform}
       </motion.pre>
       {/* flow arrow */}
       <div className="mt-3 flex items-center justify-center gap-2 text-[10px] tracking-[0.35em] uppercase text-white/55">
@@ -713,7 +713,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -877,9 +877,9 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="API Strategy & Architecture"
-          title="Design Scalable, Reusable, and Future-Ready API-Led Architectures."
-          description="Layered API-led architectures designed for the long term. System, Process, and Experience APIs that scale. Reusable assets that compound across the business."
+          eyebrow="Integration Blueprint"
+          title="API Strategy & Architecture"
+          description="Modern enterprises need flexible, reusable integrations—not fragile point-to-point connections. We design API-led architectures using MuleSoft’s best practices, helping organizations create scalable and future-ready integration ecosystems."
           features={[
             'API-led connectivity architecture',
             'API-first design using RAML / OpenAPI',
@@ -900,9 +900,9 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="Application & System Integration"
-          title="Connect Every Application, Database, and Partner Platform."
-          description="Salesforce, SAP, Oracle, and Workday connected with confidence. Real-time and batch sync with replay and retry. Legacy modernization without business disruption."
+          eyebrow="Connected Enterprise"
+          title="Application & System Integration"
+          description="We integrate cloud, on-premise, and third-party applications to ensure smooth data exchange across your business ecosystem."
           features={[
             'Salesforce integration',
             'SAP / Oracle / Workday connectivity',
@@ -924,9 +924,9 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Data Transformation & Orchestration"
-          title="Transform, Enrich, and Orchestrate Enterprise Data Flows."
-          description="DataWeave transformations for JSON, XML, CSV, and beyond. Event-driven flows on Kafka and Anypoint MQ. Tuned for high-volume orchestration."
+          eyebrow="Intelligent Data Flow"
+          title="Data Transformation & Orchestration."
+          description="Using MuleSoft’s DataWeave and orchestration capabilities, we transform, enrich, and route data between systems efficiently."
           features={[
             'DataWeave transformations',
             'JSON / XML / CSV conversion',
@@ -947,9 +947,9 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="API Management & Security"
-          title="Secure, Govern, and Monitor APIs with Enterprise-Grade Controls."
-          description="API Manager with OAuth 2.0, JWT, and policy enforcement. Rate limiting, throttling, and tenant isolation by default. Observable, governed, and audit-ready."
+          eyebrow="Intelligent Data Flow"
+          title="API Management & Security"
+          description="We help organizations manage API access, enforce governance policies, and secure integrations using enterprise-grade security standards. "
           features={[
             'API Manager implementation',
             'OAuth 2.0 authentication',
@@ -971,9 +971,9 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="CloudHub Deployment, Monitoring & Managed Support"
-          title="Deploy, Monitor, and Manage MuleSoft Integrations at Scale."
-          description="Deploy to CloudHub or Runtime Fabric with CI/CD. Anypoint Monitoring with proactive alerts and tuning. Long-term managed support across the estate."
+          eyebrow="reliable Cloud Operations"
+          title="CloudHub Deployment & Support"
+          description="We provide deployment, runtime management, monitoring, and proactive support to keep your integrations stable and high-performing."
           features={[
             'CloudHub deployment',
             'Runtime Fabric deployment',

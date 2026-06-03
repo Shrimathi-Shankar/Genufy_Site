@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="AI and ML"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[18vw] md:text-[12vw] lg:text-[10.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 4 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 4 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 4 ? 'none' : 'none',
                   }}
                 >
                   {ch === ' ' ? ' ' : ch}
@@ -293,15 +293,17 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Generative AI, Autonomous Agents, and Production MLOps for the Modern Enterprise"
+              text="AI Systems That Don't Just Generate — They Execute"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="We design, build, and operationalize enterprise-grade AI and ML systems — from LLM-powered copilots and agent platforms to computer vision, NLP, and predictive models."
+              text="At Genufy TechWorks, we bridge the gap between AI potential and real-world business impact. 
+Our enterprise-grade solutions are secure, built for production - not just pilots. 
+"
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="Every system ships with the MLOps backbone, governance, and observability needed to stay accurate, compliant, and trusted in production."
+              text="From strategy to continuous optimization, we deliver AI that works reliably at scale."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
           </div>
@@ -879,7 +881,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -1043,9 +1045,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Generative AI Solutions"
-          title="Build Intelligent AI Systems That Generate, Automate, and Transform Business Workflows."
-          description="Enterprise copilots powered by large language models. Retrieval-augmented answers grounded on your data. Secure private deployment across cloud and on-prem."
+          eyebrow="Creating Content, Code, and Conversations at Scale"
+          title="Generative AI Solutions"
+          description="Build intelligent systems that generate high-quality text, images, code, and complete workflows 
+using state-of-the-art LLMs — securely integrated into your enterprise environment. We go 
+beyond chatbots to deliver production-grade generative systems tied to your business logic.."
           features={[
             'Custom LLM applications and enterprise AI copilots',
             'Retrieval-Augmented Generation (RAG) implementations',
@@ -1066,9 +1070,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="AI Agent Development"
-          title="Deploy Autonomous AI Agents That Reason, Execute, and Deliver Outcomes."
-          description="Autonomous agents that plan, reason, and execute. Memory, context, and human-in-the-loop guardrails. CRM, ERP, and ticketing integrations included."
+          eyebrow="Autonomous Agents That Reason, Plan & Execute "
+          title="AI Agent Dvelopment"
+          description="We build goal-oriented AI agents capable of complex multi-step reasoning, tool usage, API 
+integration, and autonomous workflow execution — with full observability, human-in-the-loop 
+controls, and audit trails built in. "
           features={[
             'Multi-agent orchestration and autonomous task execution',
             'Memory and contextual reasoning capabilities',
@@ -1090,9 +1096,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Natural Language Processing"
-          title="Transform Human Language into Actionable Business Intelligence."
-          description="Conversational AI and intelligent chatbots at scale. Sentiment, intent, and classification across languages. Document intelligence with OCR and layout understanding."
+          eyebrow="Turning Language into Actionable Intelligence "
+          title="Natural Language Processing"
+          description="Enable machines to truly understand human language — intent, emotion, context, and nuance 
+— from text, documents, and speech. Our NLP solutions power intelligent experiences that 
+scale across customer, employee, and partner interactions. ."
           features={[
             'Conversational AI and intelligent chatbot development',
             'Sentiment analysis and opinion mining solutions',
@@ -1113,9 +1121,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Predictive Analytics & Forecasting"
-          title="Anticipate Trends, Reduce Risks, and Make Data-Driven Decisions."
-          description="Demand, churn, revenue, and risk models tuned to outcomes. Predictive maintenance and scenario simulation built in. Real-time scoring wired into decisions."
+          eyebrow="Anticipate the Future. Act with Confidence."
+          title="Predictive Analytics & Forecasting"
+          description="Turn historical data into accurate forecasts and proactive decisions. Our predictive intelligence 
+solutions use advanced machine learning to surface risks, opportunities, and trends before they 
+happen — giving your teams an unfair competitive advantage.."
           features={[
             'Demand forecasting and trend prediction models',
             'Predictive maintenance and asset intelligence systems',
@@ -1137,9 +1147,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="Computer Vision Solutions"
-          title="Enable Machines to See, Analyze, and Understand Visual Data."
-          description="Object detection and image classification at scale. Video analytics and quality inspection automation. OCR and intelligent document understanding."
+          eyebrow="Teach Machines to See and Understand  "
+          title="Computer Vision Solutions."
+          description="Deploy AI that can perceive, analyze, and act on visual data at scale. From manufacturing 
+quality control to retail intelligence and medical imaging, our computer vision solutions deliver 
+real-time visual understanding across industries."
           features={[
             'Object detection and image classification systems',
             'Video analytics and surveillance intelligence',
@@ -1160,9 +1172,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="06"
-          eyebrow="MLOps & AI Engineering"
-          title="Operationalize AI with Scalable, Reliable, and Governed Infrastructure."
-          description="CI/CD pipelines purpose-built for ML and LLM workloads. Drift detection, monitoring, and automated retraining. Governance and audit frameworks built in."
+          eyebrow="Operationalizing AI at Enterprise Scale "
+          title="MLOps & AI Engineering."
+          description="Bridge the gap between AI experimentation and reliable, production-grade systems. We design 
+and implement the infrastructure, pipelines, and governance needed for AI to perform 
+consistently at scale — across cloud, on-prem, and hybrid environments. ."
           features={[
             'Automated CI/CD pipelines for machine learning workflows',
             'Model monitoring, drift detection, and retraining pipelines',
@@ -1184,9 +1198,10 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="07"
-          eyebrow="Multimodal AI"
-          title="Build AI Systems That Understand Text, Images, Audio, and Video Together."
-          description="Vision-language systems across text and image. Audio, speech, and video understanding pipelines. Multimodal RAG for richer enterprise intelligence."
+          eyebrow="Understanding Text, Image, Audio & Video Together "
+          title="Multimodal AI."
+          description="Next-generation AI that processes and reasons across multiple data modalities simultaneously 
+— enabling richer, more contextual intelligence than any single-modal system can achieve. ."
           features={[
             'Vision-language AI systems for text and image understanding',
             'Audio and speech intelligence processing solutions',
@@ -1207,9 +1222,11 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="08"
-          eyebrow="AI for Healthcare & Life Sciences"
-          title="Deliver Precision Intelligence for Better Healthcare Outcomes."
-          description="Medical imaging AI for radiology and pathology. Clinical NLP and EHR intelligence at scale. HIPAA and HL7 compliant architectures by default."
+          eyebrow="Precision Intelligence for Patient Outcomes "
+          title="AI for Healthcare & Life Sciences"
+          description="Purpose-built AI solutions for healthcare providers, pharmaceutical companies, health-tech 
+startups, and medical device manufacturers — designed to improve outcomes, reduce costs, 
+and accelerate discovery while meeting strict regulatory and privacy standards."
           features={[
             'Medical imaging AI for radiology and pathology analysis',
             'Clinical NLP and electronic health record intelligence',

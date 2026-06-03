@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica / AI / DevOps / MuleSoft) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="Pega"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[20vw] md:text-[13vw] lg:text-[12rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 2 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 2 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 2 ? 'none' : 'none',
                   }}
                 >
                   {ch}
@@ -293,21 +293,22 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="BPM, CRM, AI Decisioning, and RPA for Customer-Centric Enterprises"
+              text="BPM, Decisioning & Workflow Automation"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="At Genufy, we specialize in delivering Pega-based solutions that streamline processes, improve operational efficiency, and elevate customer engagement."
+              text="We design and implement Pega solutions that unify business processes, customer engagement, and intelligent automation."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="From implementing Pega BPM and CRM platforms to developing sophisticated multi-channel applications and AI decisioning, we create customized solutions that support enterprise digital transformation."
+              text="From BPM and CRM to AI decisioning, we build scalable enterprise applications.
+Drive faster operations, greater agility, and sustainable digital growth."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="Our expert team designs and integrates scalable Pega systems that accelerate business outcomes, automate workflows, and provide a strong foundation for future growth and innovation."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -642,7 +643,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -806,9 +807,9 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Pega BPM"
-          title="Automate and Optimize Enterprise Workflows with Pega BPM."
-          description="Model and automate end-to-end case lifecycles. Drag-and-drop workflows with intelligent task routing. Real-time SLAs, monitoring, and bottleneck detection."
+          eyebrow="Enterprise Process Automation"
+          title="Pega BPM"
+          description="Leverage Pega BPM to design, automate, and optimize end-to-end business processes across your organization. Improve productivity, reduce operational bottlenecks and empower teams with intelligent workflows that adapt to changing business needs."
           features={[
             'End-to-end process automation',
             'Drag-and-drop workflow modeling',
@@ -829,9 +830,9 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="Pega CRM"
-          title="Deliver Seamless Customer Experiences Across Every Channel."
-          description="Unified customer profiles across sales, service, and marketing. Omnichannel case management with AI recommendations. CSAT compounds with consistent service blueprints."
+          eyebrow="Customer Engagement Excellence"
+          title="Pega CRM"
+          description="Deliver personalized, connected customer experiences with Pega CRM. Unify customer interactions across channels, empower service and sales teams with real-time insights, and build stronger relationships through intelligent engagement, automation, and data-driven decision-making."
           features={[
             'Unified customer profiles',
             'Case management capabilities',
@@ -853,9 +854,9 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Pega AI & Decisioning"
-          title="Automate Intelligent Decisions with Pega Customer Decision Hub."
-          description="Customer Decision Hub for real-time next-best-action. AI rules engine with adaptive analytics. Context-driven recommendations across every channel."
+          eyebrow="AI-Powered Decision Intelligence"
+          title="Pega AI & Decisioning"
+          description="Empower your organization with AI-driven decisioning that analyzes customer behavior, business rules, and operational data in real time. Deliver personalized experiences, automate complex decisions, and improve efficiency through intelligent, adaptive workflows."
           features={[
             'Real-time decisioning',
             'AI-powered rules engine',
@@ -876,9 +877,9 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="Pega Robotic Process Automation"
-          title="Automate Repetitive, Rule-Based Tasks with Pega RPA."
-          description="Attended and unattended bots across legacy and modern systems. Centralized orchestration with real-time monitoring. Audit-ready governance in every deployment."
+          eyebrow="Intelligent Process Automation"
+          title="Pega Robotic Process Automation"
+          description="Automate repetitive, rule-based tasks across enterprise systems with Pega RPA. Improve operational efficiency by integrating bots with existing applications, reducing manual effort, and ensuring faster, error-free business processes."
           features={[
             'Automated data entry and processing',
             'Workflow automation bots',
@@ -892,6 +893,31 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
             'Lower operational costs',
             'Faster task execution',
             'Scalable automation capabilities',
+          ]}
+          visual={<RPAVisual accent={accent} />}
+          accent={accent}
+          flip
+        />
+
+        <ExperienceSection
+          num="05"
+          eyebrow="Adaptive Workflow Orchestration"
+          title="Pega Workflow Automation"
+          description="Design and manage end-to-end case lifecycles with Pega’s intelligent workflow automation. Streamline complex processes, improve collaboration, and ensure every case is handled efficiently with real-time visibility and adaptive decisioning."
+          features={[
+            'End-to-end case and workflow automation',
+            'Dynamic task routing and assignment',
+            'Cross-system process orchestration',
+            'Real-time workflow tracking and visibility',
+            'AI-driven decision and process optimization',
+          ]}
+
+          benefits={[
+            'Streamlined business processes',
+            'Improved operational efficiency',
+            'Faster case resolution times',
+            'Enhanced team collaboration',
+            'Scalable and adaptive workflow execution',
           ]}
           visual={<RPAVisual accent={accent} />}
           accent={accent}

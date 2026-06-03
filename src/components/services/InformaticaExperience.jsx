@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms (mirror Salesforce experience for consistent feel) ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -40,7 +41,7 @@ function RevealWords({ text, className, once = true }) {
           style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
         >
           <motion.span
-            variants={wordIn}
+            variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined}
             style={{ display: 'inline-block', whiteSpace: 'pre' }}
           >
             {w}
@@ -307,7 +308,6 @@ function HeroScene({ service }) {
         }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -323,7 +323,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="Informatica"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[18vw] md:text-[12vw] lg:text-[10.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -356,7 +356,7 @@ function HeroScene({ service }) {
                     display: 'inline-block',
                     textShadow:
                       i < 5
-                        ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)'
+                        ? 'none'
                         : 'none',
                   }}
                 >
@@ -370,21 +370,26 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Intelligent Data Integration, Governance, and Cloud Connectivity"
+              text="Smart Data Integration for Modern Enterprises"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="Informatica empowers organizations to connect, cleanse, govern, and manage data across cloud, hybrid, and on-premise environments."
+              text="Genufy TechWorks empowers enterprises to harness the full
+power of Informatica's Intelligent Data Management Cloud (IDMC) — connecting, governing,
+and transforming data across cloud, hybrid, and on-premise environments."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="From data integration and quality to master data management and real-time API orchestration, we help businesses unlock the full potential of their data."
+              text="Powered by
+CLAIRE® AI, our Informatica services help you build a trusted, AI-ready data foundation
+that drives smarter decisions, accelerates innovation, and ensures compliance at scale.
+Trusted by leading enterprises, delivered by certified experts."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="With trusted, unified, and AI-powered data, you can drive smarter decisions, accelerate innovation, and achieve compliance with ease."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -1082,7 +1087,7 @@ function ExperienceSection({
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -1248,9 +1253,9 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Cloud Data Integration"
-          title="Connect, Transform, and Deliver Data Across Cloud and On-Premise Systems."
-          description="Cloud ETL and ELT pipelines at enterprise scale. Connectors for Salesforce, SAP, Oracle, and more. AI-driven mapping and integration recommendations."
+          eyebrow="Intelligent Data Integration"
+          title="Cloud Data Integration."
+          description="Build scalable cloud-native data pipelines that seamlessly connect enterprise applications, databases, and cloud platforms, enabling real-time data movement, unified analytics, and faster business decision-making."
           features={[
             'High-performance ETL/ELT for cloud and hybrid architectures',
             'Pre-built connectors for Salesforce, SAP, Oracle, and more',
@@ -1271,9 +1276,9 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="Data Quality & Governance"
-          title="Deliver Trusted, Clean, and Compliant Data for Confident Decision-Making."
-          description="Profiling, validation, cleansing, and deduplication at scale. AI-assisted quality automation across domains. Real-time quality through governed APIs."
+          eyebrow="Trusted Data Governance"
+          title="Data Quality & Governance."
+          description="Ensure data accuracy, consistency, and compliance with intelligent data quality controls, automated governance frameworks, and enterprise-wide visibility across critical business data assets."
           features={[
             'Data profiling, validation, cleansing, and deduplication',
             'Rule-based and AI-assisted data quality automation',
@@ -1295,9 +1300,9 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="Master Data Management"
-          title="Unify Customer, Product, and Supplier Data for a Single Source of Truth."
-          description="Golden records with intelligent matching and survivorship. Models for customer, product, and supplier data. Stewardship powered by CLAIRE GPT exploration."
+          eyebrow="Unified Master Data"
+          title="Master Data Management"
+          description="Create a trusted single source of truth by consolidating customer, product, supplier, and reference data, enabling better governance, operational efficiency, and enterprise-wide consistency."
           features={[
             'Golden record creation with intelligent matching and merging',
             'Flexible data models for customer, product, and reference data',
@@ -1316,7 +1321,7 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
           accent={accent}
         />
 
-        <ExperienceSection
+        {/* <ExperienceSection
           num="04"
           eyebrow="Data Catalog & Metadata"
           title="Discover, Understand, and Govern Enterprise Data at Scale."
@@ -1361,13 +1366,13 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
           ]}
           visual={<IPaaSEventStreamVisual accent={accent} />}
           accent={accent}
-        />
+        /> */}
 
         <ExperienceSection
-          num="06"
-          eyebrow="AI & Agentic Data Management"
-          title="Automate and Scale Data Management with Informatica CLAIRE® AI Agents."
-          description="Autonomous data workflows powered by CLAIRE AI agents. No-code AI Agent Engineering for rapid deployment. Pre-built agents for Salesforce, Jira, and Teams."
+          num="04"
+          eyebrow="AI-Powered Data Operations"
+          title="AI & Agentic Data Management"
+          description="Leverage Informatica's cutting-edge agentic AI capabilities to build autonomous data workflows, connect large language models to enterprise data, and dramatically accelerate pipeline development — no code required."
           features={[
             'CLAIRE Agents for autonomous data quality and integration workflows',
             'No-code AI Agent Engineering for rapid deployment',
@@ -1388,10 +1393,12 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
         />
 
         <ExperienceSection
-          num="07"
-          eyebrow="PowerCenter to IDMC Migration"
-          title="Migrate from PowerCenter to Informatica IDMC Faster, Smarter, and Risk-Free."
-          description="Automated PowerCenter to IDMC conversion accelerators. Structured assessment and phased migration planning. Post-migration optimization and team enablement."
+          num="05"
+          eyebrow="Cloud Data Modernization"
+          title="PowerCenter to IDMC Migration"
+          description="Modernize your legacy Informatica PowerCenter workloads to the cloud
+native IDMC platform. Genufy's certified experts guide your migration with a proven
+methodology, minimizing downtime and business risk."
           features={[
             'Automated mapping conversion and migration accelerators',
             'Structured assessment and phased migration planning',
@@ -1411,10 +1418,12 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
         />
 
         <ExperienceSection
-          num="08"
-          eyebrow="PL/SQL to IDMC Conversion"
-          title="Convert Oracle PL/SQL Logic into Modern Informatica IDMC Pipelines."
-          description="Convert Oracle PL/SQL into modern IDMC mappings. Automated validation and business logic testing. Cloud-scale performance with reduced license cost."
+          num="06"
+          eyebrow="Legacy ETL Transformation"
+          title="PL/SQL to IDMC Conversion"
+          description="Modernize your Oracle PL/SQL stored procedures, packages, functions, and
+ETL logic into native Informatica IDMC mappings and mapplets — fully cloud-ready,
+maintainable, and governed."
           features={[
             'Conversion of PL/SQL procedures and packages into IDMC mappings',
             'Transformation of complex SQL joins, cursors, and loops',
@@ -1435,10 +1444,10 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
         />
 
         <ExperienceSection
-          num="09"
-          eyebrow="IICS to IDMC Conversion"
-          title="Upgrade from Legacy IICS to the Unified Informatica IDMC Platform."
-          description="Migrate legacy IICS to unified IDMC platform. Mappings, workflows, and connector migrations included. CLAIRE AI capabilities unlocked post-migration."
+          num="07"
+          eyebrow="Unified Data Cloud Migration"
+          title="IICS to IDMC Conversion"
+          description="Migrate your existing Informatica Intelligent Cloud Services (IICS) configurations, connections, mappings, and taskflows to the fully unified, AI-powered IDMC platform — unlocking CLAIRE AI, modern governance, and advanced cloud capabilities."
           features={[
             'Comprehensive IICS environment audit and migration assessment',
             'IDMC org setup and Secure Agent configuration',
@@ -1458,10 +1467,10 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
         />
 
         <ExperienceSection
-          num="10"
-          eyebrow="Advisory & Managed Services"
-          title="Expert Informatica Advisory, Consulting, and Managed Services."
-          description="Data strategy and Informatica roadmap consulting. 24/7 managed services with monitoring and optimization. PSU-based expert engagement models."
+          num="08"
+          eyebrow="Strategic Data Advisory"
+          title="Advisory & Managed Services"
+          description="From data strategy workshops to hands-on managed services, Genufy's Informatica-certified team supports your entire data journey — so you can focus on business outcomes, not platform operations."
           features={[
             'Data strategy and Informatica roadmap consulting',
             'Industry-specific discovery workshops and assessments',

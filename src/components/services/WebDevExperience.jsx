@@ -5,6 +5,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 
 /* ---------------- Shared atoms ---------------- */
@@ -23,7 +24,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -36,7 +37,7 @@ function RevealWords({ text, className, once = true }) {
     >
       {words.map((w, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          <motion.span variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
             {w}
           </motion.span>
         </span>
@@ -245,7 +246,6 @@ function HeroScene({ service }) {
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
-      <NetworkMesh accent={service.accent} />
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
@@ -261,7 +261,7 @@ function HeroScene({ service }) {
 
         <h1
           aria-label="Web Development"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[16vw] md:text-[11vw] lg:text-[9.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -280,7 +280,7 @@ function HeroScene({ service }) {
                   className={i < 3 ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow: i < 3 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                    textShadow: i < 3 ? 'none' : 'none',
                   }}
                 >
                   {ch === ' ' ? ' ' : ch}
@@ -293,21 +293,21 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Modern, Scalable, and High-Performing Web Solutions for Digital Growth"
+              text="Scalable, High-Performance Web Solutions for Digital Growth"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
-              text="At Genufy, we build modern, scalable, and high-performing web solutions that help businesses accelerate digital growth and deliver exceptional user experiences."
+              text="We help businesses accelerate digital growth by building secure, scalable web solutions that deliver exceptional user experiences."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
             <RevealWords
-              text="From enterprise web applications and e-commerce platforms to API-driven architectures and digital marketing, we create secure, responsive, and future-ready digital ecosystems tailored to business needs."
+              text="Our expertise covers enterprise applications, e-commerce platforms, API-driven architectures, and modern full-stack development focused on performance, SEO, and conversions."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
-            <RevealWords
+            {/* <RevealWords
               text="Our expertise spans full-stack development, cloud-native architectures, headless CMS, and performance-driven UI/UX — delivering fast, secure, SEO-optimized, and conversion-focused web experiences."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            /> */}
           </div>
 
           <motion.div
@@ -712,7 +712,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
         <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
@@ -876,9 +876,9 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
       <div className="bg-ink relative z-10">
         <ExperienceSection
           num="01"
-          eyebrow="Custom Web Application Development"
-          title="Design and Develop Scalable, Secure, High-Performance Custom Web Apps."
-          description="Modern frontends with React, Angular, and Vue.js. Cloud-native backends on Node, Django, Spring, and .NET. Secure auth, observability, and real-time dashboards."
+          eyebrow="Tailored Digital Solutions"
+          title="Custom Web Application Development"
+          description="Build custom web applications designed to meet unique business needs, combining scalable architecture, modern UI/UX, and high performance to deliver seamless and future-ready digital experiences."
           features={[
             'Modern frontend frameworks: React, Angular, Vue.js',
             'Scalable backend technologies: Node.js, Django, Spring Boot, .NET',
@@ -899,9 +899,9 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="02"
-          eyebrow="E-Commerce Development"
-          title="Build High-Converting, Scalable, Customer-Focused E-Commerce Platforms."
-          description="Shopify, Magento, and custom commerce platforms. Headless storefronts on Next.js with mobile-first UX. Payments, shipping, inventory, and analytics integrated."
+          eyebrow="Digital Commerce Excellence"
+          title="E-Commerce Development"
+          description="Develop scalable and secure e-commerce platforms that deliver seamless shopping experiences, optimized performance, and conversion-driven design to help businesses grow online sales and customer engagement."
           features={[
             'Shopify, Magento, WooCommerce, and custom commerce solutions',
             'Headless commerce architecture with React & Next.js',
@@ -923,9 +923,9 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="03"
-          eyebrow="CMS & Headless CMS Solutions"
-          title="Deliver Content Seamlessly Across Web, Mobile, and Digital Channels."
-          description="Traditional CMS or API-first headless platforms. WordPress, Drupal, Strapi, Contentful, and Sanity. Publish once and render anywhere across channels."
+          eyebrow="Flexible Content Management"
+          title="CMS & Headless CMS Solutions"
+          description="Implement modern CMS and headless CMS solutions that enable seamless content delivery across web and digital platforms, ensuring scalability, faster updates, and consistent user experiences."
           features={[
             'Traditional CMS platforms: WordPress, Drupal, Joomla',
             'Headless CMS solutions: Strapi, Contentful, Sanity',
@@ -946,9 +946,9 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="04"
-          eyebrow="API & Microservices Development"
-          title="Engineer Scalable APIs and Microservices for Future-Ready Ecosystems."
-          description="REST and GraphQL APIs with OAuth and JWT. Microservices on Docker and Kubernetes with CI/CD. Event-driven, cloud-native integrations across services."
+          eyebrow="Connected Digital Architecture"
+          title="API & Microservices Development"
+          description="Design and develop secure, scalable APIs and microservices that enable seamless system integration, faster development, and flexible, cloud-ready application architectures."
           features={[
             'RESTful and GraphQL API development',
             'OAuth2, JWT, and secure API authentication',
@@ -970,9 +970,9 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
         <ExperienceSection
           num="05"
-          eyebrow="SEO & Digital Marketing"
-          title="Drive Visibility, Engagement, and Growth with Data-Driven Marketing."
-          description="Technical SEO audits and keyword roadmaps. Paid media on Google, Meta, and LinkedIn. GA4, GTM, and CRM-driven conversion optimization."
+          eyebrow="Growth-Driven Visibility"
+          title="SEO & Digital Marketing"
+          description="Enhance online presence with data-driven SEO and digital marketing strategies that improve search rankings, drive targeted traffic, and increase conversions for sustained business growth."
           features={[
             'SEO audits and technical optimization',
             'Keyword strategy and content marketing',

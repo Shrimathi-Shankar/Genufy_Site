@@ -6,6 +6,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 import SalesforceCloudsStory from './SalesforceCloudsStory.jsx';
 
@@ -25,7 +26,7 @@ const wordIn = {
   },
 };
 
-function RevealWords({ text, className, once = true }) {
+function RevealWords({ text, className, once = true, gradient = false }) {
   const words = String(text).split(/(\s+)/);
   return (
     <motion.span
@@ -42,7 +43,7 @@ function RevealWords({ text, className, once = true }) {
           style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
         >
           <motion.span
-            variants={wordIn}
+            variants={wordIn} className={gradient ? 'text-gradient-gt' : undefined}
             style={{ display: 'inline-block', whiteSpace: 'pre' }}
           >
             {w}
@@ -238,7 +239,7 @@ function HeroScene({ service }) {
         {/* Massive layered title with letter reveal */}
         <h1
           aria-label="Salesforce"
-          className="font-display font-bold leading-[0.9] tracking-tight text-[20vw] md:text-[14vw] lg:text-[12.5rem]"
+          className={HERO_TITLE_CLASS}
         >
           <motion.span
             initial="hidden"
@@ -271,7 +272,7 @@ function HeroScene({ service }) {
                     display: 'inline-block',
                     textShadow:
                       i < 5
-                        ? '0 0 60px rgba(36,186,172,0.35), 0 0 120px rgba(144,235,97,0.2)'
+                        ? 'none'
                         : 'none',
                   }}
                 >
@@ -285,7 +286,7 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="Enterprise Salesforce Solutions Built for Scale, Automation, and Customer Success"
+              text="Salesforce solutions for scalability and better customer success."
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
@@ -773,7 +774,7 @@ function ExperienceSection({
         <div className={`grid gap-14 lg:gap-16 lg:grid-cols-12 items-start`}>
           <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.05]">
-              <RevealWords text={title} />
+              <RevealWords text={title} gradient />
             </h2>
             <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
               {description}
