@@ -133,7 +133,7 @@ function StreamBand({ band, scrollYProgress }) {
 }
 
 /* ------------ main component ------------ */
-export default function PortalTransition({ height = '260vh' }) {
+export default function PortalTransition({ height = '150vh' }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
 

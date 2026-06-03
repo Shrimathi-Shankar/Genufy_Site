@@ -502,7 +502,7 @@ export default function HeroGenufy() {
           Mobile layout: grid-rows-[auto_1fr] stacks text (auto height) above
           the robot (fills remaining space). Desktop: 2-col single row.
         */}
-        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-[auto_1fr] px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1.1fr_0.9fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
+        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-[auto_1fr] px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
 
           {/* Left: text content — z-20 keeps the heading above the (larger) robot
               if they overlap horizontally. */}
@@ -577,7 +577,7 @@ export default function HeroGenufy() {
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 1.2, ease }}
-            className="relative z-0 min-h-[200px] w-full min-w-0 lg:h-[92vh] lg:min-h-[560px] lg:-mt-[7vh]"
+            className="relative z-0 min-h-[200px] w-full min-w-0 lg:h-[100vh] lg:min-h-[640px] lg:-mt-[9vh] lg:w-[130%] lg:-ml-[18%]"
             style={{
               WebkitMaskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
               maskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
