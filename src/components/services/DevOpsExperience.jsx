@@ -1,0 +1,971 @@
+import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
+import MagneticButton from '../MagneticButton.jsx';
+
+/* ---------------- Shared atoms (mirror Informatica / AI&ML) ---------------- */
+
+const wordContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
+};
+const wordIn = {
+  hidden: { y: '110%', opacity: 0, filter: 'blur(8px)' },
+  show: {
+    y: 0,
+    opacity: 1,
+    filter: 'blur(0px)',
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+function RevealWords({ text, className, once = true }) {
+  const words = String(text).split(/(\s+)/);
+  return (
+    <motion.span
+      variants={wordContainer}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once, amount: 0.3 }}
+      className={className}
+      style={{ display: 'inline-block' }}
+    >
+      {words.map((w, i) => (
+        <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+          <motion.span variants={wordIn} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+            {w}
+          </motion.span>
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
+function Eyebrow({ children }) {
+  return (
+    <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/45">
+      <span className="h-px w-10 bg-white/30" />
+      {children}
+    </div>
+  );
+}
+
+function FeatureItem({ children, accent }) {
+  return (
+    <li className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 backdrop-blur-sm">
+      <span
+        className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full text-[10px] font-bold text-black"
+        style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }}
+      >
+        ✓
+      </span>
+      <span className="text-white/85 text-[15px] md:text-base leading-relaxed">{children}</span>
+    </li>
+  );
+}
+
+function StaggerFeatures({ items, accent }) {
+  return (
+    <motion.ul
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+      className="space-y-3"
+    >
+      {items.map((it, i) => (
+        <motion.div
+          key={i}
+          variants={{
+            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+          }}
+        >
+          <FeatureItem accent={accent}>{it}</FeatureItem>
+        </motion.div>
+      ))}
+    </motion.ul>
+  );
+}
+
+function FloatingOrbs({ accent }) {
+  const orbs = [
+    { top: '14%', left: '6%', size: 360, dur: 14 },
+    { top: '62%', left: '72%', size: 460, dur: 18 },
+    { top: '40%', left: '44%', size: 280, dur: 12 },
+  ];
+  return (
+    <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      {orbs.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full blur-3xl opacity-25"
+          style={{
+            top: p.top,
+            left: p.left,
+            width: p.size,
+            height: p.size,
+            background: `radial-gradient(circle, ${i % 2 ? '#24baac' : accent} 0%, transparent 70%)`,
+          }}
+          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function GridBackdrop() {
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 opacity-[0.07] pointer-events-none"
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)',
+        backgroundSize: '70px 70px',
+        maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
+        WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
+      }}
+    />
+  );
+}
+
+function DataParticles({ count = 36, accent = '#24baac' }) {
+  const dots = Array.from({ length: count }, (_, i) => ({
+    x: (i * 41) % 100,
+    y: (i * 67) % 100,
+    size: 2 + ((i * 5) % 4),
+    dur: 6 + ((i * 3) % 8),
+    delay: (i * 0.3) % 5,
+    binary: i % 5 === 0,
+  }));
+  return (
+    <div aria-hidden className="absolute inset-0 pointer-events-none">
+      {dots.map((d, i) =>
+        d.binary ? (
+          <motion.span
+            key={i}
+            className="absolute font-mono text-[10px] tracking-widest text-white/35"
+            style={{ left: `${d.x}%`, top: `${d.y}%` }}
+            animate={{ opacity: [0.1, 0.6, 0.1], y: [0, -28, 0] }}
+            transition={{ duration: d.dur, repeat: Infinity, ease: 'easeInOut', delay: d.delay }}
+          >
+            {(i * 137).toString(2).slice(-6)}
+          </motion.span>
+        ) : (
+          <motion.span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${d.x}%`,
+              top: `${d.y}%`,
+              width: d.size,
+              height: d.size,
+              background: i % 3 === 0 ? '#90eb61' : accent,
+              boxShadow: `0 0 ${d.size * 4}px ${accent}`,
+            }}
+            animate={{ opacity: [0.2, 1, 0.2], y: [0, -30, 0] }}
+            transition={{ duration: d.dur, repeat: Infinity, ease: 'easeInOut', delay: d.delay }}
+          />
+        )
+      )}
+    </div>
+  );
+}
+
+function NetworkMesh({ accent }) {
+  const nodes = [
+    { x: 15, y: 30 }, { x: 35, y: 70 }, { x: 60, y: 20 },
+    { x: 80, y: 55 }, { x: 50, y: 50 }, { x: 25, y: 85 },
+    { x: 90, y: 80 },
+  ];
+  const edges = [[0, 4], [4, 2], [2, 3], [4, 1], [1, 5], [3, 6], [4, 6]];
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full opacity-40">
+      <defs>
+        <linearGradient id="devopsMesh" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={accent} />
+          <stop offset="100%" stopColor="#90eb61" />
+        </linearGradient>
+      </defs>
+      {edges.map(([a, b], i) => (
+        <line key={i} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y} stroke="url(#devopsMesh)" strokeWidth="0.18" strokeDasharray="1.5 1.5" />
+      ))}
+      {edges.map(([a, b], i) => (
+        <motion.circle
+          key={`p-${i}`}
+          r="0.5"
+          fill={accent}
+          initial={{ cx: nodes[a].x, cy: nodes[a].y }}
+          animate={{ cx: [nodes[a].x, nodes[b].x, nodes[a].x], cy: [nodes[a].y, nodes[b].y, nodes[a].y] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+          style={{ filter: `drop-shadow(0 0 1.5px ${accent})` }}
+        />
+      ))}
+      {nodes.map((n, i) => (
+        <motion.circle key={`n-${i}`} cx={n.x} cy={n.y} r="0.6" fill="#fff" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' }} />
+      ))}
+    </svg>
+  );
+}
+
+/* ---------------- Hero ---------------- */
+
+function HeroScene({ service }) {
+  const letters = Array.from('DEVOPS');
+  const ref = useRef(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const tx = useSpring(useTransform(mx, [-0.5, 0.5], [-18, 18]), { stiffness: 50, damping: 18 });
+  const ty = useSpring(useTransform(my, [-0.5, 0.5], [-12, 12]), { stiffness: 50, damping: 18 });
+
+  const onMove = (e) => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+
+  return (
+    <section
+      ref={ref}
+      onMouseMove={onMove}
+      className="relative min-h-[110vh] flex flex-col justify-end px-6 md:px-12 pb-24 pt-44 overflow-hidden"
+    >
+      <motion.div
+        aria-hidden
+        animate={{ scale: [1, 1.08, 1], opacity: [0.55, 0.85, 0.55] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[120vmin] w-[120vmin] rounded-full blur-[120px]"
+        style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
+      />
+
+      <NetworkMesh accent={service.accent} />
+      <DataParticles accent={service.accent} count={44} />
+
+      <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-3 mb-10 text-[10px] tracking-[0.45em] uppercase text-white/65"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
+          {service.tag} · Service Detail
+        </motion.div>
+
+        <h1
+          aria-label="DevOps"
+          className="font-display font-bold leading-[0.9] tracking-tight text-[18vw] md:text-[12vw] lg:text-[10.5rem]"
+        >
+          <motion.span
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { delayChildren: 0.2, staggerChildren: 0.06 } } }}
+            className="inline-flex"
+            style={{ overflow: 'visible' }}
+          >
+            {letters.map((ch, i) => (
+              <span key={i} style={{ display: 'inline-block', overflow: 'hidden', lineHeight: 0.9 }}>
+                <motion.span
+                  variants={{
+                    hidden: { y: '110%', opacity: 0, filter: 'blur(14px)', rotate: -4 },
+                    show: { y: 0, opacity: 1, filter: 'blur(0px)', rotate: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                  className={i < 3 ? 'text-gradient-gt' : 'text-white'}
+                  style={{
+                    display: 'inline-block',
+                    textShadow: i < 3 ? '0 0 60px rgba(36,186,172,0.4), 0 0 120px rgba(144,235,97,0.25)' : 'none',
+                  }}
+                >
+                  {ch}
+                </motion.span>
+              </span>
+            ))}
+          </motion.span>
+        </h1>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
+          <div className="max-w-2xl">
+            <RevealWords
+              text="Accelerate Delivery, Modernize Infrastructure, and Elevate Operational Excellence"
+              className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
+            />
+            <RevealWords
+              text="At Genufy, we empower organizations to accelerate software delivery, modernize infrastructure, and enhance operational efficiency through advanced DevOps and Platform Engineering services."
+              className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
+            />
+            <RevealWords
+              text="From CI/CD pipelines and cloud-native infrastructure to Kubernetes orchestration and observability, we help businesses deliver applications faster, improve resilience, and achieve scalable digital growth."
+              className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
+            />
+            <RevealWords
+              text="Our solutions focus on automation, scalability, reliability, and continuous innovation across the entire software delivery lifecycle."
+              className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
+            />
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.8 }}
+            className="text-[10px] tracking-[0.4em] uppercase text-white/40 flex items-center gap-3"
+          >
+            Scroll
+            <span className="relative inline-block h-10 w-[2px] overflow-hidden rounded-full bg-white/10">
+              <motion.span
+                className="absolute inset-x-0 top-0 h-3 rounded-full"
+                style={{ background: 'linear-gradient(180deg, #90eb61, #24baac)' }}
+                animate={{ y: [-12, 40] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </span>
+          </motion.div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+/* ---------------- Section visuals ---------------- */
+
+function MaturityVisual({ accent }) {
+  const levels = ['Manual', 'Repeatable', 'Automated', 'Measured', 'Optimized'];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Maturity Model</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">DevOps Index</div>
+        </div>
+        <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.6, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 12px ${accent}` }} />
+      </div>
+      <div className="mt-8 space-y-3">
+        {levels.map((l, i) => (
+          <motion.div
+            key={l}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.6, delay: i * 0.1 }}
+            className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
+          >
+            <div className="flex items-center justify-between text-[10px] tracking-[0.35em] uppercase text-white/65">
+              <span>Lvl {i + 1} · {l}</span>
+              <span className="font-mono text-white/85">{[28, 52, 71, 88, 96][i]}%</span>
+            </div>
+            <div className="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: i >= 3 ? 'linear-gradient(90deg, #90eb61, #24baac)' : 'rgba(255,255,255,0.35)' }}
+                animate={{ width: [`0%`, `${[28, 52, 71, 88, 96][i]}%`] }}
+                transition={{ duration: 1.2, delay: 0.4 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CICDPipelineVisual({ accent }) {
+  const stages = ['Commit', 'Build', 'Test', 'Stage', 'Prod'];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+        <defs>
+          <linearGradient id="cicdG" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#90eb61" />
+            <stop offset="100%" stopColor={accent} />
+          </linearGradient>
+        </defs>
+        <line x1="6" y1="50" x2="94" y2="50" stroke="url(#cicdG)" strokeWidth="0.35" strokeDasharray="2 2" />
+        {[0, 1, 2, 3].map((i) => (
+          <motion.circle
+            key={i}
+            r="0.7"
+            fill="#90eb61"
+            initial={{ cx: 6, cy: 50 }}
+            animate={{ cx: [6, 94, 6] }}
+            transition={{ duration: 4.5 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+          />
+        ))}
+      </svg>
+      <div className="relative flex h-full items-center justify-between">
+        {stages.map((s, i) => (
+          <motion.div
+            key={s}
+            initial={{ opacity: 0, scale: 0.7 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center gap-3"
+          >
+            <div
+              className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl font-display font-bold text-sm"
+              style={{ boxShadow: `0 0 28px -6px ${accent}cc`, color: accent }}
+            >
+              {String(i + 1).padStart(2, '0')}
+            </div>
+            <div className="text-[10px] tracking-[0.3em] uppercase text-white/75">{s}</div>
+            <motion.div
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.2 }}
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: '#90eb61', boxShadow: '0 0 8px #90eb61' }}
+            />
+          </motion.div>
+        ))}
+      </div>
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute bottom-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
+      >
+        Build #2147 · ✓
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+        className="absolute top-4 right-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
+      >
+        Auto Rollback
+      </motion.div>
+    </div>
+  );
+}
+
+function IaCTerminalVisual({ accent }) {
+  const lines = [
+    '$ terraform plan',
+    '+ aws_eks_cluster.prod',
+    '+ aws_vpc.main · 10.0.0.0/16',
+    '+ helm_release.ingress',
+    '✓ Plan: 18 to add, 0 to change',
+    '$ terraform apply --auto-approve',
+    '◆ Applying changes …',
+  ];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/60 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">IaC · Terminal</div>
+        <div className="flex gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+        </div>
+      </div>
+      <div className="mt-6 space-y-1.5 font-mono text-[12px]">
+        {lines.map((l, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.4, delay: i * 0.18 }}
+            className={l.startsWith('$') ? 'text-white' : l.startsWith('+') ? 'text-emerald-300' : 'text-white/65'}
+          >
+            {l}
+            {i === lines.length - 1 && (
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="inline-block w-2 h-3.5 bg-white/90 ml-1 align-middle"
+              />
+            )}
+          </motion.div>
+        ))}
+      </div>
+      {/* Cloud icons */}
+      {['AWS', 'GCP', 'Azure'].map((c, i) => (
+        <motion.div
+          key={c}
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 5 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+          className="absolute rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
+          style={{
+            top: ['8%', '8%', '8%'][i],
+            right: [`${10 + i * 22}%`, `${10 + i * 22}%`, `${10 + i * 22}%`][i],
+            boxShadow: `0 0 24px -8px ${accent}cc`,
+          }}
+        >
+          {c}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function KubernetesVisual({ accent }) {
+  const pods = [
+    { x: 22, y: 28 }, { x: 50, y: 22 }, { x: 78, y: 28 },
+    { x: 22, y: 62 }, { x: 50, y: 70 }, { x: 78, y: 62 },
+  ];
+  return (
+    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+        <defs>
+          <linearGradient id="k8sG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={accent} />
+            <stop offset="100%" stopColor="#90eb61" />
+          </linearGradient>
+        </defs>
+        {pods.map((p, i) => (
+          <line key={i} x1="50" y1="46" x2={p.x} y2={p.y} stroke="url(#k8sG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
+        ))}
+        {pods.map((p, i) => (
+          <motion.circle
+            key={`m-${i}`}
+            r="0.7"
+            fill={accent}
+            initial={{ cx: 50, cy: 46 }}
+            animate={{ cx: [50, p.x, 50], cy: [46, p.y, 46] }}
+            transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.25 }}
+            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+          />
+        ))}
+      </svg>
+      {/* Control plane */}
+      <div className="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+          className="h-28 w-28 md:h-32 md:w-32 grid place-items-center"
+        >
+          <div className="absolute inset-0 rounded-full border border-white/15" />
+          <div className="absolute inset-3 rounded-full border border-white/10 border-dashed" />
+        </motion.div>
+        <div
+          className="absolute inset-0 grid place-items-center"
+          style={{ width: 0, height: 0, transform: 'translate(50%, 50%) translate(-50%, -50%)' }}
+        />
+      </div>
+      <div className="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+        <motion.div
+          animate={{ scale: [1, 1.06, 1] }}
+          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+          className="h-20 w-20 md:h-24 md:w-24 rounded-2xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
+          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(36,186,172,0.12)` }}
+        >
+          <div className="text-center">
+            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Ctrl</div>
+            <div className="mt-1 font-display text-base text-gradient-gt">Plane</div>
+          </div>
+        </motion.div>
+      </div>
+      {/* Pods */}
+      {pods.map((p, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, scale: 0.7 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, delay: i * 0.08 }}
+          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2"
+          style={{ left: `${p.x}%`, top: `${p.y}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
+        >
+          <div className="text-[9px] tracking-[0.3em] uppercase text-white/60">pod</div>
+          <div className="font-mono text-[11px] text-white/90">api-{i + 1}</div>
+          <motion.div
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+            className="mt-1 h-1 w-8 rounded-full"
+            style={{ background: '#90eb61' }}
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function ObservabilityVisual({ accent }) {
+  const series = [38, 32, 35, 28, 30, 22, 26, 18, 20, 14];
+  const alerts = [
+    'svc.api · p99 latency normal',
+    'k8s.node-3 · cpu 64%',
+    'svc.auth · error rate 0.04%',
+    'pipeline · deploy succeeded',
+  ];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">SRE · Observability</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">SLO · 99.95%</div>
+        </div>
+        <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.6, repeat: Infinity }} className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">
+          ◉ Healthy
+        </motion.div>
+      </div>
+
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="mt-4 h-32 w-full">
+        <defs>
+          <linearGradient id="obsG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={accent} stopOpacity="0.6" />
+            <stop offset="100%" stopColor={accent} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          d={`M 2 ${series[0]} ${series.map((v, i) => `L ${2 + i * 10} ${v}`).join(' ')}`}
+          fill="none"
+          stroke={accent}
+          strokeWidth="0.7"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <motion.path
+          d={`M 2 ${series[0]} ${series.map((v, i) => `L ${2 + i * 10} ${v}`).join(' ')} L 92 40 L 2 40 Z`}
+          fill="url(#obsG)"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, delay: 0.6 }}
+        />
+        {series.map((v, i) => (
+          <motion.circle key={i} cx={2 + i * 10} cy={v} r="0.6" fill="#fff" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.12 }} />
+        ))}
+      </svg>
+
+      <div className="mt-4 space-y-1.5 font-mono text-[11px]">
+        {alerts.map((a, i) => (
+          <motion.div
+            key={a}
+            initial={{ opacity: 0, x: 14 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
+            className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2"
+          >
+            <span className="text-white/40">{`${10 + i}:42`}</span>
+            <span className="text-white/85 flex-1 truncate">{a}</span>
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: accent, boxShadow: `0 0 8px ${accent}` }}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- ExperienceSection template ---------------- */
+
+function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
+  return (
+    <section className="relative px-6 md:px-12 py-28 md:py-40 overflow-hidden">
+      <FloatingOrbs accent={accent} />
+      <GridBackdrop />
+
+      <div className="relative max-w-7xl mx-auto">
+        <div className="flex items-center gap-5 mb-10">
+          <span
+            className="font-display text-6xl md:text-8xl font-bold leading-none"
+            style={{
+              background: `linear-gradient(135deg, ${accent}, #ffffff15)`,
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
+          >
+            {num}
+          </span>
+          <Eyebrow>{eyebrow}</Eyebrow>
+        </div>
+
+        <div className="grid gap-14 lg:gap-16 lg:grid-cols-12 items-start">
+          <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
+              <RevealWords text={title} />
+            </h2>
+            <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
+              {description}
+            </p>
+
+            <div className="mt-12 grid gap-10 md:grid-cols-2">
+              <div>
+                <Eyebrow>Key Features</Eyebrow>
+                <div className="mt-5">
+                  <StaggerFeatures items={features} accent={accent} />
+                </div>
+              </div>
+              <div>
+                <Eyebrow>Business Benefits</Eyebrow>
+                <div className="mt-5">
+                  <StaggerFeatures items={benefits} accent={accent} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={`lg:col-span-5 ${flip ? 'lg:order-1' : ''} lg:sticky lg:top-24`}>
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {visual}
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Final CTA ---------------- */
+
+function FinalCTA({ accent, onClose }) {
+  return (
+    <section className="relative px-6 md:px-12 py-40 md:py-56 overflow-hidden">
+      <motion.div
+        aria-hidden
+        animate={{
+          background: [
+            `radial-gradient(40% 50% at 30% 40%, ${accent}55, transparent 70%), radial-gradient(50% 60% at 70% 60%, rgba(144,235,97,0.45), transparent 70%)`,
+            `radial-gradient(40% 50% at 70% 60%, ${accent}55, transparent 70%), radial-gradient(50% 60% at 30% 40%, rgba(144,235,97,0.45), transparent 70%)`,
+            `radial-gradient(40% 50% at 30% 40%, ${accent}55, transparent 70%), radial-gradient(50% 60% at 70% 60%, rgba(144,235,97,0.45), transparent 70%)`,
+          ],
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute inset-0 -z-10 opacity-50 blur-[60px]"
+      />
+      <DataParticles accent={accent} count={28} />
+      <GridBackdrop />
+
+      <div className="relative max-w-5xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.7 }}
+          className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-8"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
+          Begin · 06
+        </motion.div>
+
+        <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-tight">
+          <RevealWords text="Ready to Engineer a Faster, Safer Delivery Backbone?" />
+        </h2>
+        <RevealWords
+          text="Let's build CI/CD pipelines, cloud-native platforms, and SRE practices your teams will trust in production."
+          className="block mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-4"
+        >
+          <MagneticButton
+            as="a"
+            href="#contact"
+            onClick={onClose}
+            className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-medium text-black hover:brightness-110"
+            style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
+          >
+            Talk to DevOps Experts
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </MagneticButton>
+          <MagneticButton
+            as="a"
+            href="#contact"
+            onClick={onClose}
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
+          >
+            Start Your DevOps Journey
+          </MagneticButton>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Scroll progress dots ---------------- */
+
+function ScrollDots({ scrollRef }) {
+  const labels = ['Hero', 'Consult', 'CI/CD', 'IaC', 'K8s', 'Observe'];
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = scrollRef?.current;
+    if (!el) return;
+    const onScroll = () => {
+      const p = el.scrollTop / Math.max(1, el.scrollHeight - el.clientHeight);
+      const idx = Math.min(labels.length - 1, Math.floor(p * labels.length * 0.999));
+      setActive(idx);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [scrollRef]);
+
+  return (
+    <div className="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-30 flex-col items-end gap-3 pointer-events-none">
+      {labels.map((l, i) => (
+        <div key={l} className="flex items-center gap-3">
+          <span
+            className={`text-[10px] tracking-[0.35em] uppercase transition-opacity duration-300 ${i === active ? 'opacity-100 text-white' : 'opacity-40 text-white/70'}`}
+          >
+            {l}
+          </span>
+          <span
+            className="block h-[2px] rounded-full transition-all duration-500"
+            style={{
+              width: i === active ? 30 : 14,
+              background: i === active ? 'linear-gradient(90deg,#90eb61,#24baac)' : 'rgba(255,255,255,0.25)',
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------------- Main ---------------- */
+
+export default function DevOpsExperience({ service, onClose, scrollRef }) {
+  const accent = service.accent || '#24baac';
+
+  return (
+    <>
+      <ScrollDots scrollRef={scrollRef} />
+
+      <HeroScene service={service} />
+
+      <div className="bg-ink relative z-10">
+        <ExperienceSection
+          num="01"
+          eyebrow="DevOps Consulting & Transformation"
+          title="Assess, Design, and Implement Enterprise-Grade DevOps Strategies."
+          description="Assess DevOps maturity and design transformation strategy. Process and tooling change across the full SDLC. Golden paths that scale without slowing teams."
+          features={[
+            'DevOps maturity assessment',
+            'Process transformation strategy',
+            'DevOps roadmap planning',
+            'SDLC optimization',
+            'Enterprise DevOps adoption guidance',
+          ]}
+          benefits={[
+            'Faster development lifecycle',
+            'Improved operational efficiency',
+            'Better collaboration across teams',
+            'Accelerated digital transformation',
+            'Increased delivery consistency',
+          ]}
+          visual={<MaturityVisual accent={accent} />}
+          accent={accent}
+        />
+
+        <ExperienceSection
+          num="02"
+          eyebrow="CI/CD Engineering Services"
+          title="Design Automated CI/CD Pipelines for Faster, Safer Software Delivery."
+          description="Automated build, test, and deploy pipelines with quality gates. Multi-stage workflows with safe rollback strategies. Pipeline observability that catches issues early."
+          features={[
+            'Automated build and deployment pipelines',
+            'Continuous testing integration',
+            'Multi-stage deployment workflows',
+            'Release automation',
+            'Rollback and recovery strategies',
+          ]}
+          benefits={[
+            'Reduced deployment time',
+            'Minimized release failures',
+            'Increased deployment frequency',
+            'Improved software quality',
+            'Faster time-to-market',
+          ]}
+          visual={<CICDPipelineVisual accent={accent} />}
+          accent={accent}
+          flip
+        />
+
+        <ExperienceSection
+          num="03"
+          eyebrow="Cloud & Infrastructure Automation"
+          title="Automate Provisioning and Cloud Resource Management with Infrastructure as Code."
+          description="Codified, version-controlled IaC across every major cloud. Terraform and Pulumi provisioning at scale. Policy-as-code and reusable patterns out of the box."
+          features={[
+            'Infrastructure as Code (IaC) implementation',
+            'Automated environment provisioning',
+            'Cloud infrastructure management',
+            'Configuration management',
+            'Scalable infrastructure design',
+          ]}
+          benefits={[
+            'Faster infrastructure deployment',
+            'Consistent environments',
+            'Reduced manual operations',
+            'Improved scalability and governance',
+            'Enhanced infrastructure reliability',
+          ]}
+          visual={<IaCTerminalVisual accent={accent} />}
+          accent={accent}
+        />
+
+        <ExperienceSection
+          num="04"
+          eyebrow="Kubernetes & Container Platform Services"
+          title="Build Scalable, Resilient Containerized Platforms with Kubernetes."
+          description="Production clusters with autoscaling and self-healing. Docker, Helm, and GitOps with ArgoCD or Flux. Paved roads that developers actually use."
+          features={[
+            'Docker containerization',
+            'Kubernetes cluster setup',
+            'Helm-based deployments',
+            'Auto-scaling and self-healing',
+            'Microservices platform enablement',
+          ]}
+          benefits={[
+            'High availability architecture',
+            'Faster application deployment',
+            'Better resource optimization',
+            'Simplified application management',
+            'Improved platform scalability',
+          ]}
+          visual={<KubernetesVisual accent={accent} />}
+          accent={accent}
+          flip
+        />
+
+        <ExperienceSection
+          num="05"
+          eyebrow="Monitoring, SRE & Observability"
+          title="Engineer Reliability with Proactive Monitoring and Observability."
+          description="Centralized logs, metrics, and traces with OpenTelemetry. SLO-driven alerts and incident workflows. SRE practices that measurably lower MTTR."
+          features={[
+            'Centralized logging and monitoring',
+            'Real-time alerts and notifications',
+            'Application performance monitoring',
+            'Infrastructure health tracking',
+            'Incident and reliability management',
+          ]}
+          benefits={[
+            'Faster issue resolution',
+            'Reduced downtime',
+            'Improved system performance',
+            'Enhanced operational visibility',
+            'Increased system reliability',
+          ]}
+          visual={<ObservabilityVisual accent={accent} />}
+          accent={accent}
+        />
+
+        <FinalCTA accent={accent} onClose={onClose} />
+      </div>
+    </>
+  );
+}
