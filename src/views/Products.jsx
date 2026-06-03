@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useState, useEffect } from 'react';
 import {
   motion,
@@ -8,7 +10,6 @@ import {
   useMotionTemplate,
   useInView,
 } from 'framer-motion';
-import SEO from '../components/SEO.jsx';
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
@@ -132,7 +133,8 @@ function ProductChapter({ product, index }) {
   // Sweep mask reveal for the visual
   const maskY = useTransform(scrollYProgress, [0.05, 0.45], ['100%', '0%']);
 
-  const isLinked = Boolean(product.href);
+  // All products are pre-launch — show "Coming soon" and no visit link button.
+  const isLinked = false;
 
   return (
     <section
@@ -580,11 +582,6 @@ function ChapterRail() {
 export default function Products() {
   return (
     <>
-      <SEO
-        title="Products — Genufy"
-        description="A cinematic walk through the Genufy product atlas."
-        path="/products"
-      />
       <ScrollProgress />
       <Header />
       <ChapterRail />

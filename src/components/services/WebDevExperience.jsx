@@ -75,14 +75,14 @@ function StaggerFeatures({ items, accent }) {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } } }}
       className="space-y-3"
     >
       {items.map((it, i) => (
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
           }}
         >
@@ -869,7 +869,6 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
 
       <HeroScene service={service} />
 
@@ -883,15 +882,11 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
             'Modern frontend frameworks: React, Angular, Vue.js',
             'Scalable backend technologies: Node.js, Django, Spring Boot, .NET',
             'Secure authentication & role-based access control',
-            'Cloud-native and microservices-ready architecture',
-            'Real-time dashboards and enterprise portal development',
           ]}
           benefits={[
             'Streamline operations with workflow-driven applications',
             'Improve user experience with responsive and intuitive interfaces',
             'Scale applications seamlessly as business grows',
-            'Enhance security and system reliability',
-            'Accelerate digital transformation initiatives',
           ]}
           visual={<CustomAppVisual accent={accent} />}
           accent={accent}
@@ -906,15 +901,11 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
             'Shopify, Magento, WooCommerce, and custom commerce solutions',
             'Headless commerce architecture with React & Next.js',
             'Secure payment gateway and shipping integrations',
-            'Mobile-first, SEO-optimized storefronts',
-            'Advanced analytics, inventory, and order management',
           ]}
           benefits={[
             'Increase online sales and conversion rates',
             'Deliver seamless customer shopping experiences',
             'Simplify product and inventory management',
-            'Improve customer retention through personalized experiences',
-            'Scale e-commerce operations with confidence',
           ]}
           visual={<EcommerceVisual accent={accent} />}
           accent={accent}
@@ -930,15 +921,11 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
             'Traditional CMS platforms: WordPress, Drupal, Joomla',
             'Headless CMS solutions: Strapi, Contentful, Sanity',
             'API-first content delivery architecture',
-            'Custom plugins, workflows, and integrations',
-            'Multi-channel content publishing capabilities',
           ]}
           benefits={[
             'Simplify content management for business teams',
             'Improve website performance with decoupled architecture',
             'Deliver personalized digital experiences faster',
-            'Enable seamless integration with third-party systems',
-            'Accelerate content publishing across channels',
           ]}
           visual={<HeadlessCMSVisual accent={accent} />}
           accent={accent}
@@ -953,15 +940,11 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
             'RESTful and GraphQL API development',
             'OAuth2, JWT, and secure API authentication',
             'Microservices architecture with Docker & Kubernetes',
-            'API documentation with Swagger/OpenAPI',
-            'Event-driven and cloud-native integrations',
           ]}
           benefits={[
             'Enable seamless system interoperability',
             'Accelerate development using reusable services',
             'Improve scalability and application flexibility',
-            'Reduce deployment complexity and downtime',
-            'Future-proof enterprise applications',
           ]}
           visual={<APIMicroservicesVisual accent={accent} />}
           accent={accent}
@@ -977,15 +960,11 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
             'SEO audits and technical optimization',
             'Keyword strategy and content marketing',
             'Google Ads, Meta Ads, and LinkedIn campaign management',
-            'GA4, GTM, and CRM performance tracking',
-            'Conversion rate optimization and lead generation strategies',
           ]}
           benefits={[
             'Improve search engine rankings and online visibility',
             'Generate high-quality leads and customer traffic',
             'Increase ROI with performance-driven campaigns',
-            'Strengthen brand awareness and digital presence',
-            'Build sustainable long-term online growth',
           ]}
           visual={<SEOVisual accent={accent} />}
           accent={accent}

@@ -83,7 +83,7 @@ function StaggerFeatures({ items, accent }) {
       viewport={{ once: true, amount: 0.2 }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+        show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
       }}
       className="space-y-3"
     >
@@ -91,7 +91,7 @@ function StaggerFeatures({ items, accent }) {
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: {
               opacity: 1,
               y: 0,
@@ -1246,7 +1246,6 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
 
       <HeroScene service={service} />
 
@@ -1260,15 +1259,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'High-performance ETL/ELT for cloud and hybrid architectures',
             'Pre-built connectors for Salesforce, SAP, Oracle, and more',
             'Intelligent data mapping with AI-driven recommendations',
-            'Real-time and batch processing support',
-            'Native ELT processing for Snowflake, Databricks, and Google BigQuery',
           ]}
           benefits={[
             'Accelerate time-to-insight with automated data pipelines',
             'Eliminate data silos for a unified business view',
             'Reduce development time with reusable integration templates',
-            'Enable agile, scalable data strategies for digital transformation',
-            'Improve analytics performance with cloud-native data processing',
           ]}
           visual={<IntegrationPipelineVisual accent={accent} />}
           accent={accent}
@@ -1283,15 +1278,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'Data profiling, validation, cleansing, and deduplication',
             'Rule-based and AI-assisted data quality automation',
             'Data Privacy Management for GDPR and CCPA compliance',
-            'Integration with Informatica Axon for unified governance',
-            'Real-time data quality validation through REST APIs',
           ]}
           benefits={[
             'Increase business confidence with reliable, high-quality data',
             'Streamline compliance with automated governance workflows',
             'Reduce costly data errors across systems',
-            'Support strategic initiatives with trustworthy data assets',
-            'Enable real-time trusted data across applications and analytics',
           ]}
           visual={<GovernanceVisual accent={accent} />}
           accent={accent}
@@ -1307,15 +1298,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'Golden record creation with intelligent matching and merging',
             'Flexible data models for customer, product, and reference data',
             'Hierarchy and relationship management between records',
-            'Integrated data stewardship workflows',
-            'CLAIRE GPT-powered natural language exploration of master data',
           ]}
           benefits={[
             'Enhance customer experiences with accurate, consolidated profiles',
             'Streamline operations and reporting with clean, unified data',
             'Enable personalized marketing and improved sales effectiveness',
-            'Reduce redundancy and inconsistencies across systems',
-            'Empower business users with faster, AI-driven data insights',
           ]}
           visual={<MDMGoldenRecordVisual accent={accent} />}
           accent={accent}
@@ -1330,15 +1317,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'Automated metadata scanning across databases, applications, and cloud platforms',
             'AI-driven data discovery with business glossary integration',
             'Data lineage tracking for compliance and impact analysis',
-            'Collaboration tools for data stewardship and knowledge sharing',
-            'AI-powered inferred lineage across enterprise and AI ecosystems',
           ]}
           benefits={[
             'Speed up analytics with quick data discovery and access',
             'Strengthen compliance with full data lineage transparency',
             'Promote data literacy across business and technical teams',
-            'Improve productivity with searchable, contextual data assets',
-            'Accelerate responsible AI initiatives with trusted metadata visibility',
           ]}
           visual={<CatalogScanVisual accent={accent} />}
           accent={accent}
@@ -1354,15 +1337,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'Real-time API and event-driven integration capabilities',
             'Pre-built connectors for ERP, CRM, billing, and more',
             'Workflow automation with business process modelling',
-            'Hybrid integration support for complex enterprise ecosystems',
-            'GenAI connectors for Snowflake Cortex AI, Databricks Mosaic AI, and NVIDIA NIM',
           ]}
           benefits={[
             'Enable faster decision-making with real-time data availability',
             'Automate manual tasks to reduce operational overhead',
             'Deliver connected customer and employee experiences',
-            'Support agile digital initiatives with flexible, scalable integration',
-            'Future-proof enterprise integrations with AI-ready architectures',
           ]}
           visual={<IPaaSEventStreamVisual accent={accent} />}
           accent={accent}
@@ -1377,15 +1356,11 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
             'CLAIRE Agents for autonomous data quality and integration workflows',
             'No-code AI Agent Engineering for rapid deployment',
             'AI Agent Hub with pre-built agents for Salesforce, Jira, and Microsoft Teams',
-            'CLAIRE Copilot for natural language pipeline development',
-            'Recipe Marketplace for reusable GenAI workflow templates',
           ]}
           benefits={[
             'Reduce AI agent development time from weeks to minutes',
             'Enable LLMs to operate on governed enterprise data',
             'Automate complex workflows without custom coding',
-            'Democratize AI-powered data engineering across teams',
-            'Build a scalable AI-ready data foundation for future innovation',
           ]}
           visual={<AIAgentVisual accent={accent} />}
           accent={accent}
@@ -1403,15 +1378,11 @@ methodology, minimizing downtime and business risk."
             'Automated mapping conversion and migration accelerators',
             'Structured assessment and phased migration planning',
             'CDI-PC deployment support on Oracle Cloud Infrastructure',
-            'Post-migration optimization and performance tuning',
-            'Knowledge transfer and enablement for internal teams',
           ]}
           benefits={[
             'Reduce infrastructure and legacy platform maintenance costs',
             'Unlock advanced IDMC AI, governance, and catalog capabilities',
             'Eliminate dependency on on-premise server environments',
-            'Future-proof data operations with cloud-native scalability',
-            'Minimize migration risk with proven implementation frameworks',
           ]}
           visual={<MigrationFlowVisual accent={accent} />}
           accent={accent}
@@ -1428,15 +1399,11 @@ maintainable, and governed."
             'Conversion of PL/SQL procedures and packages into IDMC mappings',
             'Transformation of complex SQL joins, cursors, and loops',
             'Automated validation and business logic testing',
-            'Migration of Oracle Scheduler jobs into IDMC Taskflows',
-            'Error handling and exception logic mapped into fault handlers',
           ]}
           benefits={[
             'Reduce Oracle licensing costs and infrastructure dependency',
             'Enable visually manageable and auditable ETL pipelines',
             'Improve cloud-scale performance and operational efficiency',
-            'Allow broader teams to maintain and extend integrations',
-            'Ensure business continuity with zero-data-loss migration approaches',
           ]}
           visual={<PLSQLConversionVisual accent={accent} />}
           accent={accent}
@@ -1452,15 +1419,11 @@ maintainable, and governed."
             'Comprehensive IICS environment audit and migration assessment',
             'IDMC org setup and Secure Agent configuration',
             'Migration of mappings, workflows, schedules, and connectors',
-            'Parallel-run validation and compatibility testing',
-            'Enablement of CLAIRE AI and advanced IDMC features post-migration',
           ]}
           benefits={[
             'Unlock CLAIRE AI, CLAIRE GPT, and AI Agent capabilities',
             'Access governance, catalog, MDM, and data quality services in one platform',
             'Improve scalability and operational performance',
-            'Simplify administration with a consolidated IDMC environment',
-            'Ensure smooth migration with phased deployment and hypercare support',
           ]}
           visual={<IICSToIDMCVisual accent={accent} />}
           accent={accent}
@@ -1475,15 +1438,11 @@ maintainable, and governed."
             'Data strategy and Informatica roadmap consulting',
             'Industry-specific discovery workshops and assessments',
             '24/7 managed services with monitoring and optimization',
-            'Flexible PSU-based expert engagement models',
-            'Resident consultant programs for accelerated team enablement',
           ]}
           benefits={[
             'Accelerate ROI from your Informatica investments',
             'Reduce project risks with certified Informatica expertise',
             'Free internal teams to focus on business innovation',
-            'Maintain platform health through proactive support',
-            'Scale Informatica capabilities without increasing hiring costs',
           ]}
           visual={<ManagedServicesVisual accent={accent} />}
           accent={accent}

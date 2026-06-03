@@ -263,6 +263,15 @@ export default function HorizontalCapabilities() {
     // ServiceFullscreen already stops Lenis; nothing to do here.
   }, [selected]);
 
+  // Deep-link: when arriving via ?service=<id> (e.g. a footer service link),
+  // open that service's fullscreen experience automatically.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('service');
+    if (!id) return;
+    const svc = SERVICES.find((s) => s.id === id);
+    if (svc) setSelected(svc);
+  }, []);
+
   return (
     <section
       id="services"

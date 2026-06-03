@@ -76,14 +76,14 @@ function StaggerFeatures({ items, accent }) {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } } }}
       className="space-y-3"
     >
       {items.map((it, i) => (
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
           }}
         >
@@ -1439,7 +1439,6 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
 
       <HeroScene service={service} />
 
@@ -1455,15 +1454,11 @@ beyond chatbots to deliver production-grade generative systems tied to your busi
             'Custom LLM applications and enterprise AI copilots',
             'Retrieval-Augmented Generation (RAG) implementations',
             'AI workflow automation with advanced prompt engineering',
-            'Multimodal AI systems for text, image, and audio processing',
-            'Secure private LLM deployment across cloud and on-premise environments',
           ]}
           benefits={[
             'Accelerate content and code generation across teams',
             'Reduce manual effort with intelligent workflow automation',
             'Deliver personalized customer and employee experiences',
-            'Improve operational efficiency with AI-powered assistance',
-            'Enable secure enterprise AI adoption at scale',
           ]}
           visual={<GenerativeAIVisual accent={accent} />}
           accent={accent}
@@ -1480,15 +1475,11 @@ controls, and audit trails built in. "
             'Multi-agent orchestration and autonomous task execution',
             'Memory and contextual reasoning capabilities',
             'CRM and ERP integrated intelligent agents',
-            'Sales, support, and operations automation agents',
-            'Human-in-the-loop architecture with audit tracking',
           ]}
           benefits={[
             'Automate repetitive and complex business processes',
             'Provide 24/7 intelligent support and assistance',
             'Accelerate operational decision-making and execution',
-            'Scale workforce productivity with AI augmentation',
-            'Improve process efficiency with autonomous systems',
           ]}
           visual={<AIAgentVisual accent={accent} />}
           accent={accent}
@@ -1506,15 +1497,11 @@ scale across customer, employee, and partner interactions. ."
             'Conversational AI and intelligent chatbot development',
             'Sentiment analysis and opinion mining solutions',
             'Intelligent document processing with OCR capabilities',
-            'Semantic search and knowledge discovery systems',
-            'Multilingual NLP and speech recognition support',
           ]}
           benefits={[
             'Extract valuable insights from unstructured data',
             'Improve customer support automation and responsiveness',
             'Automate document classification and processing workflows',
-            'Enhance enterprise search and knowledge accessibility',
-            'Deliver smarter, context-aware digital experiences',
           ]}
           visual={<NLPVisual accent={accent} />}
           accent={accent}
@@ -1531,15 +1518,11 @@ happen — giving your teams an unfair competitive advantage.."
             'Demand forecasting and trend prediction models',
             'Predictive maintenance and asset intelligence systems',
             'Customer churn and revenue prediction analytics',
-            'Scenario simulation and what-if analysis',
-            'Real-time scoring and behavior analytics pipelines',
           ]}
           benefits={[
             'Reduce operational risks and unexpected downtime',
             'Optimize inventory, supply chain, and resource planning',
             'Improve revenue forecasting and strategic planning',
-            'Enable proactive decision-making with predictive insights',
-            'Increase business agility with real-time intelligence',
           ]}
           visual={<PredictiveAnalyticsVisual accent={accent} />}
           accent={accent}
@@ -1557,15 +1540,11 @@ real-time visual understanding across industries."
             'Object detection and image classification systems',
             'Video analytics and surveillance intelligence',
             'OCR and intelligent document understanding',
-            'Quality inspection and defect detection automation',
-            'Pose estimation and gesture recognition solutions',
           ]}
           benefits={[
             'Automate visual inspection and quality control processes',
             'Improve security and safety monitoring capabilities',
             'Generate insights from large-scale visual data',
-            'Reduce manual inspection effort and operational costs',
-            'Enhance operational efficiency with real-time visual intelligence',
           ]}
           visual={<ComputerVisionVisual accent={accent} />}
           accent={accent}
@@ -1582,15 +1561,11 @@ consistently at scale — across cloud, on-prem, and hybrid environments. ."
             'Automated CI/CD pipelines for machine learning workflows',
             'Model monitoring, drift detection, and retraining pipelines',
             'Scalable AI infrastructure and GPU optimization',
-            'Vector database integration and model version control',
-            'AI governance, compliance, and audit frameworks',
           ]}
           benefits={[
             'Accelerate AI model deployment cycles',
             'Maintain model accuracy and reliability over time',
             'Reduce operational risks and system downtime',
-            'Enable scalable enterprise AI operations',
-            'Ensure secure, compliant, and governed AI implementations',
           ]}
           visual={<MLOpsVisual accent={accent} />}
           accent={accent}
@@ -1607,15 +1582,11 @@ consistently at scale — across cloud, on-prem, and hybrid environments. ."
             'Vision-language AI systems for text and image understanding',
             'Audio and speech intelligence processing solutions',
             'Multimodal Retrieval-Augmented Generation (RAG)',
-            'Video and language understanding capabilities',
-            'Document, diagram, and screenshot comprehension systems',
           ]}
           benefits={[
             'Deliver richer AI experiences across multiple content formats',
             'Improve contextual understanding of complex inputs',
             'Unify enterprise intelligence across diverse data sources',
-            'Enhance product innovation with advanced AI capabilities',
-            'Differentiate digital experiences with multimodal intelligence',
           ]}
           visual={<MultimodalAIVisual accent={accent} />}
           accent={accent}
@@ -1632,15 +1603,11 @@ and accelerate discovery while meeting strict regulatory and privacy standards."
             'Medical imaging AI for radiology and pathology analysis',
             'Clinical NLP and electronic health record intelligence',
             'Patient risk stratification and predictive healthcare analytics',
-            'Remote patient monitoring and wearable AI solutions',
-            'HIPAA and HL7 compliant AI architectures',
           ]}
           benefits={[
             'Improve diagnosis accuracy and patient outcomes',
             'Reduce administrative and clinical operational burden',
             'Accelerate healthcare research and drug discovery initiatives',
-            'Enhance patient safety and care quality',
-            'Enable secure and compliant healthcare AI adoption',
           ]}
           visual={<HealthcareAIVisual accent={accent} />}
           accent={accent}

@@ -1,4 +1,5 @@
-import SEO from '../components/SEO.jsx';
+'use client';
+
 import Header from '../components/Header.jsx';
 import HeroGenufy from '../components/HeroGenufy.jsx';
 import Marquee from '../components/Marquee.jsx';
@@ -13,11 +14,6 @@ import ScrollProgress from '../components/ScrollProgress.jsx';
 export default function Home() {
   return (
     <>
-      <SEO
-        title="Genufy TechWorks"
-        description="Genufy — engineering the next generation of intelligent experiences."
-        path="/"
-      />
       <ScrollProgress />
       <Header />
 

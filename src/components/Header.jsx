@@ -1,5 +1,7 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
@@ -7,17 +9,41 @@ const links = ['Services', 'Products', 'Insights'];
 
 function scrollToHash(hash) {
   const id = hash.replace(/^#/, '');
-  const el = document.getElementById(id);
-  if (!el) return;
-  const header = document.querySelector('header[data-site-header]');
-  const offset = -(header?.getBoundingClientRect().height || 0) - 12;
-  const lenis = window.__lenis;
-  if (lenis?.scrollTo) {
-    lenis.scrollTo(el, { offset, duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4) });
-  } else {
-    const top = el.getBoundingClientRect().top + window.scrollY + offset;
-    window.scrollTo({ top, behavior: 'smooth' });
-  }
+  if (!document.getElementById(id)) return;
+
+  // Absolute document position of the target's top, header-adjusted. Recomputed
+  // each pass so it self-corrects against the sticky/pinned sections in between.
+  const targetTop = () => {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const headerH =
+      document.querySelector('header[data-site-header]')?.getBoundingClientRect().height || 0;
+    return el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+  };
+
+  const easing = (t) => 1 - Math.pow(1 - t, 4);
+  const go = (top, opts = {}) => {
+    const lenis = window.__lenis;
+    if (lenis?.scrollTo) lenis.scrollTo(top, { easing, ...opts });
+    else window.scrollTo({ top, behavior: opts.immediate ? 'auto' : 'smooth' });
+  };
+
+  go(targetTop(), { duration: 1.3 });
+
+  // Recompute-on-settle: after the smooth scroll, re-measure and snap precisely
+  // if we ended up off-target (sticky/pinned layout can land the first pass short).
+  let tries = 0;
+  const correct = () => {
+    if (tries >= 4) return;
+    tries += 1;
+    const top = targetTop();
+    if (top == null) return;
+    if (Math.abs(top - window.scrollY) > 4) {
+      go(top, { immediate: tries >= 2 }); // first nudge smooth, then snap exactly
+      window.setTimeout(correct, 350);
+    }
+  };
+  window.setTimeout(correct, 1400);
 }
 
 function Logo() {
@@ -73,8 +99,7 @@ export default function Header() {
   const [activeHash, setActiveHash] = useState('');
   const headerRef = useRef(null);
   const lastY = useRef(0);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const { openContact } = useContactModal();
 
   useEffect(() => {
@@ -112,19 +137,35 @@ export default function Header() {
     return () => observer.disconnect();
   }, []);
 
+  // On mount: if we arrived with a hash (e.g. navigated from another page via
+  // "/#services"), scroll to that section once content + Lenis are ready.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const t = setTimeout(() => scrollToHash(hash), 600);
+    return () => clearTimeout(t);
+  }, []);
+
   const handleNav = (hash) => {
     setOpen(false);
     const id = hash.replace(/^#/, '');
     if (id === 'products') {
-      navigate('/products');
+      router.push('/products');
       return;
     }
-    if (location.pathname !== '/') {
-      navigate('/' + hash);
+    if (id === 'insights') {
+      router.push('/insights');
       return;
     }
-    scrollToHash(hash);
-    if (window.history?.replaceState) window.history.replaceState(null, '', hash);
+    // If the target section is on the current page, smooth-scroll to it directly
+    // (don't rely on pathname — works on home and any page that has the section).
+    if (document.getElementById(id)) {
+      scrollToHash(hash);
+      if (window.history?.replaceState) window.history.replaceState(null, '', hash);
+      return;
+    }
+    // Otherwise go home to that section; the on-mount handler scrolls after load.
+    router.push('/' + hash);
   };
 
   return (

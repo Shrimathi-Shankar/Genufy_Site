@@ -75,14 +75,14 @@ function StaggerFeatures({ items, accent }) {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } } }}
       className="space-y-3"
     >
       {items.map((it, i) => (
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
           }}
         >
@@ -898,7 +898,6 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
 
       <HeroScene service={service} />
 
@@ -912,15 +911,11 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
             'Separate compute and storage architecture for elastic scalability',
             'Support for structured and semi-structured data formats',
             'Automated scaling, auto-suspend, and performance optimization',
-            'Multi-cloud and cross-region data accessibility',
-            'Fully managed cloud-native data warehouse platform',
           ]}
           benefits={[
             'Eliminate data silos with centralized data storage',
             'Reduce infrastructure and maintenance costs',
             'Accelerate analytics and reporting performance',
-            'Scale resources instantly based on business demand',
-            'Simplify enterprise data management operations',
           ]}
           visual={<WarehouseVisual accent={accent} />}
           accent={accent}
@@ -935,15 +930,11 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
             'Automated ELT pipeline development',
             'Real-time and batch data ingestion',
             'Integration with cloud and enterprise data sources',
-            'Data transformation using Snowpark and SQL',
-            'Workflow orchestration and scheduling',
           ]}
           benefits={[
             'Accelerate data processing and availability',
             'Improve data quality and consistency',
             'Reduce manual data engineering efforts',
-            'Enable faster business insights and reporting',
-            'Support scalable enterprise analytics workloads',
           ]}
           visual={<ELTPipelineVisual accent={accent} />}
           accent={accent}
@@ -959,15 +950,11 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
             'Secure live data sharing capabilities',
             'Cross-cloud and cross-region replication',
             'Snowflake Marketplace integration',
-            'Role-based access and governance controls',
-            'Real-time collaboration across business units',
           ]}
           benefits={[
             'Eliminate data duplication and latency',
             'Improve collaboration across organizations',
             'Enhance data security and governance',
-            'Enable faster partner and customer integrations',
-            'Create opportunities for data monetization',
           ]}
           visual={<DataSharingVisual accent={accent} />}
           accent={accent}
@@ -982,15 +969,11 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
             'Snowpark integration for Python, Java, and Scala',
             'Integration with TensorFlow, PyTorch, and ML tools',
             'Scalable compute for training and inference',
-            'Streamlit integration for interactive applications',
-            'Advanced analytics and predictive modeling support',
           ]}
           benefits={[
             'Accelerate machine learning development cycles',
             'Improve decision-making with AI-driven insights',
             'Ensure secure and governed ML workflows',
-            'Enable high-performance analytics at scale',
-            'Democratize insights through interactive applications',
           ]}
           visual={<SnowparkVisual accent={accent} />}
           accent={accent}
@@ -1006,15 +989,11 @@ export default function SnowflakeExperience({ service, onClose, scrollRef }) {
             'Legacy data warehouse migration',
             'Cloud migration strategy and assessment',
             'Data validation and reconciliation',
-            'Performance tuning and optimization',
-            'End-to-end modernization support',
           ]}
           benefits={[
             'Reduce legacy infrastructure dependency',
             'Improve scalability and operational agility',
             'Minimize migration risks and downtime',
-            'Optimize performance and cloud costs',
-            'Accelerate digital transformation initiatives',
           ]}
           visual={<MigrationVisual accent={accent} />}
           accent={accent}

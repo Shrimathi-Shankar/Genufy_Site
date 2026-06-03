@@ -80,7 +80,7 @@ function StaggerFeatures({ items, accent }) {
       viewport={{ once: true, amount: 0.2 }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+        show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
       }}
       className="space-y-3"
     >
@@ -88,7 +88,7 @@ function StaggerFeatures({ items, accent }) {
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: {
               opacity: 1,
               y: 0,
@@ -731,7 +731,6 @@ export default function ServiceExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
 
       <HeroScene service={service} />
 

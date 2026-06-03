@@ -380,7 +380,7 @@ function HolographicMesh() {
                 <img
                   src="/favicon.png"
                   alt="Genufy"
-                  className="h-full w-full scale-[1.5] object-contain"
+                  className="h-full w-full scale-[1.1] object-contain"
                 />
               </div>
             </div>
