@@ -43,6 +43,22 @@ function FloatingGlow({ accent }) {
   );
 }
 
+/* Fully unlock page scrolling after the overlay closes. Resets overflow on both
+   the document element and body, clears Lenis' stopped class, then restarts and
+   re-syncs Lenis (a Lenis that was stopped while the overlay scrolled can keep
+   stale dimensions / scroll position and fight new scrolls). */
+function restoreScroll() {
+  if (typeof window === 'undefined') return;
+  const html = document.documentElement;
+  document.body.style.overflow = '';
+  html.style.overflow = '';
+  html.classList.remove('lenis-stopped');
+  const lenis = window.__lenis;
+  lenis?.start?.();
+  lenis?.scrollTo?.(window.scrollY || 0, { immediate: true, force: true });
+  lenis?.resize?.();
+}
+
 export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }) {
   const ref = useRef(null);
   const scrollRef = useRef(null);
@@ -60,20 +76,20 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
   onCloseRef.current = onClose;
 
   useEffect(() => {
-    const lenis = window.__lenis;
-    lenis?.stop?.();
-    const prev = document.body.style.overflow;
+    window.__lenis?.stop?.();
     document.body.style.overflow = 'hidden';
 
     const onKey = (e) => {
-      if (e.key === 'Escape') onCloseRef.current?.();
+      if (e.key === 'Escape') {
+        restoreScroll();
+        onCloseRef.current?.();
+      }
     };
     window.addEventListener('keydown', onKey);
 
     return () => {
-      document.body.style.overflow = prev;
-      lenis?.start?.();
       window.removeEventListener('keydown', onKey);
+      restoreScroll();
     };
   }, []); // run once: lock on open, restore on close
 
@@ -86,6 +102,13 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
     },
     [mx, my]
   );
+
+  // Restore page scroll immediately on close (don't wait for the exit-animation
+  // unmount), then ask the parent to close. The unmount cleanup is a backup.
+  const closeNow = useCallback(() => {
+    restoreScroll();
+    onCloseRef.current?.();
+  }, []);
 
   return (
     <motion.div
@@ -142,7 +165,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.85 }}
         transition={{ duration: 0.5, delay: 0.55 }}
-        onClick={onClose}
+        onClick={closeNow}
         aria-label="Close"
         className="group absolute top-6 right-6 z-30 grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-black/40 backdrop-blur-xl text-white/85 hover:bg-black/60 hover:border-white/40 transition"
       >
