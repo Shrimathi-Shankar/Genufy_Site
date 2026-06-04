@@ -456,15 +456,6 @@ function HeroScene({ service }) {
       <DataParticles accent={service.accent} count={44} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-3 mb-10 text-[10px] tracking-[0.45em] uppercase text-white/65"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
-          {service.tag} · Service Detail
-        </motion.div>
 
         <h1
           aria-label={service.title}
@@ -633,16 +624,6 @@ function FinalCTA({ accent, onClose, service }) {
       <GridBackdrop />
 
       <div className="relative max-w-5xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.7 }}
-          className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-8"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
-          Begin · 05
-        </motion.div>
 
         <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-tight">
           <RevealWords text={`Ready to accelerate with ${service.title}?`} />

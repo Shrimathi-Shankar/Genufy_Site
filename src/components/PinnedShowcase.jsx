@@ -363,10 +363,6 @@ export default function PinnedShowcase() {
         <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 hidden md:grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* LEFT — animated content */}
           <div className="order-2 lg:order-1 relative">
-            <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/40">
-              <span className="h-px w-10 bg-white/30" />
-              Story · 0{step + 1} of 0{STEPS.length}
-            </div>
 
             {/* Step progress dots */}
             <div className="mt-6 flex items-center gap-2">
@@ -502,10 +498,6 @@ export default function PinnedShowcase() {
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-ink/40" />
 
           <div className="relative z-10 w-full max-w-sm">
-            <div className="flex items-center justify-center gap-3 text-[10px] tracking-[0.4em] uppercase text-white/40">
-              <span className="h-px w-8 bg-white/30" />
-              Story · 0{step + 1} of 0{STEPS.length}
-            </div>
 
             {/* Step progress dots */}
             <div className="mt-5 flex items-center justify-center gap-2">
