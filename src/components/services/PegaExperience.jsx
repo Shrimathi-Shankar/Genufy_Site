@@ -809,14 +809,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to Pega Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your Pega Journey
-          </MagneticButton>
         </motion.div>
       </div>
 
