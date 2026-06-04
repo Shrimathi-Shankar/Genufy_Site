@@ -7,6 +7,7 @@ import {
 } from 'framer-motion';
 import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
+import CinematicContact from '../CinematicContact.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica / AI&ML) ---------------- */
 
@@ -310,7 +311,7 @@ function HeroScene({ service }) {
             /> */}
           </div>
 
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.8 }}
@@ -325,7 +326,7 @@ function HeroScene({ service }) {
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               />
             </span>
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     </section>
@@ -726,6 +727,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
 /* ---------------- Final CTA ---------------- */
 
 function FinalCTA({ accent, onClose }) {
+  const [contactOpen, setContactOpen] = useState(false);
   return (
     <section className="relative px-6 md:px-12 py-40 md:py-56 overflow-hidden">
       <motion.div
@@ -771,9 +773,8 @@ function FinalCTA({ accent, onClose }) {
           className="mt-12 flex flex-wrap items-center justify-center gap-4"
         >
           <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
+            as="button"
+            onClick={() => setContactOpen(true)}
             className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-medium text-black hover:brightness-110"
             style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
           >
@@ -790,6 +791,8 @@ function FinalCTA({ accent, onClose }) {
           </MagneticButton>
         </motion.div>
       </div>
+
+      <CinematicContact open={contactOpen} onClose={() => setContactOpen(false)} cta="Talk to DevOps Experts" />
     </section>
   );
 }
@@ -842,7 +845,7 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
+      {/* <ScrollDots scrollRef={scrollRef} /> */}
 
       <HeroScene service={service} />
 

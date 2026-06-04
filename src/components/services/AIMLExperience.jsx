@@ -8,6 +8,7 @@ import {
 } from 'framer-motion';
 import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
+import CinematicContact from '../CinematicContact.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica) ---------------- */
 
@@ -309,7 +310,7 @@ Our enterprise-grade solutions are secure, built for production - not just pilot
             />
           </div>
 
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.8 }}
@@ -324,7 +325,7 @@ Our enterprise-grade solutions are secure, built for production - not just pilot
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               />
             </span>
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     </section>
@@ -923,6 +924,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
 /* ---------------- Final CTA ---------------- */
 
 function FinalCTA({ accent, onClose }) {
+  const [contactOpen, setContactOpen] = useState(false);
   return (
     <section className="relative px-6 md:px-12 py-40 md:py-56 overflow-hidden">
       <motion.div
@@ -968,9 +970,8 @@ function FinalCTA({ accent, onClose }) {
           className="mt-12 flex flex-wrap items-center justify-center gap-4"
         >
           <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
+            as="button"
+            onClick={() => setContactOpen(true)}
             className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-medium text-black hover:brightness-110"
             style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
           >
@@ -987,6 +988,8 @@ function FinalCTA({ accent, onClose }) {
           </MagneticButton>
         </motion.div>
       </div>
+
+      <CinematicContact open={contactOpen} onClose={() => setContactOpen(false)} cta="Talk to AI Experts" />
     </section>
   );
 }
@@ -1255,11 +1258,10 @@ function IndustriesExplorer({ accent }) {
                   key={it.id}
                   type="button"
                   onClick={() => setActive(i)}
-                  className={`group relative flex items-center gap-3 shrink-0 rounded-2xl border pl-4 pr-5 py-3 text-left transition-all duration-300 ${
-                    isActive
+                  className={`group relative flex items-center gap-3 shrink-0 rounded-2xl border pl-4 pr-5 py-3 text-left transition-all duration-300 ${isActive
                       ? 'border-white/20 bg-white/[0.07]'
                       : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05]'
-                  }`}
+                    }`}
                 >
                   {isActive && (
                     <motion.span
@@ -1269,9 +1271,8 @@ function IndustriesExplorer({ accent }) {
                     />
                   )}
                   <span
-                    className={`grid h-9 w-9 flex-none place-items-center rounded-xl transition-colors duration-300 ${
-                      isActive ? 'text-black' : 'text-white/60'
-                    }`}
+                    className={`grid h-9 w-9 flex-none place-items-center rounded-xl transition-colors duration-300 ${isActive ? 'text-black' : 'text-white/60'
+                      }`}
                     style={
                       isActive
                         ? { background: `linear-gradient(135deg,#90eb61,${accent})` }
@@ -1281,9 +1282,8 @@ function IndustriesExplorer({ accent }) {
                     <IndustryIcon type={it.icon} />
                   </span>
                   <span
-                    className={`whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-300 ${
-                      isActive ? 'text-white' : 'text-white/55'
-                    }`}
+                    className={`whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-300 ${isActive ? 'text-white' : 'text-white/55'
+                      }`}
                   >
                     {it.name}
                   </span>
@@ -1370,25 +1370,43 @@ function IndustriesExplorer({ accent }) {
                   <div className="mb-4 text-[10px] tracking-[0.4em] uppercase text-white/35">
                     AI Capabilities
                   </div>
-                  <div className="relative pl-1">
+                  <div className="relative pl-1.5">
                     <span
                       aria-hidden
-                      className="absolute left-[7px] top-3 bottom-3 w-px"
-                      style={{ background: 'linear-gradient(180deg, rgba(144,235,97,0.55), rgba(36,186,172,0.35), transparent)' }}
+                      className="absolute left-[11px] top-3 bottom-3 w-px border-l border-dashed border-white/20"
                     />
-                    <div className="space-y-2.5">
+                    <div className="space-y-3.5">
                       {ind.uses.map((u, k) => (
                         <motion.div
                           key={u}
                           initial={{ opacity: 0, x: -12 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.18 + k * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{ delay: 0.12 + k * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                           className="group/cap relative flex items-center gap-4"
                         >
-                          <span
-                            className="relative z-10 h-3.5 w-3.5 flex-none rounded-full ring-4 ring-black/50"
-                            style={{ background: accent, boxShadow: `0 0 12px ${accent}` }}
-                          />
+                          <div className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/10">
+                            {/* Twinkling 4-pointed star */}
+                            <motion.svg
+                              className="h-3.5 w-3.5"
+                              viewBox="0 0 24 24"
+                              animate={{
+                                scale: [0.75, 1.25, 0.75],
+                                opacity: [0.55, 1, 0.55],
+                                rotate: [0, 90, 180, 270, 360],
+                              }}
+                              transition={{
+                                duration: 3 + k * 0.5,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                              style={{
+                                color: accent,
+                                filter: `drop-shadow(0 0 5px ${accent})`,
+                              }}
+                            >
+                              <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2Z" fill="currentColor" />
+                            </motion.svg>
+                          </div>
                           <div className="flex flex-1 items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.025] px-4 py-3 transition-all duration-300 group-hover/cap:border-white/15 group-hover/cap:bg-white/[0.05]">
                             <span className="text-sm md:text-[15px] text-white/85">{u}</span>
                             <span className="font-mono text-[10px] tracking-[0.2em] text-white/30">
@@ -1439,7 +1457,7 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-      <ScrollDots scrollRef={scrollRef} />
+      {/* <ScrollDots scrollRef={scrollRef} /> */}
 
       <HeroScene service={service} />
 

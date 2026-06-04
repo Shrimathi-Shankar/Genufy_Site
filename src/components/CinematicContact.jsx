@@ -286,7 +286,7 @@ function SuccessScene({ onClose, inbox }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9, duration: 0.5 }}
         type="button"
-        onClick={onClose}
+        onClick={(e) => { e.stopPropagation(); onClose?.(); }}
         className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md px-7 py-3 text-sm text-white/85 hover:bg-white/[0.08] hover:border-white/30 transition"
       >
         Close
@@ -318,12 +318,17 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
     return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  /* ESC closes */
+  /* ESC closes only the contact form */
   useEffect(() => {
     if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', onKey, true); // capture phase so it fires first
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [open, onClose]);
 
   const update = (e) => {
@@ -460,12 +465,13 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
           role="dialog"
           aria-modal="true"
           aria-label="Contact"
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Backdrop */}
+          {/* Backdrop — clicking outside the panel closes only this form */}
           <motion.div
             aria-hidden
             className="absolute inset-0 bg-black/85 backdrop-blur-md"
-            onClick={onClose}
+            onClick={(e) => { e.stopPropagation(); onClose?.(); }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -516,19 +522,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             }}
           />
 
-          {/* Close */}
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="absolute top-6 right-6 z-10 grid place-items-center h-11 w-11 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md text-white/70 hover:text-white hover:border-white/30 transition"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-
-          {/* Panel */}
+          {/* Panel — close button lives here, top-right corner */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -536,6 +530,17 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-[1] w-[min(94vw,720px)] max-h-[92vh] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-black/60 backdrop-blur-2xl px-6 pt-12 pb-6 md:px-9 md:pt-14 md:pb-8"
           >
+            {/* X close button — top-right corner of the form panel only */}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onClose?.(); }}
+              aria-label="Close contact form"
+              className="absolute top-4 right-4 z-20 grid place-items-center h-10 w-10 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-md text-white/60 hover:text-white hover:border-white/35 hover:bg-white/[0.12] transition-all duration-200"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
             {/* Brand-gradient ring */}
             <div
               aria-hidden

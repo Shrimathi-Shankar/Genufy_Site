@@ -10,7 +10,7 @@ export const products = [
     blurb:
       'A frictionless ledger for the modern operator. GFY Books turns invoicing into a calm, automated ritual — receivables, taxes, and reconciliations flowing through a single elegant surface.',
     pillars: ['Automated invoicing', 'Tax-ready exports', 'Client portals'],
-    href: '#',
+    href: 'https://gfybooks.com/',
     external: true,
   },
   {
@@ -24,7 +24,7 @@ export const products = [
     blurb:
       'The Salesforce companion engineers actually want pinned. Inspect metadata, debug records, and trace flows — without ever leaving the org you are in.',
     pillars: ['Inline metadata', 'Live debug logs', 'Query workbench'],
-    href: '#',
+    href: 'https://chromewebstore.google.com/detail/salesforce-dev-inspector/gmokcalgglefgdhfimedlkanpohobkof?utm_source=item-share-cb',
     external: true,
   },
   {
@@ -78,7 +78,7 @@ export const products = [
     blurb:
       'Humora reframes the work-day with empathy at its center — a platform that listens, nudges, and helps teams move with shared rhythm rather than friction.',
     pillars: ['Empathy-led design', 'Team rhythm', 'Calm notifications'],
-    href: '#',
+    href: 'https://genufytechworks.my.salesforce-sites.com/',
     external: true,
   },
 ];

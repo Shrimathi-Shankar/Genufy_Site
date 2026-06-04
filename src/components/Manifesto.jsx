@@ -1,11 +1,5 @@
 import { useRef, useState } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const TEXT =
   'Genufy transforms complex business challenges into seamless digital experiences. We design intelligent platforms, automation systems, and AI-driven solutions that help businesses scale efficiently and operate smarter.';
@@ -68,7 +62,8 @@ const NETWORK_SERVICES = [
   { label: 'Snowflake', sources: ['/logos/snowflake-color.png'] },
   { label: 'MuleSoft', sources: ['/logos/mulesoft.png'], scale: 1.10 },
   { label: 'Pega', sources: ['/logos/pega.png'], scale: 1.40 },
-  // No local file for Web Development yet — falls back to the React mark.
+  // Web Development is a category, not a brand — represented by the official
+  // React mark (the ecosystem's most recognized symbol for modern web dev).
   { label: 'Web Development', sources: [SI('react', '61DAFB'), CB('react.dev')] },
   { label: 'Informatica', sources: ['/logos/informatica.png'] },
 ].map((s, i) => {
@@ -241,23 +236,6 @@ function GlowBackdrop() {
 }
 
 function HolographicMesh() {
-  const ref = useRef(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [4, -4]), { stiffness: 80, damping: 18 });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 80, damping: 18 });
-
-  const onMouseMove = (e) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    mx.set((e.clientX - r.left) / r.width - 0.5);
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  };
-  const onMouseLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
   const CENTER = { x: NETWORK_CX, y: NETWORK_CY };
   // Radial edges — each service connects to the centre point.
   const radialEdges = NETWORK_SERVICES.map((s) => ({
@@ -271,18 +249,12 @@ function HolographicMesh() {
   const allEdges = [...radialEdges, ...ringEdges];
 
   return (
-    <div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      className="relative h-full w-full"
-    >
+    <div className="relative h-full w-full">
       {/* ===== LAYER 1 — Background gradients, grid, particles, scanline.
-          Only this layer receives the 3D tilt from mouse movement. ===== */}
-      <motion.div
+          Static layer (no mouse-driven tilt) so the card stays stable. ===== */}
+      <div
         aria-hidden
-        style={{ rotateX: rx, rotateY: ry, transformPerspective: 1200 }}
-        className="absolute inset-0 will-change-transform pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
       >
         <motion.div
           aria-hidden
@@ -339,7 +311,7 @@ function HolographicMesh() {
           animate={{ y: ['-10%', '120%', '-10%'] }}
           transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         />
-      </motion.div>
+      </div>
 
       {/* ===== LAYER 2 — Network lines (locked, never transformed) ===== */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden>

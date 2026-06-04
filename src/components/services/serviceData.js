@@ -180,7 +180,7 @@ export const SERVICES = [
     body:
       'API-led connectivity that unifies CRMs, ERPs, and custom systems into a scalable, resilient digital backbone.',
     image:
-      'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1800&q=80',
+      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1800&q=80',
     accent: '#90eb61',
     description:
       'We design and operate MuleSoft estates that unlock the enterprise — clean API contracts, event-driven flows, and governance that scales as fast as the business does.',
@@ -249,7 +249,7 @@ export const SERVICES = [
     body:
       'Award-calibre digital products - performance-first, motion-rich, and built to convert from the first frame.',
     image:
-      'https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=1800&q=80',
+      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1800&q=80',
     accent: '#24baac',
     description:
       'Premium web experiences engineered on modern stacks - every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',
