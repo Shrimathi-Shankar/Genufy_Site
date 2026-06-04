@@ -7,8 +7,7 @@ export const SERVICES = [
     subtitle: 'Generative AI · Agents · MLOps',
     body:
       'Enterprise AI solutions engineered to automate workflows, optimize operations, and accelerate business growth.',
-    image:
-      'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1800&q=80',
+    image: '/AI_bg.jpg',
     accent: '#90eb61',
     description:
       'We design, build, and operationalize enterprise-grade AI and ML systems — generative copilots, autonomous agents, computer vision, NLP, predictive analytics, and the MLOps backbone that keeps them reliable in production.',
@@ -43,8 +42,7 @@ export const SERVICES = [
     subtitle: 'Sales · Service · Marketing',
     body:
       'Architect end-to-end Salesforce ecosystems engineered for scale, automation, and real-time intelligence.',
-    image:
-      'https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=1800&q=80',
+    image: '/Salesforce_bg.png',
     accent: '#24baac',
     description:
       'We design and deliver Salesforce platforms that align Sales, Service, Marketing, and Experience Clouds into a single operating fabric — built to grow with you and intelligent by default.',
@@ -77,8 +75,7 @@ export const SERVICES = [
     subtitle: 'Warehouse · Sharing · ML',
     body:
       'Modern cloud data warehousing, secure data sharing, and scalable AI-powered analytics with Snowflake Data Cloud.',
-    image:
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=80',
+    image: '/snowflake_bg.jpg',
     accent: '#24baac',
     description:
       'Genufy helps you unlock the full potential of the Snowflake Data Cloud — from migration and implementation to data engineering, sharing, and AI-powered analytics on a scalable, secure foundation.',
@@ -111,8 +108,7 @@ export const SERVICES = [
     subtitle: 'Integration · Governance · Cloud',
     body:
       'AI-powered data integration, governance, MDM, and cloud application connectivity for modern enterprises.',
-    image:
-      'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1800&q=80',
+    image: '/informatica_bg.jpg',
     accent: '#90eb61',
     description:
       'Informatica empowers organizations to connect, cleanse, govern, and manage data across cloud, hybrid, and on-premise environments — turning trusted data into intelligent business outcomes.',
@@ -145,8 +141,7 @@ export const SERVICES = [
     subtitle: 'Platform · SRE · FinOps',
     body:
       'Production discipline as a feature — pipelines, infrastructure as code, and observability that make shipping fast feel safe.',
-    image:
-      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=80',
+    image: '/DevOps_bg.jpg',
     accent: '#24baac',
     description:
       'We build platform layers that compound — golden paths for developers, infrastructure-as-code, SRE playbooks, and the kind of observability that turns 3am pages into one-line fixes.',
@@ -179,8 +174,7 @@ export const SERVICES = [
     subtitle: 'API-Led · Anypoint',
     body:
       'API-led connectivity that unifies CRMs, ERPs, and custom systems into a scalable, resilient digital backbone.',
-    image:
-      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1800&q=80',
+    image: '/MuleSoft_bg.jpg',
     accent: '#90eb61',
     description:
       'We design and operate MuleSoft estates that unlock the enterprise — clean API contracts, event-driven flows, and governance that scales as fast as the business does.',
@@ -213,8 +207,7 @@ export const SERVICES = [
     subtitle: 'BPM · CRM · AI · RPA',
     body:
       'Pega-based BPM, CRM, AI decisioning, and RPA - streamline processes and elevate customer engagement.',
-    image:
-      'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1800&q=80',
+    image: '/pega_bg.jpg',
     accent: '#24baac',
     description:
       'At Genufy, we specialize in delivering Pega-based solutions that streamline processes, improve operational efficiency, and elevate customer engagement. From Pega BPM and CRM to AI decisioning and RPA, we design and integrate scalable Pega systems that accelerate business outcomes, automate workflows, and provide a strong foundation for future growth.',
@@ -248,8 +241,7 @@ export const SERVICES = [
     subtitle: 'React · Next.js · WebGL',
     body:
       'Award-calibre digital products - performance-first, motion-rich, and built to convert from the first frame.',
-    image:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1800&q=80',
+    image: '/web_bg.jpg',
     accent: '#24baac',
     description:
       'Premium web experiences engineered on modern stacks - every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',

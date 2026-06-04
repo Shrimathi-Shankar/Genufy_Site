@@ -388,82 +388,122 @@ LeadRouter implements Queueable {
   );
 }
 
+/* Slowly turning cog — automation motif, used as a subtle backdrop element. */
+function Gear({ size, teeth = 10, accent, dir = 1, dur = 22, style }) {
+  return (
+    <motion.svg
+      aria-hidden
+      width={size}
+      height={size}
+      viewBox="-50 -50 100 100"
+      animate={{ rotate: 360 * dir }}
+      transition={{ duration: dur, repeat: Infinity, ease: 'linear' }}
+      style={{ opacity: 0.22, ...style }}
+    >
+      {Array.from({ length: teeth }).map((_, i) => (
+        <rect key={i} x={-3.5} y={-48} width={7} height={13} rx={1.6} transform={`rotate(${(i / teeth) * 360})`} fill={accent} />
+      ))}
+      <circle r="36" fill="none" stroke={accent} strokeWidth="6" />
+      <circle r="13" fill="none" stroke={accent} strokeWidth="4" />
+    </motion.svg>
+  );
+}
+
 function AutomationVisual({ accent }) {
-  const nodes = [
-    { x: 50, y: 12, label: 'Trigger' },
-    { x: 12, y: 45, label: 'Decision' },
-    { x: 88, y: 45, label: 'Approval' },
-    { x: 30, y: 82, label: 'Update' },
-    { x: 75, y: 82, label: 'Notify' },
+  /* Automation & Optimization — a Salesforce Flow: a record trigger kicks off an
+     orchestrated sequence and an execution token travels down the flow,
+     illuminating each step in turn, framed by slowly turning automation gears. */
+  const steps = [
+    { label: 'Record Trigger', sub: 'on create · update' },
+    { label: 'Decision', sub: 'criteria evaluated' },
+    { label: 'Auto Update', sub: 'fields · records' },
+    { label: 'Approval Flow', sub: 'guided · dynamic' },
+    { label: 'Notify', sub: 'email · in-app' },
   ];
+  const n = steps.length;
+  const step = 0.95;
+  const cycle = n * step;
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="flowG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        {[
-          [50, 12, 12, 45],
-          [50, 12, 88, 45],
-          [12, 45, 30, 82],
-          [88, 45, 75, 82],
-          [30, 82, 75, 82],
-        ].map(([x1, y1, x2, y2], i) => (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="url(#flowG)"
-            strokeWidth="0.4"
-            strokeDasharray="2 2"
-            className="origin-center"
-            style={{ filter: `drop-shadow(0 0 1.5px ${accent})` }}
-          />
-        ))}
-        {[
-          [50, 12, 12, 45],
-          [50, 12, 88, 45],
-          [12, 45, 30, 82],
-          [88, 45, 75, 82],
-        ].map(([x1, y1, x2, y2], i) => (
-          <motion.circle
-            key={`p-${i}`}
-            r="0.8"
-            fill="#90eb61"
-            initial={{ cx: x1, cy: y1 }}
-            animate={{ cx: [x1, x2, x1], cy: [y1, y2, y1] }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: i * 0.4,
-            }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-          />
-        ))}
-      </svg>
-      {nodes.map((n) => (
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.14]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 25%, transparent 80%)',
+        }}
+      />
+      <Gear size={150} teeth={12} accent={accent} dir={1} dur={26} style={{ position: 'absolute', top: -34, left: -28 }} />
+      <Gear size={100} teeth={10} accent="#90eb61" dir={-1} dur={20} style={{ position: 'absolute', top: 44, left: 74 }} />
+      <Gear size={124} teeth={11} accent={accent} dir={-1} dur={24} style={{ position: 'absolute', bottom: -30, right: -22 }} />
+
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
+        className="absolute -bottom-12 -left-10 h-48 w-48 rounded-full opacity-30"
+        style={{ background: `conic-gradient(from 0deg, ${accent}, #90eb61, ${accent})`, filter: 'blur(46px)' }}
+      />
+
+      <div className="absolute inset-0 grid place-items-center px-6">
         <motion.div
-          key={n.label}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-          style={{
-            left: `${n.x}%`,
-            top: `${n.y}%`,
-            boxShadow: `0 0 30px -8px ${accent}cc`,
-          }}
+          className="relative w-full max-w-[300px] rounded-2xl border border-white/10 bg-black/55 backdrop-blur-xl p-5"
+          style={{ boxShadow: `0 30px 80px -24px ${accent}66` }}
         >
-          {n.label}
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ background: '#90eb61' }} />
+            <span className="text-[10px] tracking-[0.35em] uppercase text-white/45">Flow Builder</span>
+            <span className="ml-auto text-[9px] tracking-[0.3em] uppercase text-white/35">Auto</span>
+          </div>
+
+          <div className="relative mt-4">
+            <div className="absolute left-[11px] top-2 bottom-2 w-px bg-white/15" />
+            <motion.span
+              aria-hidden
+              className="absolute left-[7px] h-2 w-2 rounded-full"
+              style={{ background: '#90eb61', boxShadow: `0 0 10px 2px ${accent}` }}
+              animate={{ top: ['2%', '92%'] }}
+              transition={{ duration: cycle, repeat: Infinity, ease: 'linear' }}
+            />
+            <ul className="space-y-2.5">
+              {steps.map((s, i) => (
+                <li key={s.label} className="relative flex items-center gap-3 pl-1">
+                  <motion.span
+                    className="relative z-10 grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full border bg-black/80"
+                    style={{ borderColor: 'rgba(255,255,255,0.18)' }}
+                    animate={{
+                      borderColor: ['rgba(255,255,255,0.18)', '#90eb61', 'rgba(255,255,255,0.18)'],
+                      boxShadow: ['0 0 0px rgba(0,0,0,0)', `0 0 16px -2px ${accent}`, '0 0 0px rgba(0,0,0,0)'],
+                    }}
+                    transition={{ duration: step, repeat: Infinity, repeatDelay: cycle - step, delay: i * step, ease: 'easeInOut' }}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#90eb61' }} />
+                  </motion.span>
+                  <motion.div
+                    className="min-w-0 flex-1 rounded-lg border px-3 py-1.5"
+                    style={{ borderColor: 'rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.03)' }}
+                    animate={{
+                      borderColor: ['rgba(255,255,255,0.10)', 'rgba(144,235,97,0.55)', 'rgba(255,255,255,0.10)'],
+                      backgroundColor: ['rgba(255,255,255,0.03)', 'rgba(144,235,97,0.10)', 'rgba(255,255,255,0.03)'],
+                    }}
+                    transition={{ duration: step, repeat: Infinity, repeatDelay: cycle - step, delay: i * step, ease: 'easeInOut' }}
+                  >
+                    <div className="truncate text-[11px] font-medium text-white/90">{s.label}</div>
+                    <div className="truncate text-[9px] tracking-[0.15em] uppercase text-white/40">{s.sub}</div>
+                  </motion.div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </motion.div>
-      ))}
+      </div>
     </div>
   );
 }
@@ -536,70 +576,108 @@ function MultiCloudVisual({ accent }) {
 }
 
 function IntegrationVisual({ accent }) {
-  const systems = [
-    { x: 10, y: 20, label: 'Salesforce' },
-    { x: 90, y: 18, label: 'SAP' },
-    { x: 18, y: 80, label: 'Snowflake' },
-    { x: 80, y: 82, label: 'Stripe' },
-    { x: 50, y: 50, label: 'MuleSoft', primary: true },
-  ];
+  /* Integration & API Management — a live API client: a POST /sync call returns
+     200 OK with a JSON payload, with a small connected-systems chip for depth —
+     a clean, premium focal card in the family of the code cards. */
+  const body = `{
+  "synced": true,
+  "records": 1248,
+  "source": "MuleSoft"
+}`;
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="netG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#90eb61" stopOpacity="0.4" />
-          </linearGradient>
-        </defs>
-        {systems
-          .filter((s) => !s.primary)
-          .map((s, i) => (
-            <g key={i}>
-              <line
-                x1={50}
-                y1={50}
-                x2={s.x}
-                y2={s.y}
-                stroke="url(#netG)"
-                strokeWidth="0.35"
-                strokeDasharray="1.5 1.2"
-              />
-              <motion.circle
-                r="0.7"
-                fill="#90eb61"
-                initial={{ cx: 50, cy: 50 }}
-                animate={{ cx: [50, s.x, 50], cy: [50, s.y, 50] }}
-                transition={{
-                  duration: 3.5 + i * 0.4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: i * 0.3,
-                }}
-              />
-            </g>
-          ))}
-      </svg>
-      {systems.map((s) => (
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+        }}
+      />
+
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
+        className="absolute -bottom-12 -right-8 h-48 w-48 rounded-full opacity-30"
+        style={{ background: `conic-gradient(from 0deg, ${accent}, #90eb61, ${accent})`, filter: 'blur(48px)' }}
+      />
+
+      <motion.div
+        animate={{ y: [0, 12, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+        className="absolute top-8 right-4 md:right-7 rounded-xl border border-white/10 bg-black/55 backdrop-blur-xl px-3 py-2"
+        style={{ boxShadow: `0 22px 55px -24px ${accent}` }}
+      >
+        <div className="text-[8px] tracking-[0.3em] uppercase text-white/40">Connected</div>
+        <div className="mt-1.5 flex items-center gap-1 text-[9px] text-white/75">
+          <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5">SAP</span>
+          <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5">Stripe</span>
+          <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5">Snowflake</span>
+        </div>
+      </motion.div>
+
+      <div className="absolute inset-0 grid place-items-center px-6">
         <motion.div
-          key={s.label}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase ${s.primary
-            ? 'border-white/40 bg-black/80 text-white'
-            : 'border-white/15 bg-black/65 text-white/85'
-            }`}
-          style={{
-            left: `${s.x}%`,
-            top: `${s.y}%`,
-            boxShadow: `0 0 ${s.primary ? 40 : 28}px -8px ${accent}cc`,
-          }}
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative w-full max-w-[330px] rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl p-5"
+          style={{ boxShadow: `0 36px 90px -26px ${accent}88` }}
         >
-          {s.label}
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-white/25" />
+            <span className="h-2 w-2 rounded-full bg-white/25" />
+            <span className="h-2 w-2 rounded-full bg-white/25" />
+            <span className="ml-2 text-[10px] tracking-[0.3em] uppercase text-white/45">API Client</span>
+            <span className="ml-auto flex items-center gap-1.5">
+              <motion.span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: '#90eb61', boxShadow: `0 0 6px ${accent}` }}
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <span className="text-[8px] tracking-[0.3em] uppercase text-white/40">Live</span>
+            </span>
+          </div>
+
+          <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-2">
+            <span className="rounded-md px-2 py-0.5 text-[10px] font-semibold text-black" style={{ background: '#90eb61' }}>
+              POST
+            </span>
+            <span className="font-mono text-[11px] text-white/85">/api/v2/sync</span>
+            <motion.span
+              className="ml-auto text-white/70"
+              animate={{ x: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              →
+            </motion.span>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between text-[10px]">
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#90eb61' }} />
+              <span className="font-mono" style={{ color: '#90eb61' }}>200 OK</span>
+            </span>
+            <span className="font-mono text-white/50">⚡ 142 ms</span>
+          </div>
+          <div className="relative mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
+              animate={{ width: ['0%', '100%'] }}
+              transition={{ duration: 1.8, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+            />
+          </div>
+
+          <pre className="mt-4 rounded-lg border border-white/10 bg-black/40 p-3 font-mono text-[11px] leading-relaxed text-white/80">
+            {body}
+          </pre>
         </motion.div>
-      ))}
+      </div>
     </div>
   );
 }
@@ -831,22 +909,22 @@ function ExperienceSection({
  *   'associate'  = lighter blue hex, chat icon (row 3 last two)
  */
 const CERTS = [
-  { code: 'ADM', label: 'Administrator', cat: 'specialist' },
-  { code: 'APP', label: 'Platform App Builder', cat: 'specialist' },
-  { code: 'BA', label: 'Business Analyst', cat: 'specialist' },
-  { code: 'PD-I', label: 'Platform Developer I', cat: 'specialist' },
-  { code: 'PD-II', label: 'Platform Developer II', cat: 'specialist' },
-  { code: 'OSD', label: 'OmniStudio Developer', cat: 'specialist' },
-  { code: 'CPQ', label: 'CPQ Specialist', cat: 'specialist' },
-  { code: 'AIS', label: 'AI Specialist', cat: 'specialist' },
-  { code: 'SVC', label: 'Service Cloud Consultant', cat: 'consultant' },
-  { code: 'OSC', label: 'OmniStudio Consultant', cat: 'consultant' },
-  { code: 'EXC', label: 'Experience Cloud Consultant', cat: 'consultant' },
-  { code: 'SCC', label: 'Sales Cloud Consultant', cat: 'consultant' },
-  { code: 'FSC', label: 'Field Service Consultant', cat: 'consultant' },
-  { code: 'MAE', label: 'Marketing Cloud Account Engagement Consultant', cat: 'consultant' },
-  { code: 'DCC', label: 'Data Cloud Consultant', cat: 'consultant' },
-  { code: 'STD', label: 'Strategy Designer', cat: 'designer' },
+  { code: 'ADM', label: 'Administrator', cat: 'specialist', img: '/certificates/Certficate-1.png' },
+  { code: 'APP', label: 'Platform App Builder', cat: 'specialist', img: '/certificates/Certificate-2.png' },
+  { code: 'BA', label: 'Business Analyst', cat: 'specialist', img: '/certificates/Certificate-3.png' },
+  { code: 'PD-I', label: 'Platform Developer I', cat: 'specialist', img: '/certificates/Certificate-4.png' },
+  { code: 'PD-II', label: 'Platform Developer II', cat: 'specialist', img: '/certificates/Certificate-5.png' },
+  { code: 'OSD', label: 'OmniStudio Developer', cat: 'specialist', img: '/certificates/Certificate-6.png' },
+  { code: 'CPQ', label: 'CPQ Specialist', cat: 'specialist', img: '/certificates/Certificate-7.png' },
+  { code: 'AIS', label: 'AI Specialist', cat: 'specialist', img: '/certificates/Certificate-8.png' },
+  { code: 'SVC', label: 'Service Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-9.png' },
+  { code: 'OSC', label: 'OmniStudio Consultant', cat: 'consultant', img: '/certificates/Certificate-10.png' },
+  { code: 'EXC', label: 'Experience Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-11.png' },
+  { code: 'SCC', label: 'Sales Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-12.png' },
+  { code: 'FSC', label: 'Field Service Consultant', cat: 'consultant', img: '/certificates/Certificate-13.png' },
+  { code: 'MAE', label: 'Marketing Cloud Account Engagement Consultant', cat: 'consultant', img: '/certificates/Certificate-14.png' },
+  { code: 'DCC', label: 'Data Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-15.png' },
+  { code: 'STD', label: 'Strategy Designer', cat: 'designer', img: '/certificates/Certificate-16.png' },
   { code: 'UXD', label: 'User Experience Designer', cat: 'designer' },
   { code: 'AIA', label: 'AI Associate', cat: 'associate' },
   { code: 'ASC', label: 'Associate', cat: 'associate' },
@@ -854,6 +932,32 @@ const CERTS = [
 
 /* Hexagonal Salesforce-style certification badge (SVG) */
 function CertBadge({ cert }) {
+  /* Load the real credential image from /public/certificates first; if the file
+     is missing it gracefully falls back to the drawn badge below (no broken
+     links). File name = the credential label slugified, e.g.
+     "Platform Developer I" -> /certificates/platform-developer-i.png */
+  const [imgOk, setImgOk] = useState(true);
+  const imgSrc =
+    cert.img ||
+    '/certificates/' +
+      cert.label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') +
+      '.png';
+  if (imgOk) {
+    return (
+      <img
+        src={imgSrc}
+        alt={`Salesforce Certified ${cert.label}`}
+        loading="lazy"
+        decoding="async"
+        onError={() => setImgOk(false)}
+        className="h-full w-full object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.4)]"
+      />
+    );
+  }
+
   const STRIP = {
     specialist: '#22D3EE',
     consultant: '#FCD34D',
