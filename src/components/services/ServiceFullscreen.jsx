@@ -53,6 +53,12 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
   const tx = useTransform(sx, (v) => v * 24);
   const ty = useTransform(sy, (v) => v * 16);
 
+  // Keep the latest onClose without making the lock effect depend on it (the
+  // parent passes a fresh function each render, which would otherwise re-run
+  // the effect and can leave Lenis stopped / scroll locked after closing).
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     const lenis = window.__lenis;
     lenis?.stop?.();
@@ -60,7 +66,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
     document.body.style.overflow = 'hidden';
 
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current?.();
     };
     window.addEventListener('keydown', onKey);
 
@@ -69,7 +75,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
       lenis?.start?.();
       window.removeEventListener('keydown', onKey);
     };
-  }, [onClose]);
+  }, []); // run once: lock on open, restore on close
 
   const onMouseMove = useCallback(
     (e) => {
