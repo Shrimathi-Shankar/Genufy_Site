@@ -103,8 +103,12 @@ export default function Header() {
   const { openContact } = useContactModal();
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
+    const onScroll = (e) => {
+      // Read the scroll position from whatever element actually scrolled — the
+      // window on normal pages, or an inner container (e.g. the fullscreen
+      // service overlay) when that scrolls instead.
+      const t = e?.target;
+      const y = t instanceof HTMLElement ? t.scrollTop : window.scrollY;
       if (y > 80 && y > lastY.current) {
         setHidden(true);
       } else {
@@ -112,8 +116,10 @@ export default function Header() {
       }
       lastY.current = y;
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    // Capture phase catches scroll events from nested scroll containers too
+    // (scroll doesn't bubble), so the navbar hides on the service pages as well.
+    window.addEventListener('scroll', onScroll, { capture: true, passive: true });
+    return () => window.removeEventListener('scroll', onScroll, { capture: true });
   }, []);
 
   useEffect(() => {
@@ -175,10 +181,10 @@ export default function Header() {
       initial={{ y: -32, opacity: 0 }}
       animate={{ y: hidden ? -120 : 0, opacity: hidden ? 0 : 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-3 md:top-5 inset-x-0 z-50 px-3 md:px-6 flex justify-center"
+      className="pointer-events-none fixed top-3 md:top-5 inset-x-0 z-50 px-3 md:px-6 flex justify-center"
     >
       <div className="w-full max-w-5xl">
-        <nav className="flex items-center justify-between rounded-full px-3 py-2 bg-white border border-gray-200/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.18)]">
+        <nav className="pointer-events-auto flex items-center justify-between rounded-full px-3 py-2 bg-white border border-gray-200/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.18)]">
           {/* Logo — sits naturally on the white nav */}
           <Logo />
 
@@ -248,7 +254,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/95 backdrop-blur-2xl p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
+            className="pointer-events-auto md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/95 backdrop-blur-2xl p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
           >
             {links.map((l) => {
               const hash = `#${l.toLowerCase()}`;
