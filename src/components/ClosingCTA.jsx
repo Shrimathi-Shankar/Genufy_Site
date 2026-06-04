@@ -42,7 +42,7 @@ export default function ClosingCTA() {
             <span aria-hidden>→</span>
           </button>
           <a
-            href="#insights"
+            href="/insights"
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-8 py-4 text-sm font-medium text-white/85 hover:bg-white/[0.04] transition"
           >
             Read our insights

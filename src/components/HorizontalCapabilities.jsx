@@ -263,6 +263,15 @@ export default function HorizontalCapabilities() {
     // ServiceFullscreen already stops Lenis; nothing to do here.
   }, [selected]);
 
+  // Deep-link: when arriving via ?service=<id> (e.g. a footer service link),
+  // open that service's fullscreen experience automatically.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('service');
+    if (!id) return;
+    const svc = SERVICES.find((s) => s.id === id);
+    if (svc) setSelected(svc);
+  }, []);
+
   return (
     <section
       id="services"
@@ -296,10 +305,6 @@ export default function HorizontalCapabilities() {
         <div className="relative h-full flex flex-col">
           {/* Header */}
           <div className="pt-28 md:pt-20 pb-10 md:pb-8 px-6 md:px-12 max-w-7xl mx-auto w-full">
-            <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/40">
-              <span className="h-px w-10 bg-white/30" />
-              Services · 02
-            </div>
             <h2 className="mt-5 font-display text-4xl md:text-4.5xl tracking-tight leading-[1.05]">
               A platform of <span className="text-gradient-gt">services</span>
               <br />

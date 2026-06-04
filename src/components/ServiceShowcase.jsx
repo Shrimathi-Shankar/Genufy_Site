@@ -91,7 +91,7 @@ export default function ServiceShowcase() {
   const [selected, setSelected] = useState(null);
 
   return (
-    <section id="services" className="relative px-6 md:px-12 py-32 md:py-40">
+    <section id="services-showcase" className="relative px-6 md:px-12 py-32 md:py-40">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8 text-[10px] tracking-[0.45em] uppercase text-white/40">
           <span className="h-px w-10 bg-white/30" />

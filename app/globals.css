@@ -8,7 +8,7 @@
   --teal: #24baac;
 }
 
-html, body, #root { height: 100%; }
+html, body { height: 100%; }
 
 body {
   @apply bg-ink text-white font-sans antialiased;

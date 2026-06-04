@@ -86,7 +86,7 @@ function StaggerFeatures({ items, accent }) {
       viewport={{ once: true, amount: 0.2 }}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+        show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
       }}
       className="space-y-3"
     >
@@ -94,7 +94,7 @@ function StaggerFeatures({ items, accent }) {
         <motion.div
           key={i}
           variants={{
-            hidden: { opacity: 0, y: 18, filter: 'blur(6px)' },
+            hidden: { opacity: 0, y: 18 },
             show: {
               opacity: 1,
               y: 0,
@@ -227,15 +227,6 @@ function HeroScene({ service }) {
       <Particles accent={service.accent} count={40} />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-3 mb-10 text-[10px] tracking-[0.45em] uppercase text-white/65"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
-          {service.tag} · Service Detail
-        </motion.div>
 
         {/* Massive layered title with letter reveal */}
         <h1
@@ -1220,16 +1211,6 @@ function FinalCTA({ accent, onClose }) {
       <GridBackdrop />
 
       <div className="relative max-w-5xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.7 }}
-          className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-8"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-lime animate-hueGlow" />
-          Begin · 07
-        </motion.div>
 
         <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-tight">
           <RevealWords text="Ready to Transform Your Salesforce Ecosystem?" />
@@ -1321,7 +1302,10 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
+<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
+=======
+>>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 
@@ -1335,15 +1319,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'Custom Objects designed for unique business processes',
             'Advanced Apex logic including asynchronous & batch processing',
             'Dynamic, responsive interfaces with Lightning Web Components (LWC)',
-            'Internal apps to boost productivity and streamline workflows',
-            'Fully branded Experience Cloud portals for customers and partners',
           ]}
           benefits={[
             'Automate and simplify complex business workflows',
             'Drive operational efficiency with tailored solutions',
             'Deliver exceptional, personalized digital experiences',
-            'Increase productivity with apps built for your unique needs',
-            'Enable scalable customer relationship management with Salesforce-powered ecosystems',
           ]}
           visual={<ImplementationVisual accent={accent} />}
           accent={accent}
@@ -1358,15 +1338,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'Record-triggered and scheduled flows for automated actions',
             'End-to-end flow orchestration for seamless process automation',
             'Approval processes with dynamic forms & guided screen flows',
-            'Agentforce implementation for service teams and contact centers',
-            'Real-time integrations with external systems using Salesforce APIs and connectors',
           ]}
           benefits={[
             'Reduce manual tasks and operational bottlenecks',
             'Accelerate approvals and decision-making',
             'Deliver personalized, guided user experiences',
-            'Improve agent efficiency with streamlined workflows',
-            'Ensure seamless data synchronization and a unified customer view across platforms',
           ]}
           visual={<AutomationVisual accent={accent} />}
           accent={accent}
@@ -1382,15 +1358,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'Sales Cloud: Intelligent lead routing, opportunity lifecycle management, and accurate forecasting',
             'Service Cloud: Robust case management, omnichannel support, and CTI telephony integration',
             'Experience Cloud: Branded customer portals and collaborative partner communities',
-            'Pardot / Marketing Cloud: Automated campaign workflows and predictive engagement scoring',
-            'Revenue Cloud: Streamlined quote-to-cash process with subscription and billing management',
           ]}
           benefits={[
             'Streamline sales cycles and improve pipeline visibility',
             'Enhance customer service with unified omnichannel experiences',
             'Foster stronger customer and partner relationships through personalized portals',
-            'Boost marketing ROI with data-driven automation and engagement insights',
-            'Deliver seamless, scalable commerce experiences to drive revenue growth',
           ]}
           visual={<MultiCloudVisual accent={accent} />}
           accent={accent}
@@ -1405,15 +1377,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'REST & SOAP API integrations with legacy and cloud platforms',
             'Middleware expertise: MuleSoft, Boomi, Informatica, AWS Lambda',
             'Third-party tool integrations including ERP, billing, and support systems',
-            'Secure connections using External Services & Named Credentials',
-            'Event-driven integrations using Platform Events and Change Data Capture (CDC)',
           ]}
           benefits={[
             'Enable real-time, reliable data exchange across diverse systems',
             'Simplify complex integration landscapes with scalable middleware solutions',
             'Improve operational agility by connecting core business applications',
-            'Ensure secure, governed access to external services and APIs',
-            'Accelerate digital transformation with seamless system interoperability',
           ]}
           visual={<IntegrationVisual accent={accent} />}
           accent={accent}
@@ -1429,14 +1397,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'Fine-grained access with Role Hierarchies, Sharing Rules, and Shield Encryption',
             'Secure authentication with SSO, MFA, and OAuth2-based connected apps',
             'Scalable CI/CD pipelines using Salesforce DX, GitHub Actions, and Copado',
-            'Test automation frameworks and sandbox seeding for reliable releases',
           ]}
           benefits={[
             'Strengthen platform security and meet regulatory compliance standards',
             'Streamline authentication while enhancing user experience',
             'Speed up release cycles with automated, reliable deployment pipelines',
-            'Reduce risks with automated testing and well-seeded environments',
-            'Enable scalable, secure, and efficient Salesforce development practices',
           ]}
           visual={<SecurityVisual accent={accent} />}
           accent={accent}
@@ -1451,14 +1416,11 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
             'Dynamic, interactive dashboards and custom report types tailored to your KPIs',
             'Advanced analytics with CRM Analytics (formerly Tableau CRM) & Einstein Discovery',
             'Data cleansing, deduplication, and enrichment for accurate reporting',
-            'Seamless integration with Power BI, Google Data Studio, and Snowflake',
           ]}
           benefits={[
             'Empower teams with real-time visibility into key business metrics',
             'Make smarter decisions with predictive AI-driven analytics',
             'Ensure data accuracy for trusted, impactful reporting',
-            'Consolidate data from multiple sources for a unified view of business performance',
-            'Drive strategic growth with insight-driven decision frameworks',
           ]}
           visual={<AnalyticsVisual accent={accent} />}
           accent={accent}

@@ -1,32 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { CLIENTS } from './clientsManifest.js';
 
 /* ------------------------------------------------------------------
    Trusted Clients — fully dynamic.
 
-   Every image in  public/clients/  is auto-imported at build time via
-   Vite's import.meta.glob. There is NO hardcoded list: drop a new logo
-   into that folder (png/jpg/jpeg/webp/svg/avif) and it appears here
-   automatically — name and order derived from the filename.
+   CLIENTS is generated from public/clients/ by scripts/gen-clients.mjs,
+   which runs automatically before `dev` and `build`. There is NO hardcoded
+   list: drop a new logo into that folder (png/jpg/jpeg/webp/svg/avif) and it
+   appears here automatically — name and order derived from the filename.
 ------------------------------------------------------------------- */
-const logoModules = import.meta.glob(
-  '../../public/clients/*.{png,jpg,jpeg,webp,svg,avif,PNG,JPG,JPEG,WEBP,SVG}',
-  { eager: true, query: '?url', import: 'default' }
-);
-
-/* Turn a file path into a clean display label, e.g.
-   '.../Cedars.png' -> 'Cedars', '.../web-dev.png' -> 'Web Dev'. */
-function labelFromPath(path) {
-  const file = path.split('/').pop().replace(/\.[^.]+$/, '');
-  return file
-    .replace(/[-_]+/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
-}
-
-const CLIENTS = Object.entries(logoModules)
-  .map(([path, src]) => ({ src, label: labelFromPath(path) }))
-  .sort((a, b) => a.label.localeCompare(b.label));
 
 /* Scroll speed scales with how many logos there are, so the pace stays
    comfortable whether there are 4 logos or 40. */

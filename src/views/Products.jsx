@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useState, useEffect } from 'react';
 import {
   motion,
@@ -8,7 +10,6 @@ import {
   useMotionTemplate,
   useInView,
 } from 'framer-motion';
-import SEO from '../components/SEO.jsx';
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
@@ -132,6 +133,7 @@ function ProductChapter({ product, index }) {
   // Sweep mask reveal for the visual
   const maskY = useTransform(scrollYProgress, [0.05, 0.45], ['100%', '0%']);
 
+  // Show the "Visit website" button when the product has a real link, else "Coming soon".
   const isLinked = Boolean(product.href);
 
   return (
@@ -463,19 +465,6 @@ function ProductsHero() {
         style={{ filter: blur, opacity }}
         className="relative mx-auto max-w-6xl px-6 md:px-10 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/70 mb-10"
-        >
-          <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ background: ACCENT }}
-          />
-          The Genufy Product Atlas
-        </motion.div>
-
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-white leading-[1.02] overflow-hidden">
           <span className="block">
             <SplitText text="Six products." />
@@ -580,11 +569,6 @@ function ChapterRail() {
 export default function Products() {
   return (
     <>
-      <SEO
-        title="Products — Genufy"
-        description="A cinematic walk through the Genufy product atlas."
-        path="/products"
-      />
       <ScrollProgress />
       <Header />
       <ChapterRail />

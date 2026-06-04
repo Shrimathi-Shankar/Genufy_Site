@@ -1,17 +1,19 @@
 import { motion } from 'framer-motion';
-import { products as ALL_PRODUCTS } from '../pages/products/productData.js';
+import { products as ALL_PRODUCTS } from '../views/products/productData.js';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
+/* label → service id (matches SERVICES in services/serviceData.js). The id is
+   used to deep-link to the matching service experience on the home page. */
 const services = [
-  'Salesforce',
-  'Snowflake',
-  'Informatica',
-  'MuleSoft',
-  'AI Solutions',
-  'DevOps',
-  'Pega',
-  'Web Development',
+  { label: 'Salesforce', id: 'salesforce' },
+  { label: 'Snowflake', id: 'snowflake' },
+  { label: 'Informatica', id: 'informatica' },
+  { label: 'MuleSoft', id: 'mulesoft' },
+  { label: 'AI Solutions', id: 'ai-ml' },
+  { label: 'DevOps', id: 'devops' },
+  { label: 'Pega', id: 'pega' },
+  { label: 'Web Development', id: 'web' },
 ];
 
 const products = ALL_PRODUCTS.map((p) => ({ name: p.name, slug: p.slug }));
@@ -190,26 +192,8 @@ export default function SiteFooter() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="pt-16 md:pt-20 pb-10 md:pb-14 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-16 items-start border-b border-white/[0.12]"
         >
-          {/* Left: logo + tagline */}
+          {/* Left: tagline */}
           <div>
-            {/* The wordmark in logo.png is dark navy (built for light bgs), so it's
-                placed on a soft light plate so both the navy text and the colored
-                icon read exactly as designed. */}
-            <a
-              href="/"
-              className="group inline-flex mb-6 rounded-2xl px-4 py-3 transition-colors duration-300"
-              style={{
-                background: 'rgba(255,255,255,0.92)',
-                boxShadow: '0 8px 30px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)',
-              }}
-              aria-label="Genufy home"
-            >
-              <img
-                src="/logo.png"
-                alt="Genufy"
-                className="h-9 md:h-10 w-auto object-contain"
-              />
-            </a>
             <h2
               className="font-display font-bold leading-[1.1] tracking-tight text-white"
               style={{
@@ -262,8 +246,8 @@ export default function SiteFooter() {
             <ColLabel>Services</ColLabel>
             <ul className="space-y-2">
               {services.map((s) => (
-                <li key={s}>
-                  <FLink>{s}</FLink>
+                <li key={s.id}>
+                  <FLink href={`/?service=${s.id}#services`}>{s.label}</FLink>
                 </li>
               ))}
             </ul>

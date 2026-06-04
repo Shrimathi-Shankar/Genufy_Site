@@ -1,13 +1,13 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { pageTransition } from '../animations/variants.js';
 import Reveal from '../components/Reveal.jsx';
-import SEO from '../components/SEO.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 
 export default function About() {
   return (
     <motion.div {...pageTransition}>
-      <SEO title="About" description="About New Gen Web — a futuristic React starter." path="/about" />
       <section className="section pt-40">
         <Reveal>
           <h1 className="h-display text-5xl md:text-7xl tracking-tight">

@@ -5,5 +5,10 @@ dist
 .env.local
 *.log
 
+# Next.js
+.next
+out
+next-env.d.ts
+
 # Nested duplicate project copy — not part of the site source
 New_Gen_Web/

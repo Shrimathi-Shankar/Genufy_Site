@@ -18,8 +18,6 @@ const STEPS = [
     subtitle: 'Your Digital Success Guide',
     paragraphs: [
       'At Genufy, innovation meets inspiration — and Cera is the face of it all. More than just a mascot, Cera is your friendly tech companion on a mission to transform dreams into milestones.',
-      'With a heart full of curiosity, a head packed with knowledge, and a spirit that embodies growth, guidance, and grit, Cera champions our core values: Empowerment, Innovation, and Connection.',
-      'Follow #CeraTheGuide and join us on a journey to smarter solutions, stronger communities, and future-ready possibilities.',
     ],
   },
   {
@@ -365,10 +363,6 @@ export default function PinnedShowcase() {
         <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 hidden md:grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* LEFT — animated content */}
           <div className="order-2 lg:order-1 relative">
-            <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/40">
-              <span className="h-px w-10 bg-white/30" />
-              Story · 0{step + 1} of 0{STEPS.length}
-            </div>
 
             {/* Step progress dots */}
             <div className="mt-6 flex items-center gap-2">
@@ -469,6 +463,33 @@ export default function PinnedShowcase() {
           </div>
         </div>
 
+        {/* Cera video — flush in the very bottom-left corner of the screen,
+            borderless, only on chapter 01 (Meet Our Cera). Slides out as soon
+            as the story advances. Desktop only. */}
+        <AnimatePresence>
+          {step === 0 && (
+            <motion.div
+              key="cera-corner-video"
+              initial={{ opacity: 0, x: -40, y: 20 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              exit={{ opacity: 0, x: -40, y: 20 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden md:block absolute bottom-0 left-0 w-80 lg:w-[28rem] xl:w-[30rem] overflow-hidden pointer-events-none"
+            >
+              {/* Video is wider than its container so the right side is cropped
+                  by the overflow-hidden parent. */}
+              <video
+                src="/cera2.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="block w-[118%] max-w-none"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Mobile (<md) layout — faded spiral in the background with
             scroll-driven, one-at-a-time content (Cera → Vision → Mission). */}
         <div className="md:hidden absolute inset-0 flex items-center justify-center px-6">
@@ -477,10 +498,6 @@ export default function PinnedShowcase() {
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-ink/40" />
 
           <div className="relative z-10 w-full max-w-sm">
-            <div className="flex items-center justify-center gap-3 text-[10px] tracking-[0.4em] uppercase text-white/40">
-              <span className="h-px w-8 bg-white/30" />
-              Story · 0{step + 1} of 0{STEPS.length}
-            </div>
 
             {/* Step progress dots */}
             <div className="mt-5 flex items-center justify-center gap-2">

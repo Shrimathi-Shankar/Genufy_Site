@@ -25,6 +25,7 @@ export const products = [
       'The Salesforce companion engineers actually want pinned. Inspect metadata, debug records, and trace flows — without ever leaving the org you are in.',
     pillars: ['Inline metadata', 'Live debug logs', 'Query workbench'],
     href: 'https://chromewebstore.google.com/detail/salesforce-dev-inspector/gmokcalgglefgdhfimedlkanpohobkof?utm_source=item-share-cb',
+<<<<<<< HEAD:src/pages/products/productData.js
     external: true,
   },
   {
@@ -65,13 +66,15 @@ export const products = [
       'Spending, observed. Expense Manager captures every rupee with a tap, then quietly composes the patterns into reports your future self will thank you for.',
     pillars: ['One-tap capture', 'Live insights', 'Multi-currency'],
     href: '#',
+=======
+>>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c:src/views/products/productData.js
     external: true,
   },
   {
     slug: 'humora',
     name: 'Humora',
     tagline: 'Human-First Experience Platform',
-    chapter: 'Chapter 06',
+    chapter: 'Chapter 03',
     accent: '#FB7185',
     accent2: '#F59E0B',
     image: '/products/humora.png',

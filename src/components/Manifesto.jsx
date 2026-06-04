@@ -251,7 +251,11 @@ function HolographicMesh() {
   return (
     <div className="relative h-full w-full">
       {/* ===== LAYER 1 — Background gradients, grid, particles, scanline.
+<<<<<<< HEAD
           Static layer (no mouse-driven tilt) so the card stays stable. ===== */}
+=======
+          Static (no mouse tilt). ===== */}
+>>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -283,15 +287,15 @@ function HolographicMesh() {
           }}
         />
 
-        {/* Floating glyphs live with the tilted background */}
-        <div aria-hidden className="absolute inset-0 font-mono text-[10px] tracking-widest text-white/35">
+        {/* Floating ambient labels — subtle on-brand capability words */}
+        <div aria-hidden className="absolute inset-0 font-mono text-[10px] tracking-[0.35em] uppercase text-white/25">
           {[
-            { x: '12%', y: '20%', t: '01101', d: 9, dl: 0 },
-            { x: '78%', y: '38%', t: '10011', d: 11, dl: 1 },
-            { x: '22%', y: '70%', t: '11000', d: 10, dl: 2 },
-            { x: '70%', y: '78%', t: '01110', d: 12, dl: 0.5 },
-            { x: '46%', y: '14%', t: '◆ AI', d: 13, dl: 1.5 },
-            { x: '60%', y: '60%', t: '◇ DATA', d: 14, dl: 0.8 },
+            { x: '12%', y: '20%', t: 'Innovate', d: 9, dl: 0 },
+            { x: '78%', y: '38%', t: 'Automate', d: 11, dl: 1 },
+            { x: '20%', y: '72%', t: 'Integrate', d: 10, dl: 2 },
+            { x: '70%', y: '80%', t: 'Scale', d: 12, dl: 0.5 },
+            { x: '46%', y: '13%', t: 'Transform', d: 13, dl: 1.5 },
+            { x: '62%', y: '62%', t: 'Connect', d: 14, dl: 0.8 },
           ].map((g, i) => (
             <motion.span
               key={i} className="absolute" style={{ left: g.x, top: g.y }}
@@ -381,7 +385,7 @@ function HolographicMesh() {
                 <img
                   src="/favicon.png"
                   alt="Genufy"
-                  className="h-full w-full scale-[1.5] object-contain"
+                  className="h-full w-full scale-[1.1] object-contain"
                 />
               </div>
             </div>
