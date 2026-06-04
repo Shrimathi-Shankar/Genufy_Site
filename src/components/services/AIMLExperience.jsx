@@ -386,68 +386,109 @@ function GenerativeAIVisual({ accent }) {
 }
 
 function AIAgentVisual({ accent }) {
-  const tools = ['CRM', 'Email', 'Search', 'DB', 'Slack'];
+  // Autonomous reasoning loop: the agent cycles through Plan -> Act -> Observe -> Reflect.
+  const phases = ['Plan', 'Act', 'Observe', 'Reflect'];
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setStep((s) => (s + 1) % phases.length), 1700);
+    return () => clearInterval(id);
+  }, []);
+
+  // Square stage so the loop is a true circle. The dashed ring sits at ringR;
+  // each phase chip's INNER edge sits at chipR, so the gap to the ring is the
+  // same on every side regardless of label length.
+  const ringR = 36;
+  const chipR = 42;
+
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="agentG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#24baac" />
-          </linearGradient>
-        </defs>
-        {tools.map((_, i) => {
-          const angle = (i / tools.length) * Math.PI * 2 - Math.PI / 2;
-          const tx = 50 + Math.cos(angle) * 36;
-          const ty = 50 + Math.sin(angle) * 36;
+    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm grid place-items-center">
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: `radial-gradient(48% 42% at 50% 50%, ${accent}1f, transparent 70%)` }}
+      />
+
+      {/* square stage keeps the ring circular + chips perpendicular */}
+      <div className="relative aspect-square w-[80%] max-w-[380px]">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id="agentG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor={accent} />
+              <stop offset="100%" stopColor="#24baac" />
+            </linearGradient>
+          </defs>
+          {/* loop ring */}
+          <circle cx="50" cy="50" r={ringR} fill="none" stroke="url(#agentG)" strokeWidth="0.6" strokeDasharray="2 2.4" opacity="0.45" />
+          {/* rotating accent arc — continuous motion (no straight connector over the core) */}
+          <motion.circle
+            cx="50" cy="50" r={ringR} fill="none" stroke={accent} strokeWidth="0.9" strokeLinecap="round"
+            strokeDasharray={`${2 * Math.PI * ringR * 0.18} ${2 * Math.PI * ringR}`}
+            style={{ transformOrigin: '50% 50%' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'linear' }}
+          />
+        </svg>
+
+        {/* phase chips — anchored by their INNER edge (the side facing the ring)
+            so the gap to the ring is identical regardless of label length. */}
+        {phases.map((p, i) => {
+          const on = i === step;
+          // order: Plan(top) Act(right) Observe(bottom) Reflect(left)
+          const anchor = [
+            { left: '50%', top: `${50 - chipR}%`, transform: 'translate(-50%, -100%)' },
+            { left: `${50 + chipR}%`, top: '50%', transform: 'translate(0, -50%)' },
+            { left: '50%', top: `${50 + chipR}%`, transform: 'translate(-50%, 0)' },
+            { left: `${50 - chipR}%`, top: '50%', transform: 'translate(-100%, -50%)' },
+          ][i];
           return (
-            <g key={i}>
-              <line x1="50" y1="50" x2={tx} y2={ty} stroke="url(#agentG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-              <motion.circle
-                r="0.7"
-                fill={accent}
-                initial={{ cx: 50, cy: 50 }}
-                animate={{ cx: [50, tx, 50], cy: [50, ty, 50] }}
-                transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-                style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-              />
-            </g>
+            <div
+              key={p}
+              className="absolute"
+              style={{ left: anchor.left, top: anchor.top, transform: anchor.transform }}
+            >
+              <motion.div
+                className="whitespace-nowrap rounded-full border px-3 py-1.5 text-[9px] tracking-[0.2em] uppercase backdrop-blur-xl"
+                style={{
+                  borderColor: on ? accent : 'rgba(255,255,255,0.14)',
+                  background: on ? `${accent}22` : 'rgba(0,0,0,0.75)',
+                  color: on ? '#eafff0' : 'rgba(255,255,255,0.6)',
+                  boxShadow: on ? `0 0 26px -6px ${accent}` : 'none',
+                }}
+                animate={{ scale: on ? 1.08 : 1 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {p}
+              </motion.div>
+            </div>
           );
         })}
-      </svg>
-      {/* Central brain node */}
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-32 w-32 md:h-36 md:w-36 rounded-3xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)` }}
-        >
-          <div className="text-center">
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Agent</div>
-            <div className="mt-1 font-display text-xl md:text-2xl text-gradient-gt">Reason</div>
-          </div>
-        </motion.div>
-      </div>
-      {/* Tool labels */}
-      {tools.map((t, i) => {
-        const angle = (i / tools.length) * Math.PI * 2 - Math.PI / 2;
-        const left = 50 + Math.cos(angle) * 36;
-        const top = 50 + Math.sin(angle) * 36;
-        return (
+
+        {/* agent core (opaque so nothing shows through) */}
+        <div className="absolute inset-0 grid place-items-center pointer-events-none">
           <motion.div
-            key={t}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, delay: i * 0.08 }}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-            style={{ left: `${left}%`, top: `${top}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
+            animate={{ scale: [1, 1.04, 1] }}
+            transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+            className="h-[42%] w-[42%] grid place-items-center rounded-3xl border border-white/20 backdrop-blur-xl bg-black/55"
+            style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 50px rgba(144,235,97,0.12)` }}
           >
-            {t}
+            <div className="text-center px-2">
+              <div className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-white/55">Agent</div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.35 }}
+                  className="mt-1 font-display text-base md:text-xl text-gradient-gt"
+                >
+                  {phases[step]}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </motion.div>
-        );
-      })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -659,135 +700,209 @@ function ComputerVisionVisual({ accent }) {
 }
 
 function MLOpsVisual({ accent }) {
+  // Live continuous-delivery pipeline: a build advances Data -> ... -> Monitor on a loop.
   const stages = ['Data', 'Train', 'Validate', 'Deploy', 'Monitor'];
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setActive((s) => (s + 1) % stages.length), 1300);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="mlopsG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        <line x1="6" y1="50" x2="94" y2="50" stroke="url(#mlopsG)" strokeWidth="0.35" strokeDasharray="2 2" />
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={i}
-            r="0.7"
-            fill="#90eb61"
-            initial={{ cx: 6, cy: 50 }}
-            animate={{ cx: [6, 94, 6] }}
-            transition={{ duration: 5 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: `radial-gradient(70% 50% at 30% 25%, ${accent}14, transparent 70%)` }}
+      />
+
+      <div className="flex items-center justify-between">
+        <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Continuous Delivery</div>
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-1.5 text-[9px] tracking-[0.3em] uppercase text-white/70">
+          <motion.span
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ background: accent }}
+            animate={{ opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
           />
-        ))}
-      </svg>
-      <div className="relative flex h-full items-center justify-between">
-        {stages.map((s, i) => (
-          <motion.div
-            key={s}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
-          >
-            <div
-              className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl font-display font-bold text-sm"
-              style={{ boxShadow: `0 0 28px -6px ${accent}cc`, color: accent }}
-            >
-              {String(i + 1).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/75">{s}</div>
-          </motion.div>
-        ))}
+          Pipeline live
+        </div>
       </div>
-      {/* Drift indicator */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
-      >
-        Drift · 0.04
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-        className="absolute top-4 right-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
-      >
-        v2.1.4
-      </motion.div>
+
+      {/* pipeline */}
+      <div className="relative mt-20 md:mt-24">
+        <div className="absolute left-0 right-0 top-6 h-px bg-white/10" />
+        <motion.div
+          className="absolute left-0 top-6 h-px"
+          style={{ background: `linear-gradient(90deg, #90eb61, ${accent})`, boxShadow: `0 0 8px ${accent}` }}
+          animate={{ width: `${(active / (stages.length - 1)) * 100}%` }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <div className="relative flex items-start justify-between">
+          {stages.map((s, i) => {
+            const on = i === active;
+            const done = i < active;
+            return (
+              <div key={s} className="flex flex-col items-center gap-3" style={{ width: '20%' }}>
+                <motion.div
+                  className="grid h-12 w-12 place-items-center rounded-2xl border font-display font-bold text-sm backdrop-blur-xl"
+                  style={{
+                    borderColor: on ? accent : done ? `${accent}55` : 'rgba(255,255,255,0.12)',
+                    background: on ? `${accent}22` : 'rgba(0,0,0,0.7)',
+                    color: on || done ? accent : 'rgba(255,255,255,0.5)',
+                    boxShadow: on ? `0 0 28px -4px ${accent}` : 'none',
+                  }}
+                  animate={{ scale: on ? 1.12 : 1 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </motion.div>
+                <div
+                  className="text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-center"
+                  style={{ color: on ? '#eafff0' : 'rgba(255,255,255,0.55)' }}
+                >
+                  {s}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* model-health sparkline */}
+      <div className="absolute bottom-6 left-6 right-6">
+        <div className="flex items-center justify-between text-[9px] tracking-[0.3em] uppercase text-white/45 mb-2">
+          <span>Model health</span>
+          <span style={{ color: accent }}>99.2% uptime</span>
+        </div>
+        <svg viewBox="0 0 100 16" preserveAspectRatio="none" className="w-full h-8">
+          <defs>
+            <linearGradient id="mlopsLine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#90eb61" />
+              <stop offset="100%" stopColor={accent} />
+            </linearGradient>
+          </defs>
+          <motion.path
+            d="M0 12 L12 9 L24 11 L36 6 L48 8 L60 4 L72 7 L84 3 L100 5"
+            fill="none"
+            stroke="url(#mlopsLine)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
+          />
+        </svg>
+      </div>
     </div>
   );
 }
 
 function MultimodalAIVisual({ accent }) {
+  // Four modalities stream inward and fuse into a single reasoning core.
   const modes = [
-    { icon: 'T', label: 'Text' },
-    { icon: '◉', label: 'Image' },
-    { icon: '♪', label: 'Audio' },
-    { icon: '▶', label: 'Video' },
+    { icon: '♪', label: 'Audio', deg: -135 },
+    { icon: '▶', label: 'Video', deg: -45 },
+    { icon: '◉', label: 'Image', deg: 135 },
+    { icon: 'T', label: 'Text', deg: 45 },
   ];
+  // Square stage so the 4 modalities sit symmetrically at the corners and the
+  // streams converge cleanly on the centred core.
+  const R = 38;
+  const pos = (deg) => {
+    const a = (deg * Math.PI) / 180;
+    return { x: 50 + Math.cos(a) * R, y: 50 + Math.sin(a) * R };
+  };
+
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="mmG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#24baac" />
-          </linearGradient>
-        </defs>
-        {modes.map((_, i) => {
-          const angle = (i / modes.length) * Math.PI * 2 + Math.PI / 4;
-          const tx = 50 + Math.cos(angle) * 30;
-          const ty = 50 + Math.sin(angle) * 30;
+    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm grid place-items-center">
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: `radial-gradient(45% 40% at 50% 50%, ${accent}22, transparent 70%)` }}
+      />
+
+      {/* square stage */}
+      <div className="relative aspect-square w-[84%] max-w-[400px]">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id="mmG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor={accent} />
+              <stop offset="100%" stopColor="#24baac" />
+            </linearGradient>
+          </defs>
+          {modes.map((m, i) => {
+            const p = pos(m.deg);
+            return (
+              <g key={i}>
+                <line x1={p.x} y1={p.y} x2="50" y2="50" stroke="url(#mmG)" strokeWidth="0.4" strokeDasharray="1.4 1.4" opacity="0.5" />
+                {/* particles streaming from the modality into the core */}
+                {[0, 1].map((k) => (
+                  <motion.circle
+                    key={k}
+                    r="0.8"
+                    fill={accent}
+                    style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+                    initial={{ cx: p.x, cy: p.y, opacity: 0 }}
+                    animate={{ cx: [p.x, 50], cy: [p.y, 50], opacity: [0, 1, 0] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeIn', delay: i * 0.4 + k * 1.2 }}
+                  />
+                ))}
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* fusion core (opaque so the streams read as feeding into it) */}
+        <div className="absolute inset-0 grid place-items-center pointer-events-none">
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              boxShadow: [
+                `0 0 60px -10px ${accent}88, inset 0 0 50px rgba(144,235,97,0.12)`,
+                `0 0 100px -6px ${accent}, inset 0 0 50px rgba(144,235,97,0.18)`,
+                `0 0 60px -10px ${accent}88, inset 0 0 50px rgba(144,235,97,0.12)`,
+              ],
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="h-[44%] w-[44%] grid place-items-center rounded-full border border-white/20 backdrop-blur-xl bg-black/55"
+          >
+            <div className="text-center">
+              <div className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-white/55">Fused</div>
+              <div className="mt-1 font-display text-xl md:text-2xl text-gradient-gt">Reason</div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* modality chips — anchored by their INNER corner so each diagonal line
+            ends exactly at the corner of its box (symmetric on all four sides). */}
+        {modes.map((m, i) => {
+          const p = pos(m.deg);
+          // place the corner facing the centre exactly on the line end
+          const transform = {
+            '-135': 'translate(-100%, -100%)', // Audio  (top-left)    -> inner = bottom-right
+            '-45': 'translate(0, -100%)',      // Video  (top-right)   -> inner = bottom-left
+            '135': 'translate(-100%, 0)',      // Image  (bottom-left) -> inner = top-right
+            '45': 'translate(0, 0)',           // Text   (bottom-right)-> inner = top-left
+          }[String(m.deg)];
           return (
-            <g key={i}>
-              <line x1="50" y1="50" x2={tx} y2={ty} stroke="url(#mmG)" strokeWidth="0.35" strokeDasharray="1.5 1.5" />
-              <motion.circle
-                r="0.7"
-                fill={accent}
-                initial={{ cx: tx, cy: ty }}
-                animate={{ cx: [tx, 50, tx], cy: [ty, 50, ty] }}
-                transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-                style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-              />
-            </g>
+            <div key={m.label} className="absolute" style={{ left: `${p.x}%`, top: `${p.y}%`, transform }}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.7 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.7, delay: i * 0.1 }}
+                className="w-[72px] rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl py-2 text-center"
+                style={{ boxShadow: `0 0 24px -8px ${accent}cc` }}
+              >
+                <div className="font-display text-lg text-white">{m.icon}</div>
+                <div className="text-[9px] tracking-[0.3em] uppercase text-white/75">{m.label}</div>
+              </motion.div>
+            </div>
           );
         })}
-      </svg>
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-32 w-32 md:h-40 md:w-40 rounded-full grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)` }}
-        >
-          <div className="text-center">
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Fused</div>
-            <div className="mt-1 font-display text-2xl md:text-3xl text-gradient-gt">Reason</div>
-          </div>
-        </motion.div>
       </div>
-      {modes.map((m, i) => {
-        const angle = (i / modes.length) * Math.PI * 2 + Math.PI / 4;
-        const left = 50 + Math.cos(angle) * 30;
-        const top = 50 + Math.sin(angle) * 30;
-        return (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, delay: i * 0.1 }}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-center"
-            style={{ left: `${left}%`, top: `${top}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
-          >
-            <div className="font-display text-lg text-white">{m.icon}</div>
-            <div className="text-[9px] tracking-[0.3em] uppercase text-white/75">{m.label}</div>
-          </motion.div>
-        );
-      })}
     </div>
   );
 }
@@ -1468,7 +1583,7 @@ beyond chatbots to deliver production-grade generative systems tied to your busi
         <ExperienceSection
           num="02"
           eyebrow="Autonomous Agents That Reason, Plan & Execute "
-          title="AI Agent Dvelopment"
+          title="AI Agent Development"
           description="We build goal-oriented AI agents capable of complex multi-step reasoning, tool usage, API 
 integration, and autonomous workflow execution — with full observability, human-in-the-loop 
 controls, and audit trails built in. "

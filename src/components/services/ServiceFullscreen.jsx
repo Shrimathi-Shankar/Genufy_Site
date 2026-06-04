@@ -53,29 +53,20 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
   const tx = useTransform(sx, (v) => v * 24);
   const ty = useTransform(sy, (v) => v * 16);
 
-  // Keep the latest onClose without making the lock effect depend on it (the
-  // parent passes a fresh function each render, which would otherwise re-run
-  // the effect and can leave Lenis stopped / scroll locked after closing).
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  // No scroll-lock here: the overlay is fixed full-screen and its inner scroll
+  // container carries `data-lenis-prevent` (Lenis ignores it) + `overscroll-contain`
+  // (no chaining to the page). Nothing is stopped or locked, so nothing can stay
+  // stuck after closing — this was the cause of the post-close scroll lock.
   useEffect(() => {
-    const lenis = window.__lenis;
-    lenis?.stop?.();
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
     const onKey = (e) => {
       if (e.key === 'Escape') onCloseRef.current?.();
     };
     window.addEventListener('keydown', onKey);
-
-    return () => {
-      document.body.style.overflow = prev;
-      lenis?.start?.();
-      window.removeEventListener('keydown', onKey);
-    };
-  }, []); // run once: lock on open, restore on close
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const onMouseMove = useCallback(
     (e) => {
@@ -86,6 +77,10 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
     },
     [mx, my]
   );
+
+  const closeNow = useCallback(() => {
+    onCloseRef.current?.();
+  }, []);
 
   return (
     <motion.div
@@ -142,7 +137,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.85 }}
         transition={{ duration: 0.5, delay: 0.55 }}
-        onClick={onClose}
+        onClick={closeNow}
         aria-label="Close"
         className="group absolute top-6 right-6 z-30 grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-black/40 backdrop-blur-xl text-white/85 hover:bg-black/60 hover:border-white/40 transition"
       >
