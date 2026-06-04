@@ -43,22 +43,6 @@ function FloatingGlow({ accent }) {
   );
 }
 
-/* Fully unlock page scrolling after the overlay closes. Resets overflow on both
-   the document element and body, clears Lenis' stopped class, then restarts and
-   re-syncs Lenis (a Lenis that was stopped while the overlay scrolled can keep
-   stale dimensions / scroll position and fight new scrolls). */
-function restoreScroll() {
-  if (typeof window === 'undefined') return;
-  const html = document.documentElement;
-  document.body.style.overflow = '';
-  html.style.overflow = '';
-  html.classList.remove('lenis-stopped');
-  const lenis = window.__lenis;
-  lenis?.start?.();
-  lenis?.scrollTo?.(window.scrollY || 0, { immediate: true, force: true });
-  lenis?.resize?.();
-}
-
 export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }) {
   const ref = useRef(null);
   const scrollRef = useRef(null);
@@ -69,29 +53,20 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
   const tx = useTransform(sx, (v) => v * 24);
   const ty = useTransform(sy, (v) => v * 16);
 
-  // Keep the latest onClose without making the lock effect depend on it (the
-  // parent passes a fresh function each render, which would otherwise re-run
-  // the effect and can leave Lenis stopped / scroll locked after closing).
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  // No scroll-lock here: the overlay is fixed full-screen and its inner scroll
+  // container carries `data-lenis-prevent` (Lenis ignores it) + `overscroll-contain`
+  // (no chaining to the page). Nothing is stopped or locked, so nothing can stay
+  // stuck after closing — this was the cause of the post-close scroll lock.
   useEffect(() => {
-    window.__lenis?.stop?.();
-    document.body.style.overflow = 'hidden';
-
     const onKey = (e) => {
-      if (e.key === 'Escape') {
-        restoreScroll();
-        onCloseRef.current?.();
-      }
+      if (e.key === 'Escape') onCloseRef.current?.();
     };
     window.addEventListener('keydown', onKey);
-
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      restoreScroll();
-    };
-  }, []); // run once: lock on open, restore on close
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const onMouseMove = useCallback(
     (e) => {
@@ -103,10 +78,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
     [mx, my]
   );
 
-  // Restore page scroll immediately on close (don't wait for the exit-animation
-  // unmount), then ask the parent to close. The unmount cleanup is a backup.
   const closeNow = useCallback(() => {
-    restoreScroll();
     onCloseRef.current?.();
   }, []);
 
