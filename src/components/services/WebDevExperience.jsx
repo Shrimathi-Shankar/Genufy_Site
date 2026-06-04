@@ -95,13 +95,30 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
+  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+     section accent, layered with soft floating orbs. Kept low-opacity and
+     blurred so it adds depth and domain identity without ever competing with
+     the foreground text. */
   const orbs = [
-    { top: '14%', left: '6%', size: 360, dur: 14 },
-    { top: '62%', left: '72%', size: 460, dur: 18 },
-    { top: '40%', left: '44%', size: 280, dur: 12 },
+    { top: '8%', left: '4%', size: 380, dur: 16, c: accent },
+    { top: '58%', left: '70%', size: 460, dur: 20, c: '#90eb61' },
+    { top: '34%', left: '42%', size: 300, dur: 14, c: accent },
   ];
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div
+        className="absolute inset-0 opacity-50"
+        style={{ filter: 'blur(44px)' }}
+        animate={{
+          background: [
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 78% 26%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 22% 74%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 40% 78%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 64% 22%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+          ],
+        }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {orbs.map((p, i) => (
         <motion.div
           key={i}
@@ -111,9 +128,9 @@ function FloatingOrbs({ accent }) {
             left: p.left,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, ${i % 2 ? '#90eb61' : accent} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${p.c} 0%, transparent 70%)`,
           }}
-          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
           transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -391,13 +408,6 @@ function CustomAppVisual({ accent }) {
         ))}
       </div>
 
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-      >
-        React · Edge
-      </motion.div>
     </div>
   );
 }
@@ -459,27 +469,43 @@ function EcommerceVisual({ accent }) {
         </div>
       </div>
 
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-      >
-        Mobile-first
-      </motion.div>
     </div>
   );
 }
 
 function HeadlessCMSVisual({ accent }) {
-  const channels = [
-    { x: 18, y: 20, label: 'Web' },
-    { x: 82, y: 20, label: 'Mobile' },
-    { x: 18, y: 80, label: 'IoT' },
-    { x: 82, y: 80, label: 'Kiosk' },
-    { x: 50, y: 90, label: 'Email' },
-  ];
+  /* CMS & Headless CMS — structured content authored once is delivered through
+     a content API and rendered responsively across devices. A realistic web
+     app renders content blocks on desktop, the same content reflows on mobile,
+     and delivery pulses stream from the content API into both surfaces. */
+  const reveal = (i) => ({
+    initial: { opacity: 0, y: 10 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.3 },
+    transition: { duration: 0.5, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] },
+  });
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+        }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute -bottom-12 -left-10 h-44 w-44 rounded-full opacity-25"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+        style={{ background: `conic-gradient(from 0deg, ${accent}, #90eb61, ${accent})`, filter: 'blur(46px)' }}
+      />
+
+      {/* content-API delivery connectors */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
         <defs>
           <linearGradient id="cmsG" x1="0" y1="0" x2="1" y2="1">
@@ -487,122 +513,248 @@ function HeadlessCMSVisual({ accent }) {
             <stop offset="100%" stopColor="#90eb61" />
           </linearGradient>
         </defs>
-        {channels.map((s, i) => (
-          <g key={i}>
-            <line x1="50" y1="45" x2={s.x} y2={s.y} stroke="url(#cmsG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-            <motion.circle
-              r="0.7"
-              fill={accent}
-              initial={{ cx: 50, cy: 45 }}
-              animate={{ cx: [50, s.x, 50], cy: [45, s.y, 45] }}
-              transition={{ duration: 3.5 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-              style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-            />
-          </g>
-        ))}
+        <line x1="86" y1="15" x2="40" y2="34" stroke="url(#cmsG)" strokeWidth="0.35" strokeDasharray="1.6 1.4" opacity="0.5" />
+        <line x1="86" y1="15" x2="84" y2="68" stroke="url(#cmsG)" strokeWidth="0.35" strokeDasharray="1.6 1.4" opacity="0.5" />
+        <motion.circle r="0.9" fill="#90eb61" style={{ filter: `drop-shadow(0 0 2px ${accent})` }} animate={{ cx: [86, 40], cy: [15, 34], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.circle r="0.9" fill="#90eb61" style={{ filter: `drop-shadow(0 0 2px ${accent})` }} animate={{ cx: [86, 84], cy: [15, 68], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 1 }} />
       </svg>
 
-      {/* Channel chips */}
-      {channels.map((s) => (
-        <motion.div
-          key={s.label}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
-        >
-          {s.label}
-        </motion.div>
-      ))}
+      {/* content API source */}
+      <motion.div
+        {...reveal(0)}
+        className="absolute right-[5%] top-[6%] rounded-lg border border-white/12 bg-black/70 px-2.5 py-1.5 backdrop-blur-xl"
+        style={{ boxShadow: `0 0 24px -10px ${accent}` }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="font-mono text-[12px]" style={{ color: accent }}>{'{ }'}</span>
+          <span className="font-mono text-[9px] text-white/65">/content</span>
+        </div>
+      </motion.div>
 
-      {/* Central CMS document */}
-      <div className="absolute left-1/2 top-[45%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-36 w-44 md:h-40 md:w-52 rounded-2xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)` }}
-        >
-          <div className="text-center px-4">
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">API-first</div>
-            <div className="mt-1 font-display text-xl md:text-2xl text-gradient-gt">Content</div>
-            <div className="mt-2 text-[10px] font-mono text-white/55">GET /api/content</div>
+      {/* desktop browser rendering CMS content */}
+      <motion.div
+        {...reveal(1)}
+        className="absolute left-[4%] top-[11%] w-[70%] overflow-hidden rounded-xl border border-white/12 bg-black/70 backdrop-blur-xl"
+        style={{ boxShadow: '0 30px 70px -30px rgba(0,0,0,0.85)' }}
+      >
+        <div className="flex items-center gap-1.5 border-b border-white/10 px-2.5 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-white/25" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/25" />
+          <span className="h-1.5 w-1.5 rounded-full bg-white/25" />
+          <div className="ml-2 h-2.5 flex-1 rounded-full bg-white/[0.06]" />
+        </div>
+        <div className="relative space-y-2 p-2.5">
+          {/* nav */}
+          <div className="flex items-center gap-1.5">
+            <div className="h-3 w-3 rounded" style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }} />
+            <div className="h-1 w-6 rounded-full bg-white/20" />
+            <div className="h-1 w-6 rounded-full bg-white/12" />
+            <div className="h-1 w-6 rounded-full bg-white/12" />
+            <div className="ml-auto h-3 w-8 rounded-full" style={{ background: `${accent}33`, border: `1px solid ${accent}66` }} />
           </div>
-        </motion.div>
-      </div>
+          {/* hero */}
+          <div className="relative h-14 overflow-hidden rounded-lg border border-white/10" style={{ background: `linear-gradient(135deg, ${accent}22, rgba(144,235,97,0.10))` }}>
+            <div className="absolute left-2 top-2 h-1.5 w-1/2 rounded-full bg-white/35" />
+            <div className="absolute left-2 top-5 h-1 w-2/3 rounded-full bg-white/18" />
+            <div className="absolute bottom-2 left-2 h-3 w-10 rounded-full" style={{ background: `linear-gradient(90deg, #90eb61, ${accent})` }} />
+          </div>
+          {/* content grid */}
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2].map((k) => (
+              <motion.div key={k} {...reveal(2 + k)} className="rounded-lg border border-white/10 bg-white/[0.03] p-1.5">
+                <div className="h-7 rounded" style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.06), ${accent}22)` }} />
+                <div className="mt-1.5 h-1 w-3/4 rounded-full bg-white/22" />
+                <div className="mt-1 h-1 w-1/2 rounded-full bg-white/12" />
+              </motion.div>
+            ))}
+          </div>
+          {/* render shimmer */}
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 w-1/3"
+            style={{ background: `linear-gradient(90deg, transparent, ${accent}22, transparent)` }}
+            animate={{ x: ['-120%', '320%'] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+      </motion.div>
+
+      {/* mobile rendering the same content (responsive) */}
+      <motion.div
+        {...reveal(3)}
+        className="absolute bottom-[7%] right-[6%] w-[22%] overflow-hidden rounded-[1.1rem] border border-white/15 bg-black/85 backdrop-blur-xl"
+        style={{ boxShadow: `0 24px 50px -24px ${accent}` }}
+      >
+        <div className="mx-auto mt-1.5 h-1 w-6 rounded-full bg-white/20" />
+        <div className="space-y-1.5 p-1.5">
+          <div className="flex items-center gap-1">
+            <div className="h-2.5 w-2.5 rounded" style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }} />
+            <div className="h-1 flex-1 rounded-full bg-white/14" />
+          </div>
+          <div className="h-10 rounded-md border border-white/10" style={{ background: `linear-gradient(135deg, ${accent}22, rgba(144,235,97,0.10))` }} />
+          {[0, 1].map((k) => (
+            <div key={k} className="rounded-md border border-white/10 bg-white/[0.03] p-1.5">
+              <div className="h-5 rounded" style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.06), ${accent}22)` }} />
+              <div className="mt-1 h-1 w-3/4 rounded-full bg-white/20" />
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
 
 function APIMicroservicesVisual({ accent }) {
-  const services = ['auth-svc', 'orders-svc', 'catalog-svc', 'search-svc'];
+  /* API & Microservices — a request flows from the client through an
+     authenticated API gateway (JWT) and is routed to backend microservices,
+     each backed by its own datastore. Data flows across every hop and a live
+     request log streams real API activity. */
+  const services = [
+    { name: 'auth-svc', y: 20, ms: '38ms' },
+    { name: 'orders-svc', y: 44, ms: '52ms' },
+    { name: 'catalog-svc', y: 68, ms: '44ms' },
+  ];
+  const CX = 12;
+  const CY = 30;
+  const GX = 33;
+  const GY = 50;
+  const SXL = 60; // service card left edge (%)
+  const logs = [
+    { m: 'POST', p: '/orders', ms: '52ms' },
+    { m: 'GET', p: '/catalog', ms: '44ms' },
+    { m: 'POST', p: '/auth/token', ms: '38ms' },
+  ];
   return (
-    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">API Gateway</div>
-          <div className="mt-1 font-display text-xl md:text-2xl">REST · GraphQL</div>
-        </div>
-        <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.6, repeat: Infinity }} className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">
-          ◉ 4 svc
-        </motion.div>
-      </div>
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+        }}
+      />
 
+      {/* links + flowing data */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
         <defs>
           <linearGradient id="msG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
+            <stop offset="0%" stopColor={accent} stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#90eb61" stopOpacity="0.4" />
           </linearGradient>
         </defs>
-        <line x1="10" y1="60" x2="90" y2="60" stroke="url(#msG)" strokeWidth="0.35" strokeDasharray="2 2" />
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={i}
-            r="0.7"
-            fill="#90eb61"
-            initial={{ cx: 10, cy: 60 }}
-            animate={{ cx: [10, 90, 10] }}
-            transition={{ duration: 4.5 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-          />
+        {/* client → gateway */}
+        <line x1={CX} y1={CY} x2={GX} y2={GY} stroke="url(#msG)" strokeWidth="0.4" strokeDasharray="1.6 1.3" />
+        <motion.circle r="0.9" fill="#90eb61" style={{ filter: `drop-shadow(0 0 2px ${accent})` }} animate={{ cx: [CX, GX], cy: [CY, GY], opacity: [0, 1, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }} />
+        {/* gateway → services + service → datastore */}
+        {services.map((s, i) => (
+          <g key={i}>
+            <line x1={GX} y1={GY} x2={SXL} y2={s.y} stroke="url(#msG)" strokeWidth="0.35" strokeDasharray="1.6 1.3" />
+            <line x1="84" y1={s.y} x2="90" y2={s.y} stroke="url(#msG)" strokeWidth="0.35" strokeDasharray="1.4 1.2" opacity="0.7" />
+            <motion.circle r="0.85" fill="#90eb61" style={{ filter: `drop-shadow(0 0 2px ${accent})` }} animate={{ cx: [GX, SXL], cy: [GY, s.y], opacity: [0, 1, 0] }} transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 }} />
+            <motion.circle r="0.7" fill={accent} style={{ filter: 'drop-shadow(0 0 2px #90eb61)' }} animate={{ cx: [SXL, GX], cy: [s.y, GY], opacity: [0, 1, 0] }} transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 + 0.9 }} />
+            <motion.circle r="0.6" fill="#90eb61" animate={{ cx: [84, 90], cy: [s.y, s.y], opacity: [0, 1, 0] }} transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 + 0.4 }} />
+          </g>
         ))}
       </svg>
 
-      <div className="relative mt-12 grid grid-cols-2 gap-3">
-        {services.map((s, i) => (
-          <motion.div
-            key={s}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.55, delay: i * 0.1 }}
-            className="rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 backdrop-blur-sm"
-            style={{ boxShadow: `0 0 24px -14px ${accent}cc` }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="font-mono text-[12px] text-white/90">{s}</div>
-              <motion.span
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.2 }}
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: accent, boxShadow: `0 0 8px ${accent}` }}
-              />
-            </div>
-            <div className="mt-2 text-[10px] tracking-[0.3em] uppercase text-white/50 font-mono">v1.{4 + i}.0 · 200ms p99</div>
-          </motion.div>
-        ))}
+      {/* client (browser) */}
+      <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${CX}%`, top: `${CY}%` }}>
+        <div className="grid h-9 w-9 place-items-center rounded-xl border border-white/12 bg-black/60 backdrop-blur-xl" style={{ boxShadow: `0 0 22px -10px ${accent}` }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cdebd8" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="13" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+          </svg>
+        </div>
       </div>
 
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-      >
-        OAuth · JWT
-      </motion.div>
+      {/* API gateway — JWT authentication */}
+      <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${GX}%`, top: `${GY}%` }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6 }}
+          className="relative w-[112px] rounded-2xl border border-white/20 bg-black/75 p-2.5 backdrop-blur-xl"
+          style={{ boxShadow: `0 0 50px -12px ${accent}, inset 0 0 24px rgba(144,235,97,0.08)` }}
+        >
+          <motion.span aria-hidden className="absolute inset-0 rounded-2xl" animate={{ opacity: [0.5, 0, 0.5] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} style={{ boxShadow: `0 0 22px 2px ${accent}66` }} />
+          <div className="relative flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <rect x="5" y="11" width="14" height="9" rx="2" stroke="url(#msG)" strokeWidth="1.7" />
+              <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#90eb61" strokeWidth="1.7" />
+              <circle cx="12" cy="15.5" r="1.4" fill="#90eb61" />
+            </svg>
+            <span className="text-[8px] tracking-[0.3em] uppercase text-white/55">Gateway</span>
+          </div>
+          <div className="relative mt-2 flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-1">
+            <span className="font-mono text-[8px] text-white/60">JWT</span>
+            <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/10">
+              <motion.div className="h-full w-1/2 rounded-full" style={{ background: `linear-gradient(90deg, #90eb61, ${accent})` }} animate={{ x: ['-60%', '160%'] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }} />
+            </div>
+            <motion.svg width="10" height="10" viewBox="0 0 12 12" fill="none" animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}>
+              <path d="M2 6.5 5 9.5 10 3.5" stroke="#90eb61" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </motion.svg>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* microservices + datastores */}
+      {services.map((s, i) => (
+        <div key={s.name}>
+          <motion.div
+            initial={{ opacity: 0, x: 12 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute -translate-y-1/2 rounded-xl border border-white/12 bg-black/65 px-2.5 py-2 backdrop-blur-xl"
+            style={{ left: `${SXL}%`, top: `${s.y}%`, width: '24%', boxShadow: `0 0 26px -12px ${accent}` }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="truncate font-mono text-[10px] text-white/85">{s.name}</span>
+              <motion.span className="h-1.5 w-1.5 rounded-full" style={{ background: '#90eb61' }} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }} />
+            </div>
+            <div className="mt-1.5 flex items-center gap-1.5">
+              <div className="flex items-end gap-0.5">
+                {[5, 7, 6].map((h, k) => (
+                  <span key={k} className="w-1 rounded-full" style={{ height: h, background: `${accent}aa` }} />
+                ))}
+              </div>
+              <span className="ml-auto font-mono text-[8px] text-white/40">{s.ms}</span>
+            </div>
+          </motion.div>
+          {/* datastore */}
+          <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: '92%', top: `${s.y}%` }}>
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+              <ellipse cx="9" cy="4" rx="6.5" ry="2.4" stroke="url(#msG)" strokeWidth="1.2" fill="rgba(255,255,255,0.04)" />
+              <path d="M2.5 4v12c0 1.3 2.9 2.4 6.5 2.4s6.5-1.1 6.5-2.4V4" stroke="url(#msG)" strokeWidth="1.2" />
+              <path d="M2.5 10c0 1.3 2.9 2.4 6.5 2.4s6.5-1.1 6.5-2.4" stroke="url(#msG)" strokeWidth="1" opacity="0.6" />
+            </svg>
+          </div>
+        </div>
+      ))}
+
+      {/* live API request log */}
+      <div className="absolute inset-x-4 bottom-3 rounded-lg border border-white/10 bg-black/55 px-3 py-2 backdrop-blur-xl">
+        <div className="space-y-1">
+          {logs.map((l, i) => (
+            <motion.div
+              key={i}
+              className="flex items-center gap-2 font-mono text-[8px]"
+              animate={{ opacity: [0.35, 1, 0.35] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+            >
+              <span className="rounded px-1 py-0.5 text-[7px] font-semibold text-black" style={{ background: l.m === 'GET' ? '#90eb61' : accent }}>{l.m}</span>
+              <span className="text-white/75">{l.p}</span>
+              <span className="ml-auto text-white/35">{l.ms}</span>
+              <span className="text-emerald-300">200</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -666,13 +818,6 @@ function SEOVisual({ accent }) {
         ))}
       </div>
 
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-      >
-        CTR · 6.4%
-      </motion.div>
     </div>
   );
 }
@@ -789,14 +934,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to Web Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your Web Project
-          </MagneticButton>
         </motion.div>
       </div>
 
@@ -853,10 +990,7 @@ export default function WebDevExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 

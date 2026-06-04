@@ -251,11 +251,7 @@ function HolographicMesh() {
   return (
     <div className="relative h-full w-full">
       {/* ===== LAYER 1 — Background gradients, grid, particles, scanline.
-<<<<<<< HEAD
           Static layer (no mouse-driven tilt) so the card stays stable. ===== */}
-=======
-          Static (no mouse tilt). ===== */}
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"

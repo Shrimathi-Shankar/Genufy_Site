@@ -328,148 +328,166 @@ Drive faster operations, greater agility, and sustainable digital growth."
 /* ---------------- Section visuals ---------------- */
 
 function BPMVisual({ accent }) {
-  const stages = ['Intake', 'Assign', 'Approve', 'Resolve'];
+  /* Pega BPM — enterprise process automation as a live case-lifecycle console:
+     each stage of the case advances in sequence, the active stage highlights as
+     the case moves through the process, and an SLA gauge fills. */
+  const stages = [
+    { name: 'Intake', sub: 'auto-captured' },
+    { name: 'Triage', sub: 'rules applied' },
+    { name: 'Assign', sub: 'skill-based routing' },
+    { name: 'Approve', sub: 'guided review' },
+    { name: 'Resolve', sub: 'closed · SLA met' },
+  ];
+  const stepT = 0.9;
+  const cycleT = stages.length * stepT;
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Case Lifecycle</div>
-          <div className="mt-1 font-display text-xl md:text-2xl">Pega BPM</div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Process Automation</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Case Lifecycle</div>
         </div>
-        <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.6, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 12px ${accent}` }} />
+        <div className="flex items-center gap-2">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">live</span>
+        </div>
       </div>
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="bpmG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        <line x1="10" y1="55" x2="90" y2="55" stroke="url(#bpmG)" strokeWidth="0.35" strokeDasharray="2 2" />
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={i}
-            r="0.7"
-            fill="#90eb61"
-            initial={{ cx: 10, cy: 55 }}
-            animate={{ cx: [10, 90, 10] }}
-            transition={{ duration: 4.5 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-          />
-        ))}
-      </svg>
-      <div className="relative mt-12 flex h-[260px] items-center justify-between">
+
+      <div className="mt-5 space-y-2">
         {stages.map((s, i) => (
           <motion.div
-            key={s}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
+            key={s.name}
+            initial={{ opacity: 0, x: -16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.09 }}
+            className="flex items-center gap-3 rounded-lg border bg-white/[0.03] px-3 py-2"
+            style={{ borderColor: 'rgba(255,255,255,0.10)' }}
           >
-            <div
-              className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl font-display font-bold text-sm"
-              style={{ boxShadow: `0 0 28px -6px ${accent}cc`, color: accent }}
+            <motion.span
+              className="grid h-6 w-6 shrink-0 place-items-center rounded-md border font-mono text-[10px]"
+              style={{ borderColor: 'rgba(255,255,255,0.15)', color: accent }}
+              animate={{
+                borderColor: ['rgba(255,255,255,0.15)', `${accent}cc`, 'rgba(255,255,255,0.15)'],
+                backgroundColor: ['rgba(255,255,255,0)', `${accent}1f`, 'rgba(255,255,255,0)'],
+              }}
+              transition={{ duration: stepT, repeat: Infinity, repeatDelay: cycleT - stepT, delay: i * stepT, ease: 'easeInOut' }}
             >
               {String(i + 1).padStart(2, '0')}
+            </motion.span>
+            <div className="min-w-0 flex-1">
+              <div className="font-mono text-[12px] text-white/85">{s.name}</div>
+              <div className="text-[9px] tracking-[0.2em] uppercase text-white/40">{s.sub}</div>
             </div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/75">{s}</div>
-            <motion.div
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.2 }}
+            <motion.span
               className="h-1.5 w-1.5 rounded-full"
               style={{ background: '#90eb61', boxShadow: '0 0 8px #90eb61' }}
+              animate={{ opacity: [0.25, 1, 0.25] }}
+              transition={{ duration: stepT, repeat: Infinity, repeatDelay: cycleT - stepT, delay: i * stepT, ease: 'easeInOut' }}
             />
           </motion.div>
         ))}
       </div>
+
+      <div className="mt-6">
+        <div className="mb-2 text-[10px] tracking-[0.4em] uppercase text-white/45">Process SLA · 30d</div>
+        <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }} initial={{ width: '0%' }} whileInView={{ width: '94%' }} viewport={{ once: true }} transition={{ duration: 1.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between font-mono text-[10px] tracking-[0.3em] uppercase text-white/55">
+          <span>1,240 cases</span>
+          <span>99.4% on-time</span>
+        </div>
+      </div>
+
       <motion.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
+        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
       >
-        SLA · 99.4%
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-        className="absolute top-4 right-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
-      >
-        WIP · 142
+        Automated
       </motion.div>
     </div>
   );
 }
 
 function CRMVisual({ accent }) {
-  const channels = [
-    { x: 12, y: 22, label: 'Email' },
-    { x: 88, y: 22, label: 'Chat' },
-    { x: 12, y: 80, label: 'Voice' },
-    { x: 88, y: 80, label: 'Mobile' },
-    { x: 50, y: 8, label: 'Web' },
-    { x: 50, y: 92, label: 'Social' },
+  /* Pega CRM — a unified customer-engagement console: live interactions stream
+     in across every channel against one profile, with a CSAT gauge. */
+  const rows = [
+    { ch: 'chat', label: 'support · resolved' },
+    { ch: 'email', label: 'campaign · replied' },
+    { ch: 'call', label: 'inbound · 4m 12s' },
+    { ch: 'web', label: 'pricing · browsing' },
+    { ch: 'case', label: '#4821 · escalated' },
   ];
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="crmG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#90eb61" />
-          </linearGradient>
-        </defs>
-        {channels.map((s, i) => (
-          <g key={i}>
-            <line x1="50" y1="50" x2={s.x} y2={s.y} stroke="url(#crmG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-            <motion.circle
-              r="0.7"
-              fill={accent}
-              initial={{ cx: s.x, cy: s.y }}
-              animate={{ cx: [s.x, 50, s.x], cy: [s.y, 50, s.y] }}
-              transition={{ duration: 4 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-              style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-            />
-          </g>
-        ))}
-      </svg>
-      {channels.map((s) => (
-        <motion.div
-          key={s.label}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, boxShadow: `0 0 28px -8px ${accent}cc` }}
-        >
-          {s.label}
-        </motion.div>
-      ))}
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-40 w-40 md:h-48 md:w-48 rounded-3xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04] text-center"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)` }}
-        >
-          <div>
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Unified</div>
-            <div className="mt-1 font-display text-2xl md:text-3xl text-gradient-gt">Profile</div>
-            <div className="mt-2 text-[10px] text-white/65 font-mono">cust_id · 47812</div>
-          </div>
-        </motion.div>
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Customer Engagement</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Unified Profile</div>
+        </div>
+        <div className="flex items-center gap-2">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">omni</span>
+        </div>
       </div>
+
+      <div className="mt-5 space-y-2 font-mono text-[12px]">
+        {rows.map((r, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2"
+            style={{ boxShadow: i === 3 ? `0 0 24px -10px ${accent}aa` : 'none' }}
+          >
+            <span className="w-12 shrink-0 text-[9px] tracking-[0.2em] uppercase text-white/45">{r.ch}</span>
+            <span className="flex-1 truncate text-white/85">{r.label}</span>
+            <motion.span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: accent, boxShadow: `0 0 8px ${accent}` }}
+              animate={{ opacity: [0.25, 1, 0.25] }}
+              transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.15 }}
+            />
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-6">
+        <div className="mb-2 text-[10px] tracking-[0.4em] uppercase text-white/45">CSAT · 30d</div>
+        <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }} initial={{ width: '0%' }} whileInView={{ width: '92%' }} viewport={{ once: true }} transition={{ duration: 1.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between font-mono text-[10px] tracking-[0.3em] uppercase text-white/55">
+          <span>4.7 / 5 CSAT</span>
+          <span>8.2k touches</span>
+        </div>
+      </div>
+
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
+      >
+        360°
+      </motion.div>
     </div>
   );
 }
 
 function DecisioningVisual({ accent }) {
-  const branches = [
-    { x: 22, y: 22, label: 'Offer A', score: 0.92 },
-    { x: 22, y: 50, label: 'Offer B', score: 0.61 },
-    { x: 22, y: 78, label: 'Offer C', score: 0.34 },
+  /* Pega AI & Decisioning — a real-time Next-Best-Action console: candidate
+     actions are scored by propensity, the bars fill live, and the top action
+     is locked in as the next best action. */
+  const actions = [
+    { name: 'Upgrade Offer', score: 0.92, win: true },
+    { name: 'Retention Save', score: 0.64 },
+    { name: 'Cross-sell Bundle', score: 0.48 },
+    { name: 'Service Nudge', score: 0.31 },
   ];
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
@@ -478,61 +496,60 @@ function DecisioningVisual({ accent }) {
           <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Customer Decision Hub</div>
           <div className="mt-1 font-display text-xl md:text-2xl">Next Best Action</div>
         </div>
-        <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">
-          ◉ Realtime
-        </motion.div>
+        <div className="flex items-center gap-2">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">realtime</span>
+        </div>
       </div>
 
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="mt-3 h-72 w-full">
-        <defs>
-          <linearGradient id="decG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        {/* trunk */}
-        <line x1="78" y1="50" x2="50" y2="50" stroke="url(#decG)" strokeWidth="0.5" />
-        {/* branches */}
-        {branches.map((b, i) => (
-          <g key={i}>
-            <line x1="50" y1="50" x2={b.x + 12} y2={b.y} stroke="url(#decG)" strokeWidth="0.4" strokeDasharray="1.5 1.5" />
-            <motion.circle
-              r="0.8"
-              fill={accent}
-              initial={{ cx: 50, cy: 50 }}
-              animate={{ cx: [50, b.x + 12, 50], cy: [50, b.y, 50] }}
-              transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-              style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-            />
-          </g>
+      <div className="mt-5 space-y-2.5">
+        {actions.map((a, i) => (
+          <motion.div
+            key={a.name}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-lg border bg-white/[0.03] px-3 py-2"
+            style={{ borderColor: a.win ? `${accent}66` : 'rgba(255,255,255,0.10)', boxShadow: a.win ? `0 0 26px -10px ${accent}` : 'none' }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-[12px] text-white/85">
+                {a.win && (
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6.5 5 9.5 10 3.5" stroke="#90eb61" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+                {a.name}
+              </span>
+              <span className="font-mono text-[11px]" style={{ color: a.win ? accent : 'rgba(255,255,255,0.55)' }}>{a.score.toFixed(2)}</span>
+            </div>
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: a.win ? 'linear-gradient(90deg, #90eb61, #24baac)' : 'rgba(255,255,255,0.3)' }}
+                initial={{ width: '0%' }}
+                whileInView={{ width: `${a.score * 100}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.3, delay: 0.3 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+          </motion.div>
         ))}
-        {/* customer node */}
-        <circle cx="78" cy="50" r="2.2" fill="#fff" />
-      </svg>
+      </div>
 
-      {/* Branch cards */}
-      {branches.map((b, i) => (
-        <motion.div
-          key={b.label}
-          initial={{ opacity: 0, x: -10 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-          className="absolute left-6 -translate-y-1/2 rounded-xl border border-white/12 bg-black/70 backdrop-blur-xl px-3 py-2"
-          style={{ top: `${30 + i * 22}%`, boxShadow: `0 0 24px -10px ${accent}cc` }}
-        >
-          <div className="text-[9px] tracking-[0.3em] uppercase text-white/55">{b.label}</div>
-          <div className="font-mono text-[12px] text-white">{b.score.toFixed(2)}</div>
-          <div className="mt-1 h-1 w-20 rounded-full bg-white/10 overflow-hidden">
-            <motion.div
-              className="h-full rounded-full"
-              style={{ background: i === 0 ? 'linear-gradient(90deg,#90eb61,#24baac)' : 'rgba(255,255,255,0.35)' }}
-              animate={{ width: ['0%', `${b.score * 100}%`] }}
-              transition={{ duration: 1.4, delay: 0.6 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-            />
-          </div>
-        </motion.div>
-      ))}
+      <div className="mt-5 flex items-center justify-between font-mono text-[10px] tracking-[0.3em] uppercase text-white/55">
+        <span>predicted uplift</span>
+        <span style={{ color: accent }}>+18%</span>
+      </div>
+
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
+      >
+        Adaptive
+      </motion.div>
     </div>
   );
 }
@@ -603,6 +620,78 @@ function RPAVisual({ accent }) {
         className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
       >
         Centralized
+      </motion.div>
+    </div>
+  );
+}
+
+function WorkflowVisual({ accent }) {
+  /* Pega Workflow Automation — an adaptive case-orchestration console: cases
+     route dynamically across systems and stages, each with a live status, and
+     resolution time trends down. */
+  const cases = [
+    { id: 'CASE-3471', to: 'Finance', state: 'routed' },
+    { id: 'CASE-3472', to: 'Tier-2', state: 'escalated' },
+    { id: 'CASE-3473', to: 'Billing', state: 'auto-resolved', done: true },
+    { id: 'CASE-3474', to: 'Approval', state: 'pending' },
+    { id: 'CASE-3475', to: 'Service', state: 'in SLA' },
+  ];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Workflow Orchestration</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Case Routing</div>
+        </div>
+        <div className="flex items-center gap-2">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">auto</span>
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-2 font-mono text-[12px]">
+        {cases.map((c, i) => (
+          <motion.div
+            key={c.id}
+            initial={{ opacity: 0, x: -16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2"
+            style={{ boxShadow: c.done ? `0 0 24px -10px ${accent}aa` : 'none' }}
+          >
+            <span className="text-white/70">{c.id}</span>
+            <span className="text-white/30">→</span>
+            <span className="flex-1 truncate text-white/85">{c.to}</span>
+            <span className="text-[9px] tracking-[0.15em] uppercase" style={{ color: c.done ? '#90eb61' : 'rgba(255,255,255,0.45)' }}>{c.state}</span>
+            {c.done ? (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 6.5 5 9.5 10 3.5" stroke="#90eb61" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <motion.span className="h-1.5 w-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} animate={{ opacity: [0.25, 1, 0.25] }} transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.15 }} />
+            )}
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-6">
+        <div className="mb-2 text-[10px] tracking-[0.4em] uppercase text-white/45">Avg resolution · 30d</div>
+        <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }} initial={{ width: '0%' }} whileInView={{ width: '82%' }} viewport={{ once: true }} transition={{ duration: 1.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between font-mono text-[10px] tracking-[0.3em] uppercase text-white/55">
+          <span>−42% time</span>
+          <span>cross-system</span>
+        </div>
+      </div>
+
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
+      >
+        Orchestrated
       </motion.div>
     </div>
   );
@@ -784,10 +873,7 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 
@@ -886,7 +972,7 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
             'Improved operational efficiency',
             'Faster case resolution times',
           ]}
-          visual={<RPAVisual accent={accent} />}
+          visual={<WorkflowVisual accent={accent} />}
           accent={accent}
           flip
         />

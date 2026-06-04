@@ -109,13 +109,30 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
+  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+     section accent, layered with soft floating orbs. Kept low-opacity and
+     blurred so it adds depth and domain identity without ever competing with
+     the foreground text. */
   const orbs = [
-    { top: '14%', left: '6%', size: 360, dur: 14 },
-    { top: '62%', left: '72%', size: 460, dur: 18 },
-    { top: '40%', left: '44%', size: 280, dur: 12 },
+    { top: '8%', left: '4%', size: 380, dur: 16, c: accent },
+    { top: '58%', left: '70%', size: 460, dur: 20, c: '#90eb61' },
+    { top: '34%', left: '42%', size: 300, dur: 14, c: accent },
   ];
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div
+        className="absolute inset-0 opacity-50"
+        style={{ filter: 'blur(44px)' }}
+        animate={{
+          background: [
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 78% 26%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 22% 74%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 40% 78%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 64% 22%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+          ],
+        }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {orbs.map((p, i) => (
         <motion.div
           key={i}
@@ -125,9 +142,9 @@ function FloatingOrbs({ accent }) {
             left: p.left,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, ${i % 2 ? '#24baac' : accent} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${p.c} 0%, transparent 70%)`,
           }}
-          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
           transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -408,78 +425,132 @@ Trusted by leading enterprises, delivered by certified experts."
 
 /* ---------------- Section visuals ---------------- */
 
-function IntegrationPipelineVisual({ accent }) {
-  const stages = ['Source', 'Ingest', 'Transform', 'Govern', 'Deliver'];
+/* One field row in the mapping canvas — anchored to the left or right column. */
+function FieldChip({ side, y, children, accent, ai, delay = 0 }) {
+  const isLeft = side === 'left';
   return (
-    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="pipeG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        <line x1="6" y1="50" x2="94" y2="50" stroke="url(#pipeG)" strokeWidth="0.35" strokeDasharray="2 2" />
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={i}
-            r="0.7"
-            fill="#90eb61"
-            initial={{ cx: 6, cy: 50 }}
-            animate={{ cx: [6, 94, 6] }}
-            transition={{
-              duration: 5 + i * 0.6,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: i * 0.5,
-            }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-          />
+    <motion.div
+      initial={{ opacity: 0, x: isLeft ? -14 : 14 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={`absolute -translate-y-1/2 flex items-center gap-1.5 rounded-lg border border-white/12 bg-black/65 px-2.5 py-1.5 font-mono text-[10px] text-white/80 backdrop-blur-xl ${
+        isLeft ? 'left-0 flex-row-reverse' : 'right-0'
+      }`}
+      style={{ top: `${y}%`, boxShadow: `0 0 20px -12px ${accent}` }}
+    >
+      <span
+        className="h-1.5 w-1.5 shrink-0 rounded-full"
+        style={{ background: ai ? accent : '#90eb61', boxShadow: `0 0 6px ${ai ? accent : '#90eb61'}` }}
+      />
+      <span className="whitespace-nowrap">{children}</span>
+      {ai && (
+        <span className="rounded px-1 text-[8px] font-semibold" style={{ background: `${accent}22`, color: accent }}>
+          AI
+        </span>
+      )}
+    </motion.div>
+  );
+}
+
+function IntegrationPipelineVisual({ accent }) {
+  /* Cloud data integration shown as an intelligent ETL/ELT field-mapping canvas:
+     source schema fields are auto-mapped to the cloud target, AI-suggested
+     matches are highlighted, and live data flows across each mapping link. */
+  const src = [
+    { label: 'account_id', y: 18 },
+    { label: 'full_name', y: 40 },
+    { label: 'email', y: 62 },
+    { label: 'amount', y: 84 },
+  ];
+  const tgt = [
+    { label: 'ACCOUNT_KEY', y: 18 },
+    { label: 'CUSTOMER_NAME', y: 40 },
+    { label: 'EMAIL_ADDR', y: 62, ai: true },
+    { label: 'REVENUE', y: 84, ai: true },
+  ];
+  return (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      {/* header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Cloud Data Integration</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">ETL / ELT · AI Mapping</div>
+        </div>
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.6, repeat: Infinity }}
+          className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase font-mono text-white/55"
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
+          Mapping
+        </motion.div>
+      </div>
+
+      {/* column labels */}
+      <div className="mt-5 flex justify-between text-[9px] tracking-[0.3em] uppercase text-white/40">
+        <span>Source · Salesforce</span>
+        <span>Target · Snowflake</span>
+      </div>
+
+      {/* mapping canvas */}
+      <div className="relative mt-3 h-[210px] md:h-[270px]">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id="cdiMapG" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#90eb61" />
+              <stop offset="100%" stopColor={accent} />
+            </linearGradient>
+          </defs>
+          {src.map((s, i) => (
+            <g key={i}>
+              <line
+                x1="25"
+                y1={s.y}
+                x2="75"
+                y2={tgt[i].y}
+                stroke="url(#cdiMapG)"
+                strokeWidth="0.5"
+                strokeDasharray={tgt[i].ai ? '2 1.4' : undefined}
+                opacity="0.7"
+              />
+              <motion.circle
+                r="0.9"
+                fill="#90eb61"
+                animate={{ cx: [25, 75], cy: [s.y, tgt[i].y], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.35 }}
+                style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+              />
+            </g>
+          ))}
+        </svg>
+
+        {src.map((s, i) => (
+          <FieldChip key={s.label} side="left" y={s.y} accent={accent} delay={i * 0.08}>
+            {s.label}
+          </FieldChip>
         ))}
-      </svg>
-      <div className="relative flex h-full items-center justify-between">
-        {stages.map((s, i) => (
-          <motion.div
-            key={s}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
-          >
-            <div
-              className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl font-display font-bold text-sm"
-              style={{ boxShadow: `0 0 28px -6px ${accent}cc`, color: accent }}
-            >
-              {String(i + 1).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/70">{s}</div>
-          </motion.div>
+        {tgt.map((t, i) => (
+          <FieldChip key={t.label} side="right" y={t.y} accent={accent} ai={t.ai} delay={0.2 + i * 0.08}>
+            {t.label}
+          </FieldChip>
         ))}
       </div>
 
-      {/* Floating connector cards */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/65"
-      >
-        Salesforce
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-        className="absolute top-4 right-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/65"
-      >
-        Snowflake
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-        className="absolute top-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/65"
-      >
-        SAP
-      </motion.div>
+      {/* connectors footer */}
+      <div className="mt-4 flex items-center gap-2">
+        <span className="text-[9px] tracking-[0.3em] uppercase text-white/35">Connectors</span>
+        <div className="flex flex-wrap gap-1.5">
+          {['Salesforce', 'SAP', 'Oracle', 'Snowflake'].map((c) => (
+            <span key={c} className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[9px] text-white/65">
+              {c}
+            </span>
+          ))}
+          <span className="rounded-full border px-2 py-0.5 text-[9px]" style={{ borderColor: `${accent}66`, color: accent }}>
+            120+
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -574,70 +645,148 @@ function GovernanceVisual({ accent }) {
 }
 
 function MDMGoldenRecordVisual({ accent }) {
-  const sources = [
-    { x: 12, y: 22, label: 'CRM' },
-    { x: 88, y: 22, label: 'ERP' },
-    { x: 12, y: 80, label: 'Billing' },
-    { x: 88, y: 80, label: 'Support' },
-    { x: 50, y: 8, label: 'Marketing' },
-    { x: 50, y: 92, label: 'Commerce' },
+  /* Master data management shown as record consolidation: several duplicate /
+     conflicting source records are matched and merged into one trusted golden
+     record, with a live match-confidence score. */
+  const dupes = [
+    { src: 'CRM', name: 'Jon Smith', y: 16 },
+    { src: 'ERP', name: 'John Smith', y: 44 },
+    { src: 'Support', name: 'J. Smith', y: 72 },
   ];
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="mdmG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#24baac" />
-          </linearGradient>
-        </defs>
-        {sources.map((s, i) => (
-          <g key={i}>
-            <line x1="50" y1="50" x2={s.x} y2={s.y} stroke="url(#mdmG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-            <motion.circle
-              r="0.7"
-              fill={accent}
-              initial={{ cx: s.x, cy: s.y }}
-              animate={{ cx: [s.x, 50, s.x], cy: [s.y, 50, s.y] }}
-              transition={{
-                duration: 4 + i * 0.3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: i * 0.3,
-              }}
-              style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-            />
-          </g>
-        ))}
-      </svg>
-      {sources.map((s) => (
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      {/* faint grid */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+        }}
+      />
+
+      {/* header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Master Data Management</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Match · Merge · Master</div>
+        </div>
         <motion.div
-          key={s.label}
-          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.6, repeat: Infinity }}
+          className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase font-mono text-white/55"
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
+          Resolving
+        </motion.div>
+      </div>
+
+      {/* duplicates → golden record */}
+      <div className="relative mt-6 h-[230px] md:h-[300px]">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id="mdmFlowG" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor={accent} stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#90eb61" stopOpacity="0.4" />
+            </linearGradient>
+          </defs>
+          {dupes.map((d, i) => (
+            <g key={i}>
+              <line x1="34" y1={d.y} x2="62" y2="50" stroke="url(#mdmFlowG)" strokeWidth="0.4" strokeDasharray="1.6 1.3" />
+              <motion.circle
+                r="0.85"
+                fill="#90eb61"
+                animate={{ cx: [34, 62], cy: [d.y, 50], opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+                style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+              />
+            </g>
+          ))}
+        </svg>
+
+        {/* duplicate source records */}
+        {dupes.map((d, i) => (
+          <motion.div
+            key={d.src}
+            initial={{ opacity: 0, x: -14 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute left-0 w-[38%] -translate-y-1/2 rounded-xl border border-white/10 bg-black/55 backdrop-blur-xl px-3 py-2"
+            style={{ top: `${d.y}%`, boxShadow: '0 0 20px -12px rgba(0,0,0,0.7)' }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[8px] tracking-[0.3em] uppercase text-white/40">{d.src}</span>
+              <span className="text-[8px] tracking-[0.2em] uppercase text-amber-300/70">dup</span>
+            </div>
+            <div className="mt-0.5 font-mono text-[11px] text-white/80">{d.name}</div>
+          </motion.div>
+        ))}
+
+        {/* golden record */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, boxShadow: `0 0 28px -8px ${accent}cc` }}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute right-0 top-1/2 w-[46%] -translate-y-1/2 rounded-2xl border bg-black/75 p-3.5 backdrop-blur-xl"
+          style={{ borderColor: `${accent}66`, boxShadow: `0 0 60px -14px ${accent}` }}
         >
-          {s.label}
-        </motion.div>
-      ))}
-      {/* Golden record */}
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-36 w-36 md:h-44 md:w-44 rounded-full grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04] text-center"
-          style={{
-            boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)`,
-          }}
-        >
-          <div>
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Golden</div>
-            <div className="mt-1 font-display text-2xl md:text-3xl text-gradient-gt">Record</div>
+          <div className="flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.5 6.7L12 17.8 5.9 20.9l1.5-6.7L2.3 9.6l6.8-.7z"
+                fill={accent}
+                fillOpacity="0.18"
+                stroke="#90eb61"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-[9px] tracking-[0.35em] uppercase text-gradient-gt">Golden Record</span>
+          </div>
+          <div className="mt-2 space-y-1 font-mono text-[10px] text-white/80">
+            <div>
+              <span className="text-white/35">name </span>John A. Smith
+            </div>
+            <div>
+              <span className="text-white/35">email </span>john@acme.com
+            </div>
+            <div>
+              <span className="text-white/35">id </span>MDM-100482
+            </div>
+            <div className="text-emerald-300">✓ verified · 1 profile</div>
+          </div>
+          <div className="mt-2.5">
+            <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40">
+              <span>Match confidence</span>
+              <span style={{ color: accent }}>98%</span>
+            </div>
+            <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
+                animate={{ width: ['0%', '98%'] }}
+                transition={{ duration: 1.8, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+              />
+            </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* mastered domains */}
+      <div className="mt-4 flex items-center gap-2">
+        <span className="text-[9px] tracking-[0.3em] uppercase text-white/35">Domains</span>
+        <div className="flex gap-1.5">
+          {['Customer', 'Product', 'Supplier'].map((d) => (
+            <span key={d} className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[9px] text-white/65">
+              {d}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -804,66 +953,88 @@ function IPaaSEventStreamVisual({ accent }) {
 /* ---------------- Stubbed visuals for sections 06-10 ---------------- */
 
 function AIAgentVisual({ accent }) {
-  const tools = ['Salesforce', 'Jira', 'Teams', 'DB', 'API'];
+  /* AI & agentic data management shown as an autonomous CLAIRE agent run: given
+     a goal, the agent plans and executes data steps across connected tools —
+     no code — completing each with a live status, last step still running. */
+  const steps = [
+    { t: 'Connected sources · Salesforce, SAP', done: true },
+    { t: 'Profiled 2.4M records', done: true },
+    { t: 'Resolved 1,204 duplicates', done: true },
+    { t: 'Applying data quality rules…', done: false },
+  ];
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="infAgentG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#24baac" />
-          </linearGradient>
-        </defs>
-        {tools.map((_, i) => {
-          const angle = (i / tools.length) * Math.PI * 2 - Math.PI / 2;
-          const tx = 50 + Math.cos(angle) * 34;
-          const ty = 50 + Math.sin(angle) * 34;
-          return (
-            <g key={i}>
-              <line x1="50" y1="50" x2={tx} y2={ty} stroke="url(#infAgentG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-              <motion.circle
-                r="0.7"
-                fill={accent}
-                initial={{ cx: 50, cy: 50 }}
-                animate={{ cx: [50, tx, 50], cy: [50, ty, 50] }}
-                transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-                style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-              />
-            </g>
-          );
-        })}
-      </svg>
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/55 backdrop-blur-sm p-6 md:p-7">
+      {/* agent identity */}
+      <div className="flex items-center gap-3">
         <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-32 w-32 md:h-36 md:w-36 rounded-3xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)` }}
+          animate={{ boxShadow: [`0 0 0px ${accent}00`, `0 0 24px -2px ${accent}`, `0 0 0px ${accent}00`] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/15 bg-black/60"
         >
-          <div className="text-center">
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">CLAIRE</div>
-            <div className="mt-1 font-display text-xl md:text-2xl text-gradient-gt">Agent</div>
-          </div>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3a4 4 0 0 0-4 4 3.5 3.5 0 0 0-1 6.5V17a3 3 0 0 0 6 0V7" stroke="#90eb61" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M12 3a4 4 0 0 1 4 4 3.5 3.5 0 0 1 1 6.5V17a3 3 0 0 1-5 2.8" stroke={accent} strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
         </motion.div>
+        <div>
+          <div className="font-display text-lg text-white">CLAIRE Agent</div>
+          <div className="text-[9px] tracking-[0.35em] uppercase text-white/45">Autonomous · No-code</div>
+        </div>
+        <span
+          className="ml-auto rounded-full border px-2 py-0.5 text-[8px] tracking-[0.3em] uppercase"
+          style={{ borderColor: `${accent}66`, color: accent }}
+        >
+          LLM
+        </span>
       </div>
-      {tools.map((t, i) => {
-        const angle = (i / tools.length) * Math.PI * 2 - Math.PI / 2;
-        const left = 50 + Math.cos(angle) * 34;
-        const top = 50 + Math.sin(angle) * 34;
-        return (
+
+      {/* goal */}
+      <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5">
+        <div className="text-[8px] tracking-[0.35em] uppercase text-white/40">Goal</div>
+        <div className="mt-0.5 font-mono text-[12px] text-white/85">Build a trusted Customer 360</div>
+      </div>
+
+      {/* agent steps */}
+      <div className="mt-4 space-y-2">
+        {steps.map((s, i) => (
           <motion.div
-            key={t}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            key={i}
+            initial={{ opacity: 0, x: -12 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, delay: i * 0.08 }}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-            style={{ left: `${left}%`, top: `${top}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
+            transition={{ duration: 0.5, delay: i * 0.25 }}
+            className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/40 px-3 py-2"
           >
-            {t}
+            {s.done ? (
+              <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full" style={{ background: `${accent}22` }}>
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6.5 5 9.5 10 3.5" stroke="#90eb61" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            ) : (
+              <motion.span
+                className="h-4 w-4 shrink-0 rounded-full border-2 border-white/15"
+                style={{ borderTopColor: accent }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+              />
+            )}
+            <span className={`flex-1 font-mono text-[11px] ${s.done ? 'text-white/70' : 'text-white/90'}`}>{s.t}</span>
           </motion.div>
-        );
-      })}
+        ))}
+      </div>
+
+      {/* agent hub */}
+      <div className="absolute bottom-5 inset-x-6 flex items-center gap-2">
+        <span className="text-[9px] tracking-[0.3em] uppercase text-white/35">Agent Hub</span>
+        <div className="flex gap-1.5">
+          {['Salesforce', 'Jira', 'Teams'].map((t) => (
+            <span key={t} className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[9px] text-white/65">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -951,14 +1122,6 @@ function PLSQLConversionVisual({ accent }) {
           </motion.div>
         ))}
       </div>
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-        style={{ boxShadow: `0 0 18px -8px ${accent}aa` }}
-      >
-        Validated
-      </motion.div>
     </div>
   );
 }
@@ -1164,14 +1327,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your Data Transformation
-          </MagneticButton>
         </motion.div>
       </div>
 
@@ -1230,10 +1385,7 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 

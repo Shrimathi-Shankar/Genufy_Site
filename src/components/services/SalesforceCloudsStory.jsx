@@ -19,22 +19,22 @@ const CATEGORIES = [
 ];
 
 const CLOUDS = [
-  { id: 'sales',      name: 'Sales Cloud',              tag: 'Pipeline · Forecasting',  desc: 'AI-assisted lead-to-cash with intelligent routing.',     glyph: '◆', from: '#0EA5E9', to: '#24baac', cat: 0 },
-  { id: 'service',    name: 'Service Cloud',            tag: 'Cases · Omnichannel',     desc: 'Omnichannel case management with Einstein.',             glyph: '◉', from: '#6366F1', to: '#24baac', cat: 0 },
-  { id: 'marketing',  name: 'Marketing Cloud',          tag: 'Journeys · Engagement',   desc: 'Cross-channel journeys and AI personalization.',         glyph: '✺', from: '#EC4899', to: '#F59E0B', cat: 0 },
-  { id: 'experience', name: 'Experience Cloud',         tag: 'Portals · Communities',   desc: 'Branded portals and partner communities.',               glyph: '✦', from: '#10B981', to: '#24baac', cat: 0 },
-  { id: 'commerce',   name: 'Commerce Cloud',           tag: 'Storefronts · OMS',       desc: 'Composable B2C and B2B commerce at scale.',              glyph: '❖', from: '#F59E0B', to: '#EF4444', cat: 1 },
-  { id: 'revenue',    name: 'Revenue Cloud',            tag: 'CPQ · Billing',           desc: 'CPQ, subscriptions, and billing as one engine.',         glyph: '◇', from: '#F59E0B', to: '#90eb61', cat: 1 },
-  { id: 'data',       name: 'Data Cloud',               tag: 'CDP · Activation',        desc: 'Real-time customer data activated everywhere.',          glyph: '◈', from: '#06B6D4', to: '#3B82F6', cat: 1 },
-  { id: 'pardot',     name: 'Account Engagement',       tag: 'Pardot · B2B Nurture',    desc: 'B2B nurture, scoring, and revenue analytics.',           glyph: '▤', from: '#8B5CF6', to: '#22D3EE', cat: 1 },
-  { id: 'health',     name: 'Health Cloud',             tag: 'Patient 360',             desc: 'Connected care across the patient continuum.',           glyph: '✚', from: '#F472B6', to: '#EF4444', cat: 2 },
-  { id: 'education',  name: 'Education Cloud',          tag: 'Recruit · Retain',        desc: 'Student journeys from recruitment to alumni.',           glyph: '✧', from: '#22D3EE', to: '#90eb61', cat: 2 },
-  { id: 'fsl',        name: 'Financial Services Cloud', tag: 'Banking · Wealth',        desc: 'Compliance-ready workflows for financial services.',     glyph: '❅', from: '#8B5CF6', to: '#10B981', cat: 2 },
-  { id: 'automotive', name: 'Automotive Cloud',         tag: 'Dealer · Driver',         desc: 'Connected vehicle data and dealer journeys.',            glyph: '◐', from: '#94A3B8', to: '#EF4444', cat: 2 },
-  { id: 'manuf',      name: 'Manufacturing Cloud',      tag: 'Forecast · Run-rate',     desc: 'Account-based forecasting and partner operations.',      glyph: '▣', from: '#F97316', to: '#0EA5E9', cat: 3 },
-  { id: 'field',      name: 'Field Service',            tag: 'Dispatch · IoT',          desc: 'Smart dispatch and mobile workforce, anywhere.',         glyph: '⬡', from: '#F59E0B', to: '#3B82F6', cat: 3 },
-  { id: 'nonprofit',  name: 'Nonprofit Cloud',          tag: 'Donors · Programs',       desc: 'Fundraising and programs for mission-led teams.',        glyph: '❤', from: '#A78BFA', to: '#EC4899', cat: 3 },
-  { id: 'netzero',    name: 'Net Zero Cloud',           tag: 'Carbon · ESG',            desc: 'Emissions tracking across scope 1, 2, and 3.',           glyph: '◍', from: '#10B981', to: '#24baac', cat: 3 },
+  { id: 'sales', name: 'Sales Cloud', tag: 'Pipeline · Forecasting', desc: 'AI-assisted lead-to-cash with intelligent routing.', glyph: '◆', from: '#0EA5E9', to: '#24baac', cat: 0 },
+  { id: 'service', name: 'Service Cloud', tag: 'Cases · Omnichannel', desc: 'Omnichannel case management with Einstein.', glyph: '◉', from: '#6366F1', to: '#24baac', cat: 0 },
+  { id: 'marketing', name: 'Marketing Cloud', tag: 'Journeys · Engagement', desc: 'Cross-channel journeys and AI personalization.', glyph: '✺', from: '#EC4899', to: '#F59E0B', cat: 0 },
+  { id: 'experience', name: 'Experience Cloud', tag: 'Portals · Communities', desc: 'Branded portals and partner communities.', glyph: '✦', from: '#10B981', to: '#24baac', cat: 0 },
+  { id: 'commerce', name: 'Commerce Cloud', tag: 'Storefronts · OMS', desc: 'Composable B2C and B2B commerce at scale.', glyph: '❖', from: '#F59E0B', to: '#EF4444', cat: 1 },
+  { id: 'revenue', name: 'Revenue Cloud', tag: 'CPQ · Billing', desc: 'CPQ, subscriptions, and billing as one engine.', glyph: '◇', from: '#F59E0B', to: '#90eb61', cat: 1 },
+  { id: 'data', name: 'Data Cloud', tag: 'CDP · Activation', desc: 'Real-time customer data activated everywhere.', glyph: '◈', from: '#06B6D4', to: '#3B82F6', cat: 1 },
+  { id: 'pardot', name: 'Account Engagement', tag: 'Pardot · B2B Nurture', desc: 'B2B nurture, scoring, and revenue analytics.', glyph: '▤', from: '#8B5CF6', to: '#22D3EE', cat: 1 },
+  { id: 'health', name: 'Health Cloud', tag: 'Patient 360', desc: 'Connected care across the patient continuum.', glyph: '✚', from: '#F472B6', to: '#EF4444', cat: 2 },
+  { id: 'education', name: 'Education Cloud', tag: 'Recruit · Retain', desc: 'Student journeys from recruitment to alumni.', glyph: '✧', from: '#22D3EE', to: '#90eb61', cat: 2 },
+  { id: 'fsl', name: 'Financial Services Cloud', tag: 'Banking · Wealth', desc: 'Compliance-ready workflows for financial services.', glyph: '❅', from: '#8B5CF6', to: '#10B981', cat: 2 },
+  { id: 'automotive', name: 'Automotive Cloud', tag: 'Dealer · Driver', desc: 'Connected vehicle data and dealer journeys.', glyph: '◐', from: '#94A3B8', to: '#EF4444', cat: 2 },
+  { id: 'manuf', name: 'Manufacturing Cloud', tag: 'Forecast · Run-rate', desc: 'Account-based forecasting and partner operations.', glyph: '▣', from: '#F97316', to: '#0EA5E9', cat: 3 },
+  { id: 'field', name: 'Field Service', tag: 'Dispatch · IoT', desc: 'Smart dispatch and mobile workforce, anywhere.', glyph: '⬡', from: '#F59E0B', to: '#3B82F6', cat: 3 },
+  { id: 'nonprofit', name: 'Nonprofit Cloud', tag: 'Donors · Programs', desc: 'Fundraising and programs for mission-led teams.', glyph: '❤', from: '#A78BFA', to: '#EC4899', cat: 3 },
+  { id: 'netzero', name: 'Net Zero Cloud', tag: 'Carbon · ESG', desc: 'Emissions tracking across scope 1, 2, and 3.', glyph: '◍', from: '#10B981', to: '#24baac', cat: 3 },
 ];
 
 /* ---------------- Ambient backdrop ---------------- */
@@ -70,9 +70,8 @@ function CloudTile({ cloud, i, wide }) {
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.6, delay: (i % 5) * 0.05, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-5 ${
-        wide ? 'col-span-2' : 'col-span-1'
-      }`}
+      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-5 ${wide ? 'col-span-2' : 'col-span-1'
+        }`}
       style={{ boxShadow: `0 22px 50px -30px ${cloud.from}77, inset 0 1px 0 rgba(255,255,255,0.05)` }}
     >
       {/* Unique brand corner glow */}
@@ -125,11 +124,11 @@ function CloudTile({ cloud, i, wide }) {
           <div className="mt-1 text-[9px] tracking-[0.3em] uppercase text-white/45">
             {cloud.tag}
           </div>
-          {wide && (
+          {/* {wide && (
             <p className="mt-2 max-w-md text-xs text-white/55 leading-relaxed line-clamp-2">
               {cloud.desc}
             </p>
-          )}
+          )} */}
         </div>
       </div>
 

@@ -111,13 +111,30 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
+  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+     section accent, layered with soft floating orbs. Kept low-opacity and
+     blurred so it adds depth and domain identity without ever competing with
+     the foreground text. */
   const orbs = [
-    { top: '12%', left: '8%', size: 360, dur: 14 },
-    { top: '60%', left: '70%', size: 460, dur: 18 },
-    { top: '38%', left: '42%', size: 280, dur: 12 },
+    { top: '8%', left: '4%', size: 380, dur: 16, c: accent },
+    { top: '58%', left: '70%', size: 460, dur: 20, c: '#90eb61' },
+    { top: '34%', left: '42%', size: 300, dur: 14, c: accent },
   ];
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div
+        className="absolute inset-0 opacity-50"
+        style={{ filter: 'blur(44px)' }}
+        animate={{
+          background: [
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 78% 26%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 22% 74%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 40% 78%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 64% 22%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+          ],
+        }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {orbs.map((p, i) => (
         <motion.div
           key={i}
@@ -127,9 +144,9 @@ function FloatingOrbs({ accent }) {
             left: p.left,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, ${i % 2 ? '#90eb61' : accent} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${p.c} 0%, transparent 70%)`,
           }}
-          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
           transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -1236,14 +1253,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your Transformation
-          </MagneticButton>
         </motion.div>
       </div>
 
@@ -1302,10 +1311,7 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 

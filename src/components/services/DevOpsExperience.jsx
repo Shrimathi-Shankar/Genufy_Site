@@ -95,13 +95,30 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
+  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+     section accent, layered with soft floating orbs. Kept low-opacity and
+     blurred so it adds depth and domain identity without ever competing with
+     the foreground text. */
   const orbs = [
-    { top: '14%', left: '6%', size: 360, dur: 14 },
-    { top: '62%', left: '72%', size: 460, dur: 18 },
-    { top: '40%', left: '44%', size: 280, dur: 12 },
+    { top: '8%', left: '4%', size: 380, dur: 16, c: accent },
+    { top: '58%', left: '70%', size: 460, dur: 20, c: '#90eb61' },
+    { top: '34%', left: '42%', size: 300, dur: 14, c: accent },
   ];
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div
+        className="absolute inset-0 opacity-50"
+        style={{ filter: 'blur(44px)' }}
+        animate={{
+          background: [
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 78% 26%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 22% 74%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 40% 78%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 64% 22%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+          ],
+        }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {orbs.map((p, i) => (
         <motion.div
           key={i}
@@ -111,9 +128,9 @@ function FloatingOrbs({ accent }) {
             left: p.left,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, ${i % 2 ? '#24baac' : accent} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${p.c} 0%, transparent 70%)`,
           }}
-          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
           transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -367,69 +384,114 @@ function MaturityVisual({ accent }) {
 }
 
 function CICDPipelineVisual({ accent }) {
-  const stages = ['Commit', 'Build', 'Test', 'Stage', 'Prod'];
+  /* CI/CD engineering shown as a live pipeline run: commit → build → test →
+     stage → prod, each stage with a real status (done · running · gated), a
+     progress spine that fills as stages pass, and DORA-style delivery metrics. */
+  const stages = [
+    { name: 'Commit', meta: 'a3f9c2 · main', dur: '2s', state: 'done' },
+    { name: 'Build', meta: 'docker image', dur: '48s', state: 'done' },
+    { name: 'Test', meta: '248 passed', dur: '1m 04s', state: 'done' },
+    { name: 'Deploy · Stage', meta: 'rolling update', dur: '12s', state: 'run' },
+    { name: 'Deploy · Prod', meta: 'awaiting gate', dur: '—', state: 'pending' },
+  ];
   return (
-    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-8">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="cicdG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-        <line x1="6" y1="50" x2="94" y2="50" stroke="url(#cicdG)" strokeWidth="0.35" strokeDasharray="2 2" />
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={i}
-            r="0.7"
-            fill="#90eb61"
-            initial={{ cx: 6, cy: 50 }}
-            animate={{ cx: [6, 94, 6] }}
-            transition={{ duration: 4.5 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      {/* header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">CI/CD Pipeline</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Run #2147</div>
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">
+          <motion.span
+            className="h-3.5 w-3.5 rounded-full border-2 border-white/15"
+            style={{ borderTopColor: accent }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
           />
-        ))}
-      </svg>
-      <div className="relative flex h-full items-center justify-between">
-        {stages.map((s, i) => (
-          <motion.div
-            key={s}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
-          >
-            <div
-              className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/70 backdrop-blur-xl font-display font-bold text-sm"
-              style={{ boxShadow: `0 0 28px -6px ${accent}cc`, color: accent }}
+          Running
+        </div>
+      </div>
+
+      {/* stages */}
+      <div className="relative mt-6">
+        <div className="absolute left-[13px] top-3 bottom-3 w-px bg-white/12" />
+        <motion.div
+          className="absolute left-[13px] top-3 w-px"
+          style={{ background: 'linear-gradient(180deg, #90eb61, #24baac)' }}
+          initial={{ height: '0%' }}
+          whileInView={{ height: '64%' }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <ul className="space-y-2">
+          {stages.map((s, i) => (
+            <motion.li
+              key={s.name}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: i * 0.12 }}
+              className="relative flex items-center gap-3"
             >
-              {String(i + 1).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/75">{s}</div>
-            <motion.div
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.2 }}
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ background: '#90eb61', boxShadow: '0 0 8px #90eb61' }}
-            />
+              {/* status node */}
+              {s.state === 'done' ? (
+                <span className="z-10 grid h-[26px] w-[26px] shrink-0 place-items-center rounded-full border border-white/15" style={{ background: `${accent}22` }}>
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6.5 5 9.5 10 3.5" stroke="#90eb61" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              ) : s.state === 'run' ? (
+                <motion.span
+                  className="z-10 h-[26px] w-[26px] shrink-0 rounded-full border-2 border-white/15 bg-black"
+                  style={{ borderTopColor: accent }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+                />
+              ) : (
+                <span className="z-10 h-[26px] w-[26px] shrink-0 rounded-full border border-dashed border-white/20 bg-black" />
+              )}
+
+              {/* stage card */}
+              <div
+                className="flex flex-1 items-center justify-between rounded-lg border px-3 py-1.5"
+                style={{
+                  borderColor: s.state === 'run' ? `${accent}66` : 'rgba(255,255,255,0.10)',
+                  background: s.state === 'run' ? `${accent}14` : 'rgba(255,255,255,0.03)',
+                }}
+              >
+                <div>
+                  <div className="text-[11px] font-medium text-white/90">{s.name}</div>
+                  <div className="font-mono text-[9px] text-white/45">{s.meta}</div>
+                </div>
+                <div className="font-mono text-[10px] text-white/50">{s.dur}</div>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+
+      {/* delivery metrics */}
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        {[
+          { k: 'Lead time', v: '7 min' },
+          { k: 'Success', v: '99.2%' },
+          { k: 'Deploys', v: '24 / day' },
+        ].map((m, i) => (
+          <motion.div
+            key={m.k}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+            className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2"
+            style={{ boxShadow: `0 0 22px -14px ${accent}` }}
+          >
+            <div className="text-[8px] tracking-[0.3em] uppercase text-white/40">{m.k}</div>
+            <div className="mt-0.5 font-mono text-[12px] text-white/85">{m.v}</div>
           </motion.div>
         ))}
       </div>
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-4 left-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
-      >
-        Build #2147 · ✓
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-        className="absolute top-4 right-6 rounded-xl border border-white/10 bg-black/60 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/70"
-      >
-        Auto Rollback
-      </motion.div>
     </div>
   );
 }
@@ -475,104 +537,133 @@ function IaCTerminalVisual({ accent }) {
           </motion.div>
         ))}
       </div>
-      {/* Cloud icons */}
-      {['AWS', 'GCP', 'Azure'].map((c, i) => (
-        <motion.div
-          key={c}
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 5 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
-          className="absolute rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
-          style={{
-            top: ['8%', '8%', '8%'][i],
-            right: [`${10 + i * 22}%`, `${10 + i * 22}%`, `${10 + i * 22}%`][i],
-            boxShadow: `0 0 24px -8px ${accent}cc`,
-          }}
-        >
-          {c}
-        </motion.div>
-      ))}
     </div>
   );
 }
 
 function KubernetesVisual({ accent }) {
-  const pods = [
-    { x: 22, y: 28 }, { x: 50, y: 22 }, { x: 78, y: 28 },
-    { x: 22, y: 62 }, { x: 50, y: 70 }, { x: 78, y: 62 },
+  /* Kubernetes platform services shown as a live cluster: worker nodes each run
+     a set of pods (steady "running" heartbeat), the HPA scales a new pod in,
+     CPU is tracked per node, and a Helm release ships — clearly container
+     platform engineering at work. */
+  const nodes = [
+    { name: 'node-1', cpu: 62, pods: 4 },
+    { name: 'node-2', cpu: 48, pods: 4 },
+    { name: 'node-3', cpu: 35, pods: 3, scaling: true },
   ];
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="k8sG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#90eb61" />
-          </linearGradient>
-        </defs>
-        {pods.map((p, i) => (
-          <line key={i} x1="50" y1="46" x2={p.x} y2={p.y} stroke="url(#k8sG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-        ))}
-        {pods.map((p, i) => (
-          <motion.circle
-            key={`m-${i}`}
-            r="0.7"
-            fill={accent}
-            initial={{ cx: 50, cy: 46 }}
-            animate={{ cx: [50, p.x, 50], cy: [46, p.y, 46] }}
-            transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.25 }}
-            style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-          />
-        ))}
-      </svg>
-      {/* Control plane */}
-      <div className="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
-          className="h-28 w-28 md:h-32 md:w-32 grid place-items-center"
-        >
-          <div className="absolute inset-0 rounded-full border border-white/15" />
-          <div className="absolute inset-3 rounded-full border border-white/10 border-dashed" />
-        </motion.div>
-        <div
-          className="absolute inset-0 grid place-items-center"
-          style={{ width: 0, height: 0, transform: 'translate(50%, 50%) translate(-50%, -50%)' }}
-        />
-      </div>
-      <div className="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.06, 1] }}
-          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-20 w-20 md:h-24 md:w-24 rounded-2xl grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04]"
-          style={{ boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(36,186,172,0.12)` }}
-        >
-          <div className="text-center">
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Ctrl</div>
-            <div className="mt-1 font-display text-base text-gradient-gt">Plane</div>
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      {/* header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <motion.svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+          >
+            <path d="M12 2l8.5 5v10L12 22l-8.5-5V7z" stroke={accent} strokeWidth="1.3" fill="rgba(255,255,255,0.03)" />
+            <circle cx="12" cy="12" r="2.6" stroke="#90eb61" strokeWidth="1.3" />
+            {[0, 72, 144, 216, 288].map((a) => {
+              const r = (a * Math.PI) / 180;
+              return (
+                <line
+                  key={a}
+                  x1={12 + Math.cos(r) * 2.6}
+                  y1={12 + Math.sin(r) * 2.6}
+                  x2={12 + Math.cos(r) * 6.5}
+                  y2={12 + Math.sin(r) * 6.5}
+                  stroke="#90eb61"
+                  strokeWidth="1"
+                  opacity="0.6"
+                />
+              );
+            })}
+          </motion.svg>
+          <div>
+            <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Kubernetes</div>
+            <div className="mt-0.5 font-display text-lg md:text-xl">prod-cluster</div>
           </div>
-        </motion.div>
-      </div>
-      {/* Pods */}
-      {pods.map((p, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, delay: i * 0.08 }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, boxShadow: `0 0 24px -8px ${accent}cc` }}
-        >
-          <div className="text-[9px] tracking-[0.3em] uppercase text-white/60">pod</div>
-          <div className="font-mono text-[11px] text-white/90">api-{i + 1}</div>
-          <motion.div
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase text-white/55">
+          <motion.span
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ background: '#90eb61', boxShadow: `0 0 8px ${accent}` }}
             animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
-            className="mt-1 h-1 w-8 rounded-full"
-            style={{ background: '#90eb61' }}
+            transition={{ duration: 1.6, repeat: Infinity }}
           />
-        </motion.div>
-      ))}
+          Healthy
+        </div>
+      </div>
+
+      {/* nodes with pods */}
+      <div className="mt-6 grid grid-cols-3 gap-3">
+        {nodes.map((n, ni) => (
+          <motion.div
+            key={n.name}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.55, delay: ni * 0.1 }}
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-3"
+          >
+            <div className="text-[9px] tracking-[0.25em] uppercase text-white/45">{n.name}</div>
+            <div className="mt-2 grid grid-cols-2 gap-1.5">
+              {Array.from({ length: n.pods }).map((_, pi) => (
+                <motion.div
+                  key={pi}
+                  className="h-5 rounded-md border"
+                  style={{ borderColor: `${accent}55`, background: `${accent}1a` }}
+                  animate={{ opacity: [0.45, 1, 0.45] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: (ni + pi) * 0.2 }}
+                />
+              ))}
+              {n.scaling && (
+                <motion.div
+                  className="grid h-5 place-items-center rounded-md border border-dashed"
+                  style={{ borderColor: accent }}
+                  animate={{ opacity: [0, 1, 0], scale: [0.7, 1, 0.7] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <span className="text-[9px] font-bold" style={{ color: accent }}>+</span>
+                </motion.div>
+              )}
+            </div>
+            <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }}
+                initial={{ width: '0%' }}
+                whileInView={{ width: `${n.cpu}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.4, delay: 0.3 + ni * 0.15, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+            <div className="mt-1 font-mono text-[8px] text-white/40">cpu {n.cpu}%</div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* autoscale + helm */}
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+          <div className="text-[8px] tracking-[0.3em] uppercase text-white/40">Autoscale · HPA</div>
+          <div className="mt-0.5 flex items-center gap-1.5 font-mono text-[12px] text-white/85">
+            6
+            <motion.span style={{ color: accent }} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.4, repeat: Infinity }}>
+              →
+            </motion.span>
+            9
+            <span className="text-[9px]" style={{ color: accent }}>↑ replicas</span>
+          </div>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+          <div className="text-[8px] tracking-[0.3em] uppercase text-white/40">Helm Release</div>
+          <div className="mt-0.5 font-mono text-[12px] text-white/85">api-gateway · v2.3 ✓</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -762,14 +853,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to DevOps Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your DevOps Journey
-          </MagneticButton>
         </motion.div>
       </div>
 
@@ -826,10 +909,7 @@ export default function DevOpsExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 

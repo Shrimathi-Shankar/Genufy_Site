@@ -95,13 +95,30 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
+  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+     section accent, layered with soft floating orbs. Kept low-opacity and
+     blurred so it adds depth and domain identity without ever competing with
+     the foreground text. */
   const orbs = [
-    { top: '14%', left: '6%', size: 360, dur: 14 },
-    { top: '62%', left: '72%', size: 460, dur: 18 },
-    { top: '40%', left: '44%', size: 280, dur: 12 },
+    { top: '8%', left: '4%', size: 380, dur: 16, c: accent },
+    { top: '58%', left: '70%', size: 460, dur: 20, c: '#90eb61' },
+    { top: '34%', left: '42%', size: 300, dur: 14, c: accent },
   ];
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div
+        className="absolute inset-0 opacity-50"
+        style={{ filter: 'blur(44px)' }}
+        animate={{
+          background: [
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 78% 26%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 22% 74%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 40% 78%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 64% 22%, rgba(144,235,97,0.16), transparent 62%)`,
+            `radial-gradient(50% 60% at 18% 22%, ${accent}26, transparent 60%), radial-gradient(46% 56% at 82% 72%, rgba(144,235,97,0.16), transparent 62%)`,
+          ],
+        }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
       {orbs.map((p, i) => (
         <motion.div
           key={i}
@@ -111,9 +128,9 @@ function FloatingOrbs({ accent }) {
             left: p.left,
             width: p.size,
             height: p.size,
-            background: `radial-gradient(circle, ${i % 2 ? '#24baac' : accent} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${p.c} 0%, transparent 70%)`,
           }}
-          animate={{ y: [0, -24, 0], x: [0, 14, 0] }}
+          animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
           transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
@@ -362,90 +379,78 @@ function APIArchitectureVisual({ accent }) {
           </motion.div>
         ))}
       </div>
-      {/* Data flow indicator */}
-      <svg viewBox="0 0 100 8" preserveAspectRatio="none" className="absolute bottom-4 inset-x-6 h-6">
-        <motion.circle
-          r="0.8"
-          fill={accent}
-          initial={{ cx: 4 }}
-          animate={{ cx: [4, 96, 4] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          cy="4"
-          style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-        />
-        <line x1="2" y1="4" x2="98" y2="4" stroke="url(#apiArchLine)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-        <defs>
-          <linearGradient id="apiArchLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#90eb61" />
-            <stop offset="100%" stopColor={accent} />
-          </linearGradient>
-        </defs>
-      </svg>
     </div>
   );
 }
 
 function SystemIntegrationVisual({ accent }) {
-  const systems = [
-    { x: 12, y: 22, label: 'Salesforce' },
-    { x: 88, y: 22, label: 'SAP' },
-    { x: 12, y: 80, label: 'Oracle' },
-    { x: 88, y: 80, label: 'Workday' },
-    { x: 50, y: 8, label: 'REST' },
-    { x: 50, y: 92, label: 'SOAP' },
+  /* Application & system integration — a live Anypoint integration console:
+     each row is a bi-directional flow between two enterprise apps mediated by
+     the Mule runtime, with protocol and sync status, plus an uptime gauge. */
+  const flows = [
+    { a: 'Salesforce', b: 'SAP', proto: 'REST', state: 'synced' },
+    { a: 'Oracle', b: 'Workday', proto: 'SOAP', state: 'syncing' },
+    { a: 'Commerce', b: 'Snowflake', proto: 'REST', state: 'synced' },
+    { a: 'Billing', b: 'NetSuite', proto: 'REST', state: 'synced' },
   ];
   return (
-    <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="sysG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={accent} />
-            <stop offset="100%" stopColor="#24baac" />
-          </linearGradient>
-        </defs>
-        {systems.map((s, i) => (
-          <g key={i}>
-            <line x1="50" y1="50" x2={s.x} y2={s.y} stroke="url(#sysG)" strokeWidth="0.3" strokeDasharray="1.5 1.5" />
-            <motion.circle
-              r="0.7"
-              fill={accent}
-              initial={{ cx: s.x, cy: s.y }}
-              animate={{ cx: [s.x, 50, s.x], cy: [s.y, 50, s.y] }}
-              transition={{ duration: 4 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-              style={{ filter: `drop-shadow(0 0 2px ${accent})` }}
-            />
-          </g>
-        ))}
-      </svg>
-      {systems.map((s) => (
-        <motion.div
-          key={s.label}
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl px-3 py-2 text-[10px] tracking-[0.3em] uppercase text-white/85"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, boxShadow: `0 0 28px -8px ${accent}cc` }}
-        >
-          {s.label}
-        </motion.div>
-      ))}
-      {/* Central Mule runtime */}
-      <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-36 w-36 md:h-44 md:w-44 rounded-full grid place-items-center border border-white/20 backdrop-blur-xl bg-white/[0.04] text-center"
-          style={{
-            boxShadow: `0 0 80px -8px ${accent}99, inset 0 0 60px rgba(144,235,97,0.12)`,
-          }}
-        >
-          <div>
-            <div className="text-[9px] tracking-[0.5em] uppercase text-white/55">Mule</div>
-            <div className="mt-1 font-display text-2xl md:text-3xl text-gradient-gt">Runtime</div>
-          </div>
-        </motion.div>
+    <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Application Integration</div>
+          <div className="mt-1 font-display text-xl md:text-2xl">Anypoint · Realtime</div>
+        </div>
+        <div className="flex items-center gap-2">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 10px ${accent}` }} />
+          <span className="text-[10px] tracking-[0.3em] uppercase font-mono text-white/55">live</span>
+        </div>
       </div>
+
+      <div className="mt-5 space-y-2">
+        {flows.map((f, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: i % 2 ? 18 : -18 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2"
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-[26%] truncate font-mono text-[11px] text-white/85">{f.a}</span>
+              <div className="relative h-3 flex-1">
+                <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/15" />
+                <motion.span className="absolute top-1/2 h-1 w-1 -translate-y-1/2 rounded-full" style={{ background: '#90eb61', boxShadow: `0 0 5px ${accent}` }} animate={{ left: ['0%', '100%'], opacity: [0, 1, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }} />
+                <motion.span className="absolute top-1/2 h-1 w-1 -translate-y-1/2 rounded-full" style={{ background: accent, boxShadow: '0 0 5px #90eb61' }} animate={{ left: ['100%', '0%'], opacity: [0, 1, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 + 0.8 }} />
+              </div>
+              <span className="w-[26%] truncate text-right font-mono text-[11px] text-white/85">{f.b}</span>
+            </div>
+            <div className="mt-1.5 flex items-center justify-between text-[8px] tracking-[0.25em] uppercase">
+              <span className="text-white/40">{f.proto} · bi-directional</span>
+              <span style={{ color: f.state === 'synced' ? '#90eb61' : accent }}>{f.state === 'synced' ? '✓ synced' : '⇄ syncing'}</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-5">
+        <div className="mb-2 text-[10px] tracking-[0.4em] uppercase text-white/45">Uptime · 30d</div>
+        <div className="h-2 overflow-hidden rounded-full bg-white/10">
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #90eb61, #24baac)' }} initial={{ width: '0%' }} whileInView={{ width: '99%' }} viewport={{ once: true }} transition={{ duration: 1.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+        <div className="mt-2 flex items-center justify-between font-mono text-[10px] tracking-[0.3em] uppercase text-white/55">
+          <span>12 flows</span>
+          <span>99.9% uptime</span>
+        </div>
+      </div>
+
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/60 backdrop-blur-xl px-3 py-1 text-[10px] tracking-[0.35em] uppercase text-white/70"
+      >
+        Anypoint
+      </motion.div>
     </div>
   );
 }
@@ -790,14 +795,6 @@ function FinalCTA({ accent, onClose }) {
             Talk to Integration Experts
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </MagneticButton>
-          <MagneticButton
-            as="a"
-            href="#contact"
-            onClick={onClose}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-sm font-medium text-white/90 hover:bg-white/[0.04]"
-          >
-            Start Your Integration Journey
-          </MagneticButton>
         </motion.div>
       </div>
 
@@ -854,10 +851,7 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
   return (
     <>
-<<<<<<< HEAD
       {/* <ScrollDots scrollRef={scrollRef} /> */}
-=======
->>>>>>> 71ef4cf6a97a4e193aa6c8c6e2a7139e1f4e1e5c
 
       <HeroScene service={service} />
 
