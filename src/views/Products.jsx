@@ -272,16 +272,6 @@ function ProductChapter({ product, index }) {
                   </div>
                 </div>
 
-                {/* Corner meta */}
-                <div className="absolute top-5 left-5 flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-white/60">
-                  <motion.span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ background: ACCENT }}
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                  />
-                  {product.chapter}
-                </div>
                 <div className="absolute bottom-5 right-5 text-[10px] tracking-[0.3em] uppercase text-white/40">
                   {String(index + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}
                 </div>
@@ -310,7 +300,7 @@ function ProductChapter({ product, index }) {
                   color: 'transparent',
                 }}
               >
-                {product.chapter} — {product.tagline}
+                {product.tagline}
               </span>
             </motion.div>
 
@@ -467,7 +457,7 @@ function ProductsHero() {
       >
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-white leading-[1.02] overflow-hidden">
           <span className="block">
-            <SplitText text="Six products." />
+            <SplitText text="Every product." />
           </span>
           <motion.span
             initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
