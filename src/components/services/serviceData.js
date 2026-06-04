@@ -42,7 +42,7 @@ export const SERVICES = [
     subtitle: 'Sales · Service · Marketing',
     body:
       'Architect end-to-end Salesforce ecosystems engineered for scale, automation, and real-time intelligence.',
-    image: '/Salesforce_bg.png',
+    image: '/salesforce_bg.jpg',
     accent: '#24baac',
     description:
       'We design and deliver Salesforce platforms that align Sales, Service, Marketing, and Experience Clouds into a single operating fabric — built to grow with you and intelligent by default.',
@@ -241,7 +241,7 @@ export const SERVICES = [
     subtitle: 'React · Next.js · WebGL',
     body:
       'Award-calibre digital products - performance-first, motion-rich, and built to convert from the first frame.',
-    image: '/web_bg.jpg',
+    image: '/web_bg.png',
     accent: '#24baac',
     description:
       'Premium web experiences engineered on modern stacks - every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',

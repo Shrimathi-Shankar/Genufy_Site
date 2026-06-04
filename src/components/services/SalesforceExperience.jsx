@@ -909,25 +909,24 @@ function ExperienceSection({
  *   'associate'  = lighter blue hex, chat icon (row 3 last two)
  */
 const CERTS = [
-  { code: 'ADM', label: 'Administrator', cat: 'specialist', img: '/certificates/Certficate-1.png' },
-  { code: 'APP', label: 'Platform App Builder', cat: 'specialist', img: '/certificates/Certificate-2.png' },
-  { code: 'BA', label: 'Business Analyst', cat: 'specialist', img: '/certificates/Certificate-3.png' },
-  { code: 'PD-I', label: 'Platform Developer I', cat: 'specialist', img: '/certificates/Certificate-4.png' },
-  { code: 'PD-II', label: 'Platform Developer II', cat: 'specialist', img: '/certificates/Certificate-5.png' },
-  { code: 'OSD', label: 'OmniStudio Developer', cat: 'specialist', img: '/certificates/Certificate-6.png' },
-  { code: 'CPQ', label: 'CPQ Specialist', cat: 'specialist', img: '/certificates/Certificate-7.png' },
-  { code: 'AIS', label: 'AI Specialist', cat: 'specialist', img: '/certificates/Certificate-8.png' },
-  { code: 'SVC', label: 'Service Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-9.png' },
-  { code: 'OSC', label: 'OmniStudio Consultant', cat: 'consultant', img: '/certificates/Certificate-10.png' },
-  { code: 'EXC', label: 'Experience Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-11.png' },
-  { code: 'SCC', label: 'Sales Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-12.png' },
-  { code: 'FSC', label: 'Field Service Consultant', cat: 'consultant', img: '/certificates/Certificate-13.png' },
-  { code: 'MAE', label: 'Marketing Cloud Account Engagement Consultant', cat: 'consultant', img: '/certificates/Certificate-14.png' },
-  { code: 'DCC', label: 'Data Cloud Consultant', cat: 'consultant', img: '/certificates/Certificate-15.png' },
-  { code: 'STD', label: 'Strategy Designer', cat: 'designer', img: '/certificates/Certificate-16.png' },
-  { code: 'UXD', label: 'User Experience Designer', cat: 'designer' },
-  { code: 'AIA', label: 'AI Associate', cat: 'associate' },
-  { code: 'ASC', label: 'Associate', cat: 'associate' },
+  { code: 'ADM', label: 'Associate', cat: 'specialist', img: '/certificate_folder/Certificate_1.png' },
+  { code: 'APP', label: 'Administrator', cat: 'specialist', img: '/certificate_folder/Certificate_2.png' },
+  { code: 'BA', label: 'Platform Builder', cat: 'specialist', img: '/certificate_folder/Certificate_3.png' },
+  { code: 'PD-I', label: 'Business Analyst', cat: 'specialist', img: '/certificate_folder/Certificate_4.png' },
+  { code: 'PD-II', label: 'Platform Developer I', cat: 'specialist', img: '/certificate_folder/Certificate_5.png' },
+  { code: 'OSD', label: 'Platform Developer II', cat: 'specialist', img: '/certificate_folder/Certificate_6.png' },
+  { code: 'CPQ', label: 'OmniStudio Developer', cat: 'specialist', img: '/certificate_folder/Certificate_7.png' },
+  { code: 'AIS', label: 'CPQ Specialist', cat: 'specialist', img: '/certificate_folder/Certificate_8.png' },
+  { code: 'SVC', label: 'AI Specialist', cat: 'consultant', img: '/certificate_folder/Certificate_9.png' },
+  { code: 'OSC', label: 'Service Cloud Consultant', cat: 'consultant', img: '/certificate_folder/Certificate_10.png' },
+
+
+  { code: 'FSC', label: 'Strategy Designer', cat: 'consultant', img: '/certificate_folder/Certificate_13.png' },
+
+  { code: 'STD', label: 'Field Service Consultant', cat: 'designer', img: '/certificate_folder/Certificate_16.png' },
+  { code: 'UXD', label: 'Sales Cloud Consultant', cat: 'designer', img: '/certificate_folder/Certificate_17.png' },
+  { code: 'AIA', label: 'Experience Cloud Consultant', cat: 'associate', img: '/certificate_folder/Certificate_18.png' },
+  { code: 'ASC', label: 'OmniStudio Consultant', cat: 'associate', img: '/certificate_folder/Certificate_19.png' },
 ];
 
 /* Hexagonal Salesforce-style certification badge (SVG) */
@@ -940,11 +939,11 @@ function CertBadge({ cert }) {
   const imgSrc =
     cert.img ||
     '/certificates/' +
-      cert.label
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') +
-      '.png';
+    cert.label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') +
+    '.png';
   if (imgOk) {
     return (
       <img
@@ -1074,7 +1073,7 @@ function CertCard({ cert, accent }) {
         my.set(0.5);
       }}
       style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
-      className="group relative flex-none w-56 h-72 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01] backdrop-blur-xl p-6 will-change-transform"
+      className="group relative flex-none w-56 min-h-72 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01] backdrop-blur-xl p-4 will-change-transform"
     >
       <div
         aria-hidden
@@ -1084,7 +1083,7 @@ function CertCard({ cert, accent }) {
         }}
       />
       <div className="relative flex flex-col items-center h-full">
-        <div className="h-40 w-32 md:h-44 md:w-36 flex items-center justify-center">
+        <div className="h-36 w-36 md:h-40 md:w-40 grid place-items-center">
           <CertBadge cert={cert} />
         </div>
         <div className="mt-3 text-center">
