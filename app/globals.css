@@ -33,6 +33,16 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
+/* Skip rendering (layout/paint) of off-screen sections so the browser doesn't
+   composite blurred gradients / SVG networks the user can't see. `auto` in
+   contain-intrinsic-size makes the browser remember each section's real height
+   after first render, so there's no scrollbar jump. Applied ONLY to non-pinned
+   sections (never the GSAP/sticky ones, which would break). */
+.cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
 /* Parallax stage helpers */
 .layer { will-change: transform; }
 .noise {

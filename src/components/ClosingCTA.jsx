@@ -11,7 +11,7 @@ export default function ClosingCTA() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.6]);
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
+    <section ref={ref} className="cv-section relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
       <motion.div
         aria-hidden
         style={{ y, scale }}
