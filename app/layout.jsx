@@ -25,13 +25,13 @@ const spaceGrotesk = Space_Grotesk({
 
 const SITE_URL = 'https://genufy.in';
 const DESCRIPTION =
-  'Genufy TechWorks engineers intelligent digital solutions — Salesforce expertise, AI automation, data engineering, and enterprise-grade platforms built to scale.';
+  'Genufy TechWorks engineers intelligent digital solutions - Salesforce expertise, AI automation, data engineering, and enterprise-grade platforms built to scale.';
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     // Longer, keyword-rich default (the bare brand name was flagged as too short).
-    default: 'Genufy TechWorks — Intelligent Digital Solutions & AI',
+    default: 'Genufy TechWorks - Intelligent Digital Solutions & AI',
     template: '%s | Genufy TechWorks',
   },
   description: DESCRIPTION,
@@ -84,7 +84,7 @@ export const viewport = {
   themeColor: '#000000',
 };
 
-/* Organization structured data (JSON-LD) — helps search engines understand the
+/* Organization structured data (JSON-LD) - helps search engines understand the
    brand (rich results / knowledge panel signals). */
 const orgJsonLd = {
   '@context': 'https://schema.org',

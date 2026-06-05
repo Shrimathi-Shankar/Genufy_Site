@@ -163,7 +163,7 @@ function ParallaxStage() {
         />
       </div>
 
-      {/* Particles — skipped entirely on mobile/low-end (the canvas RAF loop is
+      {/* Particles - skipped entirely on mobile/low-end (the canvas RAF loop is
           a common cause of freezing there). */}
       {enhanced && (
         <motion.div style={{ y: yNear }} className="layer absolute inset-0">
@@ -228,7 +228,7 @@ function RobotHUD() {
         transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
       />
 
-      {/* SVG HUD — hidden on small phones where it adds visual noise */}
+      {/* SVG HUD - hidden on small phones where it adds visual noise */}
       <svg
         className="absolute inset-0 w-full h-full hidden sm:block"
         viewBox="0 0 400 500"
@@ -457,7 +457,7 @@ export default function HeroGenufy() {
       {/* 3D background / parallax stage layers */}
       <ParallaxStage />
 
-      {/* Main hero section — h-screen with dvh override for mobile browser chrome */}
+      {/* Main hero section - h-screen with dvh override for mobile browser chrome */}
       <section
         className="relative h-screen overflow-hidden isolate"
         style={{ height: '100dvh' }}
@@ -470,7 +470,7 @@ export default function HeroGenufy() {
         */}
         <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-[auto_1fr] px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
 
-          {/* Left: text content — z-20 keeps the heading above the (larger) robot
+          {/* Left: text content - z-20 keeps the heading above the (larger) robot
               if they overlap horizontally. */}
           <div className="relative z-20 flex flex-col items-start text-left overflow-hidden min-w-0 pt-3 lg:pt-0">
             <motion.span
@@ -537,7 +537,7 @@ export default function HeroGenufy() {
             </motion.div>
           </div>
 
-          {/* Right: Spline Robot + HUD — fills remaining height on mobile via grid-rows.
+          {/* Right: Spline Robot + HUD - fills remaining height on mobile via grid-rows.
               z-0 sits behind the heading; taller + negative top margin make the robot
               larger and shifted upward. */}
           <motion.div
@@ -563,7 +563,7 @@ export default function HeroGenufy() {
                 <SplineRobot />
               </>
             ) : (
-              // Lightweight fallback for mobile/low-end — no WebGL, no HUD.
+              // Lightweight fallback for mobile/low-end - no WebGL, no HUD.
               <div aria-hidden className="absolute inset-0 grid place-items-center">
                 <div
                   className="h-56 w-56 rounded-full opacity-50 blur-3xl sm:h-72 sm:w-72"

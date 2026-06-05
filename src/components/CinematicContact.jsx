@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /* ============================================================
-   CinematicContact — single-screen premium contact form
+   CinematicContact - single-screen premium contact form
    Fields: First Name · Last Name · Email · Contact Number · Message
    Posts to FormSubmit so deliveries reach the configured INBOX.
 ============================================================ */
@@ -12,25 +12,25 @@ import { motion, AnimatePresence } from 'framer-motion';
    -----------------------------------------------------------------
    The form sends to whichever path is configured below.
 
-   Preferred — EmailJS (your own SMTP, full HTML control, sender name,
+   Preferred - EmailJS (your own SMTP, full HTML control, sender name,
    reply-to, and far better deliverability than FormSubmit):
      1) Create a free account at https://www.emailjs.com
      2) Add an Email Service (Gmail / Zoho / Microsoft 365 / your SMTP)
-     3) Create a Template — set:
+     3) Create a Template - set:
           From Name:  Genufy Website Notifications
           Subject:    {{subject}}
           Reply-To:   {{reply_to}}
-          Content:    (HTML — see EMAIL_TEMPLATE_PREVIEW below for the
+          Content:    (HTML - see EMAIL_TEMPLATE_PREVIEW below for the
                        exact body we send as a `body_html` variable, OR
                        use individual `{{name}}, {{email}}, …` vars.)
      4) Paste the IDs below. As soon as `serviceId` is non-empty,
         EmailJS is used and FormSubmit is bypassed.
 
-   Fallback — FormSubmit (no setup, but Reply-To only and may hit spam). */
+   Fallback - FormSubmit (no setup, but Reply-To only and may hit spam). */
 const INBOX = 'info@genufy.in';
 
 /* -----------------------------------------------------------------
-   EmailJS setup (one-time) — fill the three IDs below and the polished
+   EmailJS setup (one-time) - fill the three IDs below and the polished
    HTML email is sent automatically (FormSubmit is bypassed):
 
    1) Sign up at https://www.emailjs.com (free tier is fine).
@@ -44,11 +44,11 @@ const INBOX = 'info@genufy.in';
       For the Content, switch the editor to the code/HTML view and paste
       the block in EMAILJS_TEMPLATE_HTML (exported at the bottom of this
       file). It uses {{name}}, {{email}}, {{phone}}, {{message}},
-      {{submitted_on}}, {{source}} — exactly the params we send.
+      {{submitted_on}}, {{source}} - exactly the params we send.
       Copy the Template ID → paste into `templateId` below.
    4) Account → General → Public Key → paste into `publicKey` below.
 
-   That's it — no code changes needed after pasting the IDs. */
+   That's it - no code changes needed after pasting the IDs. */
 const EMAILJS = {
   serviceId: 'service_lcjx2d8',
   templateId: 'template_dqb6si7',
@@ -59,7 +59,7 @@ const EMAILJS = {
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${INBOX}`;
 
 /* Escape user-supplied strings before injecting them into the HTML email
-   body — prevents broken markup and trivial HTML injection. */
+   body - prevents broken markup and trivial HTML injection. */
 function esc(s) {
   return String(s ?? '')
     .replace(/&/g, '&amp;')
@@ -68,7 +68,7 @@ function esc(s) {
     .replace(/"/g, '&quot;');
 }
 
-/* Professional, business-style HTML inquiry email — clean two-column
+/* Professional, business-style HTML inquiry email - clean two-column
    Name/Value table with a blue header bar, matching FormSubmit's default
    table aesthetic. */
 function buildBodyHtml({ fullName, email, phone, message, submittedDate }) {
@@ -365,13 +365,13 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
         timeStyle: 'short',
         timeZone: 'Asia/Kolkata',
       });
-      const subject = `New Inquiry from ${fullName} — Genufy Website`;
+      const subject = `New Inquiry from ${fullName} - Genufy Website`;
       const bodyText = buildBodyText({ fullName, email, phone, message, submittedDate });
       const bodyHtml = buildBodyHtml({ fullName, email, phone, message, submittedDate });
 
       let ok = false;
 
-      /* Preferred path — EmailJS (real SMTP, custom HTML + sender name) */
+      /* Preferred path - EmailJS (real SMTP, custom HTML + sender name) */
       if (EMAILJS.serviceId && EMAILJS.templateId && EMAILJS.publicKey) {
         const res = await fetch(EMAILJS.endpoint, {
           method: 'POST',
@@ -402,7 +402,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
           throw new Error(`EmailJS ${res.status}: ${detail || 'request failed'}`);
         }
       } else {
-        /* Fallback — FormSubmit. We send ONLY clean, well-ordered fields (no
+        /* Fallback - FormSubmit. We send ONLY clean, well-ordered fields (no
            emoji keys, no paragraph-rows) so the received email is a tidy
            Name/Value list. `_template: 'box'` is FormSubmit's cleanest layout.
            FormSubmit builds its own email from these fields and ignores raw
@@ -467,7 +467,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
           aria-label="Contact"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Backdrop — clicking outside the panel closes only this form */}
+          {/* Backdrop - clicking outside the panel closes only this form */}
           <motion.div
             aria-hidden
             className="absolute inset-0 bg-black/85 backdrop-blur-md"
@@ -522,7 +522,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             }}
           />
 
-          {/* Panel — close button lives here, top-right corner */}
+          {/* Panel - close button lives here, top-right corner */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -530,7 +530,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-[1] w-[min(94vw,720px)] max-h-[92vh] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-black/60 backdrop-blur-2xl px-6 pt-12 pb-6 md:px-9 md:pt-14 md:pb-8"
           >
-            {/* X close button — top-right corner of the form panel only */}
+            {/* X close button - top-right corner of the form panel only */}
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onClose?.(); }}
@@ -560,7 +560,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
               <SuccessScene onClose={onClose} inbox={INBOX} />
             ) : (
               <>
-                {/* Header — compact so the CTA sits in view without scrolling */}
+                {/* Header - compact so the CTA sits in view without scrolling */}
                 <div className="text-center mb-5 md:mb-6">
                   <div className="text-[10px] md:text-[11px] tracking-[0.45em] uppercase text-white/55">
                     Begin the conversation
@@ -592,7 +592,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
                   </div>
                   <Field label="Message" name="message" as="textarea" value={form.message} onChange={update} error={errors.message} delay={0.33} />
 
-                  {/* Inline status row — only takes space when there's an error */}
+                  {/* Inline status row - only takes space when there's an error */}
                   {status === 'error' && (
                     <div className="text-xs text-rose-300">
                       Something went wrong. Please try again, or email us directly at {INBOX}.
@@ -631,8 +631,8 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
 
    Copy everything between the backticks below and paste it into your EmailJS
    template's Content (switch the editor to the </> code / HTML view first).
-   It uses the same variables this form sends — {{name}}, {{email}}, {{phone}},
-   {{message}}, {{submitted_on}}, {{source}} — so no further wiring is needed.
+   It uses the same variables this form sends - {{name}}, {{email}}, {{phone}},
+   {{message}}, {{submitted_on}}, {{source}} - so no further wiring is needed.
    The {{message}} cell uses `white-space:pre-line` so line breaks are kept.
    EmailJS escapes these values, so it is safe against HTML injection.
 ============================================================================ */
@@ -641,7 +641,7 @@ export const EMAILJS_TEMPLATE_HTML = `
   <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
     <div style="background:linear-gradient(135deg,#90eb61,#24baac);padding:28px 32px;">
       <h1 style="margin:0;font-size:20px;font-weight:700;color:#062019;letter-spacing:-0.2px;">New Website Inquiry</h1>
-      <p style="margin:6px 0 0;font-size:13px;color:#063b32;">Genufy — submitted {{submitted_on}}</p>
+      <p style="margin:6px 0 0;font-size:13px;color:#063b32;">Genufy - submitted {{submitted_on}}</p>
     </div>
     <div style="padding:28px 32px;">
       <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#374151;">

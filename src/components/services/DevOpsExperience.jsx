@@ -95,7 +95,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -392,7 +392,7 @@ function CICDPipelineVisual({ accent }) {
     { name: 'Build', meta: 'docker image', dur: '48s', state: 'done' },
     { name: 'Test', meta: '248 passed', dur: '1m 04s', state: 'done' },
     { name: 'Deploy · Stage', meta: 'rolling update', dur: '12s', state: 'run' },
-    { name: 'Deploy · Prod', meta: 'awaiting gate', dur: '—', state: 'pending' },
+    { name: 'Deploy · Prod', meta: 'awaiting gate', dur: '-', state: 'pending' },
   ];
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-6 md:p-7">
@@ -544,7 +544,7 @@ function IaCTerminalVisual({ accent }) {
 function KubernetesVisual({ accent }) {
   /* Kubernetes platform services shown as a live cluster: worker nodes each run
      a set of pods (steady "running" heartbeat), the HPA scales a new pod in,
-     CPU is tracked per node, and a Helm release ships — clearly container
+     CPU is tracked per node, and a Helm release ships - clearly container
      platform engineering at work. */
   const nodes = [
     { name: 'node-1', cpu: 62, pods: 4 },

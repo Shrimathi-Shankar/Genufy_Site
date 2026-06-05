@@ -16,7 +16,7 @@ import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'fr
      5. Captions fade through the journey
 ============================================================ */
 
-/* ------------ data — Genufy capabilities, platform-agnostic ------------ */
+/* ------------ data - Genufy capabilities, platform-agnostic ------------ */
 const TECH_CARDS = [
   { label: 'AI & Machine Learning', sub: 'Models · Copilots', x: 12, y: 22, depth: 0.7 },
   { label: 'Data Engineering', sub: 'Pipelines · Warehouses', x: 78, y: 18, depth: 1.2 },
@@ -151,7 +151,7 @@ export default function PortalTransition({ height = '170vh' }) {
 
   const gridY = useTransform(progress, [0, 1], ['0%', '-25%']);
 
-  /* Caption rotation — wider fade/hold windows for a slower, smoother change. */
+  /* Caption rotation - wider fade/hold windows for a slower, smoother change. */
   const cap1Op = useTransform(progress, [0.00, 0.12, 0.30, 0.40], [0, 1, 1, 0]);
   const cap2Op = useTransform(progress, [0.36, 0.46, 0.60, 0.70], [0, 1, 1, 0]);
   const cap3Op = useTransform(progress, [0.66, 0.76, 0.88, 0.98], [0, 1, 1, 0]);
@@ -168,7 +168,7 @@ export default function PortalTransition({ height = '170vh' }) {
       style={{ height }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* === Layer 1 — abstract backdrop ============================ */}
+        {/* === Layer 1 - abstract backdrop ============================ */}
         {/* Slow-drifting grid */}
         <motion.div
           aria-hidden
@@ -210,20 +210,20 @@ export default function PortalTransition({ height = '170vh' }) {
         </motion.div>
 
         {/* Floating / drifting decorative layers (data streams, tech cards,
-            particles) — hidden on mobile (<md) so the Salesforce Partner
+            particles) - hidden on mobile (<md) so the Salesforce Partner
             content stays stable and easy to read; tablet + desktop unchanged. */}
         <div className="hidden md:block" aria-hidden>
-          {/* === Layer 2 — horizontal data streams ===================== */}
+          {/* === Layer 2 - horizontal data streams ===================== */}
           {STREAM_BANDS.map((band, i) => (
             <StreamBand key={i} band={band} scrollYProgress={scrollYProgress} />
           ))}
 
-          {/* === Layer 3 — floating tech cards with mixed parallax ==== */}
+          {/* === Layer 3 - floating tech cards with mixed parallax ==== */}
           {TECH_CARDS.map((c, i) => (
             <TechCard key={i} card={c} scrollYProgress={scrollYProgress} />
           ))}
 
-          {/* === Layer 4 — vertical particle streams ================== */}
+          {/* === Layer 4 - vertical particle streams ================== */}
           {PARTICLES.map((p) => (
             <motion.span
               key={p.i}
@@ -250,7 +250,7 @@ export default function PortalTransition({ height = '170vh' }) {
           ))}
         </div>
 
-        {/* === Layer 5 — Salesforce Partner caption sequence ============ */}
+        {/* === Layer 5 - Salesforce Partner caption sequence ============ */}
         <motion.div
           style={{ opacity: cap1Op }}
           className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none px-6"
@@ -269,7 +269,7 @@ export default function PortalTransition({ height = '170vh' }) {
           <Caption
             eyebrow="Enterprise · Scale"
             accent="Enterprise Transformation"
-            sub="From legacy migrations to multi-cloud orchestration — engineered to grow with you."
+            sub="From legacy migrations to multi-cloud orchestration - engineered to grow with you."
           />
         </motion.div>
         <motion.div

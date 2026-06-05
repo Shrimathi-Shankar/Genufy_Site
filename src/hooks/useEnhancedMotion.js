@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 /* Gate heavy visual effects (the Spline 3D robot, canvas particle fields) so
-   they only run on capable devices — keeping mobiles and low-end laptops from
+   they only run on capable devices - keeping mobiles and low-end laptops from
    freezing.
 
    Starts `false` so the server-prerendered HTML and the first client paint

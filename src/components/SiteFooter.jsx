@@ -81,7 +81,7 @@ function FLink({ href = '#', children }) {
   );
 }
 
-// Minimal inline SVG icons — no external dependency
+// Minimal inline SVG icons - no external dependency
 const IconMail = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect width="20" height="16" x="2" y="4" rx="2.5" />
@@ -129,7 +129,7 @@ export default function SiteFooter() {
       style={{
         // Starts near-black at the TOP so it blends seamlessly into the deep
         // black section above (no hard "box" seam), then the teal glow rises
-        // gently from the lower-center — the same deep-space-with-accents look
+        // gently from the lower-center - the same deep-space-with-accents look
         // as the rest of the page rather than a flat green panel.
         background:
           'radial-gradient(85% 75% at 50% 115%, rgba(36,186,172,0.22) 0%, transparent 58%),' +
@@ -149,7 +149,7 @@ export default function SiteFooter() {
         }}
       />
 
-      {/* ── Ghost wordmark — gradient-filled for a touch more presence ──── */}
+      {/* ── Ghost wordmark - gradient-filled for a touch more presence ──── */}
       <div
         aria-hidden
         className="absolute bottom-0 right-0 pointer-events-none select-none overflow-hidden"
@@ -164,7 +164,7 @@ export default function SiteFooter() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             // Fade the wordmark out toward the bottom so it dissolves into the
-            // footer's lower edge — top stays visible, bottom disappears.
+            // footer's lower edge - top stays visible, bottom disappears.
             maskImage: 'linear-gradient(180deg, black 25%, transparent 92%)',
             WebkitMaskImage: 'linear-gradient(180deg, black 25%, transparent 92%)',
           }}
@@ -173,7 +173,7 @@ export default function SiteFooter() {
         </span>
       </div>
 
-      {/* ── Soft top accent — fades at the edges so there's no hard box seam ── */}
+      {/* ── Soft top accent - fades at the edges so there's no hard box seam ── */}
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 h-px"
@@ -331,7 +331,7 @@ export default function SiteFooter() {
           </motion.div>
         </div>
 
-        {/* Divider — fades to transparent on the right so it doesn't cut across
+        {/* Divider - fades to transparent on the right so it doesn't cut across
             the large GENUFY wordmark in the corner. */}
         <div
           className="h-px w-full"

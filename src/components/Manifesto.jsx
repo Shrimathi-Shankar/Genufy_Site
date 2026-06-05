@@ -41,13 +41,13 @@ function BrandLogo({ sources = [], alt = '', scale = 1 }) {
   );
 }
 
-/* ===== Network services — perfect octagonal layout via trigonometry =====
+/* ===== Network services - perfect octagonal layout via trigonometry =====
    8 nodes evenly spaced 360/8 = 45° apart, starting at -90° (top). */
 const NETWORK_CX = 50;   // centre X in viewBox %
 const NETWORK_CY = 53;   // centre Y in viewBox %
 const NETWORK_R = 28;    // radius in viewBox %
 const NETWORK_N = 8;
-const NETWORK_START_ANGLE = -90; // degrees — Salesforce sits at the top
+const NETWORK_START_ANGLE = -90; // degrees - Salesforce sits at the top
 
 /* Each entry carries an ordered list of logo sources. BrandLogo tries them in
    order. Non-brand labels (AI Solutions, DevOps, Web Development) map to the
@@ -62,7 +62,7 @@ const NETWORK_SERVICES = [
   { label: 'Snowflake', sources: ['/logos/snowflake-color.png'] },
   { label: 'MuleSoft', sources: ['/logos/mulesoft.png'], scale: 1.10 },
   { label: 'Pega', sources: ['/logos/pega.png'], scale: 1.40 },
-  // Web Development is a category, not a brand — represented by the official
+  // Web Development is a category, not a brand - represented by the official
   // React mark (the ecosystem's most recognized symbol for modern web dev).
   { label: 'Web Development', sources: [SI('react', '61DAFB'), CB('react.dev')] },
   { label: 'Informatica', sources: ['/logos/informatica.png'] },
@@ -237,11 +237,11 @@ function GlowBackdrop() {
 
 function HolographicMesh() {
   const CENTER = { x: NETWORK_CX, y: NETWORK_CY };
-  // Radial edges — each service connects to the centre point.
+  // Radial edges - each service connects to the centre point.
   const radialEdges = NETWORK_SERVICES.map((s) => ({
     ax: s.x, ay: s.y, bx: CENTER.x, by: CENTER.y,
   }));
-  // Ring edges — each service connects to its adjacent neighbour.
+  // Ring edges - each service connects to its adjacent neighbour.
   const ringEdges = NETWORK_SERVICES.map((s, i) => {
     const next = NETWORK_SERVICES[(i + 1) % NETWORK_SERVICES.length];
     return { ax: s.x, ay: s.y, bx: next.x, by: next.y };
@@ -250,7 +250,7 @@ function HolographicMesh() {
 
   return (
     <div className="relative h-full w-full">
-      {/* ===== LAYER 1 — Background gradients, grid, particles, scanline.
+      {/* ===== LAYER 1 - Background gradients, grid, particles, scanline.
           Static layer (no mouse-driven tilt) so the card stays stable. ===== */}
       <div
         aria-hidden
@@ -283,7 +283,7 @@ function HolographicMesh() {
           }}
         />
 
-        {/* Floating ambient labels — subtle on-brand capability words */}
+        {/* Floating ambient labels - subtle on-brand capability words */}
         <div aria-hidden className="absolute inset-0 font-mono text-[10px] tracking-[0.35em] uppercase text-white/25">
           {[
             { x: '12%', y: '20%', t: 'Innovate', d: 9, dl: 0 },
@@ -303,7 +303,7 @@ function HolographicMesh() {
           ))}
         </div>
 
-        {/* Scanline sweep — part of the tilted background */}
+        {/* Scanline sweep - part of the tilted background */}
         <motion.div
           aria-hidden
           className="absolute inset-x-0 h-12"
@@ -313,7 +313,7 @@ function HolographicMesh() {
         />
       </div>
 
-      {/* ===== LAYER 2 — Network lines (locked, never transformed) ===== */}
+      {/* ===== LAYER 2 - Network lines (locked, never transformed) ===== */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden>
         <defs>
           <linearGradient id="meshLineG" x1="0" y1="0" x2="1" y2="1">
@@ -339,11 +339,11 @@ function HolographicMesh() {
         ))}
       </svg>
 
-      {/* ===== LAYER 3 — Service nodes (locked, never transformed) =====
+      {/* ===== LAYER 3 - Service nodes (locked, never transformed) =====
           No rotateX/rotateY, no hover-based motion. Only entry animation
           (opacity/scale once on first viewport entry) + ambient pulse ring. */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Center logo — Genufy favicon sits exactly on the convergence point
+        {/* Center logo - Genufy favicon sits exactly on the convergence point
             of all radial connections. White circular badge matches the
             service nodes, slightly larger so the centre reads as the hub. */}
         <div
@@ -357,7 +357,7 @@ function HolographicMesh() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
-            {/* Mobile-only shrink wrapper — scales the badge + halo + glow down
+            {/* Mobile-only shrink wrapper - scales the badge + halo + glow down
                 ~25% below md so the network feels more compact; md+ = scale-100
                 (unchanged). The center anchor point doesn't move, so the
                 connecting lines and layout stay intact. */}
@@ -370,7 +370,7 @@ function HolographicMesh() {
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
                 style={{ boxShadow: '0 0 28px 6px rgba(144,235,97,0.6)' }}
               />
-              {/* White circular badge — matches the service nodes, slightly larger. */}
+              {/* White circular badge - matches the service nodes, slightly larger. */}
               <div
                 className="relative grid h-12 w-12 sm:h-14 sm:w-14 md:h-[72px] md:w-[72px] lg:h-[76px] lg:w-[76px] place-items-center rounded-full bg-white ring-1 ring-white/40 p-1.5 sm:p-2 md:p-2.5 lg:p-3"
                 style={{
@@ -388,7 +388,7 @@ function HolographicMesh() {
           </motion.div>
         </div>
 
-        {/* Service icon nodes — circle's centre is anchored to (s.x, s.y). */}
+        {/* Service icon nodes - circle's centre is anchored to (s.x, s.y). */}
         {NETWORK_SERVICES.map((s, i) => (
           <div
             key={s.label}
@@ -402,7 +402,7 @@ function HolographicMesh() {
               transition={{ duration: 0.6, delay: 0.05 * i, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
             >
-              {/* Outward pulse ring — visual only, no positional change */}
+              {/* Outward pulse ring - visual only, no positional change */}
               <motion.span
                 aria-hidden
                 className="absolute inset-0 rounded-full"
@@ -410,7 +410,7 @@ function HolographicMesh() {
                 transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
                 style={{ boxShadow: '0 0 22px 4px rgba(144,235,97,0.55)' }}
               />
-              {/* White circle with the official brand logo — centre sits
+              {/* White circle with the official brand logo - centre sits
                   exactly on (s.x, s.y). Inner padding gives the logo breathing
                   room so it never touches the badge edge. */}
               <div
@@ -422,7 +422,7 @@ function HolographicMesh() {
               >
                 <BrandLogo sources={s.sources} alt={s.label} scale={s.scale} />
               </div>
-              {/* Label sits below the circle — hidden on mobile (<md) so only
+              {/* Label sits below the circle - hidden on mobile (<md) so only
                   the logos show; visible on tablet/desktop. */}
               <div className="hidden md:block absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[10px] md:text-[11px] lg:text-xs font-medium tracking-tight text-white/90">
                 {s.label}
@@ -451,14 +451,14 @@ export default function Manifesto() {
       <GlowBackdrop />
 
       <div className="relative max-w-7xl mx-auto">
-        {/* Heading — top-left */}
+        {/* Heading - top-left */}
         <h2 className="font-display font-bold tracking-tight leading-[1.05] text-2xl sm:text-3xl md:text-[2rem] lg:text-[2.4rem] mb-7 md:mb-9 lg:mb-14 max-w-2xl">
           Built for <span className="text-gradient-gt">Intelligent Growth</span>
         </h2>
 
-        {/* Bottom row — overlap composition mirrors the reference */}
+        {/* Bottom row - overlap composition mirrors the reference */}
         <div className="relative">
-          {/* Right visual — anchored right */}
+          {/* Right visual - anchored right */}
           <div className="lg:w-[60%] lg:ml-auto">
             <div
               className="relative aspect-[16/10] lg:aspect-[16/9.5] rounded-[1.65rem] overflow-hidden border border-white/10 ring-1 ring-white/5"
@@ -469,7 +469,7 @@ export default function Manifesto() {
             </div>
           </div>
 
-          {/* Left card — overlaps the right visual's bottom-left corner */}
+          {/* Left card - overlaps the right visual's bottom-left corner */}
           <div className="mt-5 lg:mt-0 lg:absolute lg:left-0 lg:bottom-0 lg:w-[43%] lg:translate-y-12 z-20">
             <div className="relative rounded-[1.65rem] overflow-hidden">
               <div

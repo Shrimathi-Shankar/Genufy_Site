@@ -7,7 +7,7 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 /* This module is the ONLY place that imports @splinetool/react-spline. It is
    loaded exclusively via next/dynamic({ ssr: false }) from HeroGenufy, so the
    Spline package (which ships only an ESM `import` export condition) never
-   enters Next's server/prerender compilation — it resolves and runs only in
+   enters Next's server/prerender compilation - it resolves and runs only in
    the client bundle. */
 
 const SCENE_URL = '/robot.splinecode';
@@ -28,7 +28,7 @@ function LoadingPulse() {
 }
 
 // Soft glow shown when the 3D scene can't render (e.g. WebGL unsupported or
-// failing on a mobile browser) — so the hero degrades instead of crashing.
+// failing on a mobile browser) - so the hero degrades instead of crashing.
 function RobotFallback() {
   return (
     <div aria-hidden className="absolute inset-0 grid place-items-center">

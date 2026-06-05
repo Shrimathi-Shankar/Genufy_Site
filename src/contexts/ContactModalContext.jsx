@@ -2,7 +2,7 @@ import { createContext, useContext, useCallback, useState } from 'react';
 import CinematicContact from '../components/CinematicContact.jsx';
 
 /* ------------------------------------------------------------------
-   ContactModalContext — single source of truth for the contact form.
+   ContactModalContext - single source of truth for the contact form.
 
    One CinematicContact instance is mounted at the app root so that any
    trigger (Navbar "Contact Us", ClosingCTA "Start a conversation", …)

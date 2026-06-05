@@ -95,7 +95,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -384,7 +384,7 @@ function APIArchitectureVisual({ accent }) {
 }
 
 function SystemIntegrationVisual({ accent }) {
-  /* Application & system integration — a live Anypoint integration console:
+  /* Application & system integration - a live Anypoint integration console:
      each row is a bi-directional flow between two enterprise apps mediated by
      the Mule runtime, with protocol and sync status, plus an uptime gauge. */
   const flows = [
@@ -860,7 +860,7 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
           num="01"
           eyebrow="Integration Blueprint"
           title="API Strategy & Architecture"
-          description="Modern enterprises need flexible, reusable integrations—not fragile point-to-point connections. We design API-led architectures using MuleSoft’s best practices, helping organizations create scalable and future-ready integration ecosystems."
+          description="Modern enterprises need flexible, reusable integrations-not fragile point-to-point connections. We design API-led architectures using MuleSoft’s best practices, helping organizations create scalable and future-ready integration ecosystems."
           features={[
             'API-led connectivity architecture',
             'API-first design using RAML / OpenAPI',

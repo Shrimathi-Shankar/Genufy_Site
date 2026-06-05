@@ -18,28 +18,28 @@ export default function Home() {
       <Header />
 
       <main className="relative z-10">
-        {/* Act 1 — Hero (self-contained: internal parallax stage + Spline robot) */}
+        {/* Act 1 - Hero (self-contained: internal parallax stage + Spline robot) */}
         <HeroGenufy />
 
-        {/* Act 2 — Manifesto reveal */}
+        {/* Act 2 - Manifesto reveal */}
         <Manifesto />
 
-        {/* Act 3 — Trusted Clients marquee */}
+        {/* Act 3 - Trusted Clients marquee */}
         <Marquee />
 
-        {/* Act 4 — Official Salesforce Partner (cinematic portal transition) */}
+        {/* Act 4 - Official Salesforce Partner (cinematic portal transition) */}
         <PortalTransition />
 
-        {/* Act 7 — Horizontal capabilities scroll */}
+        {/* Act 7 - Horizontal capabilities scroll */}
         <HorizontalCapabilities />
 
-        {/* Act 8 — Process pinned showcase */}
+        {/* Act 8 - Process pinned showcase */}
         <PinnedShowcase />
 
-        {/* Act 9 — Closing CTA */}
+        {/* Act 9 - Closing CTA */}
         <ClosingCTA />
 
-        {/* Footer — kept INSIDE main so it shares the z-10 stacking context and
+        {/* Footer - kept INSIDE main so it shares the z-10 stacking context and
             is not veiled by the fixed ParallaxStage overlay (which sits above
             anything outside main). */}
         <SiteFooter />

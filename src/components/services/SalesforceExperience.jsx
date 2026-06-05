@@ -111,7 +111,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -388,7 +388,7 @@ LeadRouter implements Queueable {
   );
 }
 
-/* Slowly turning cog — automation motif, used as a subtle backdrop element. */
+/* Slowly turning cog - automation motif, used as a subtle backdrop element. */
 function Gear({ size, teeth = 10, accent, dir = 1, dur = 22, style }) {
   return (
     <motion.svg
@@ -410,7 +410,7 @@ function Gear({ size, teeth = 10, accent, dir = 1, dur = 22, style }) {
 }
 
 function AutomationVisual({ accent }) {
-  /* Automation & Optimization — a Salesforce Flow: a record trigger kicks off an
+  /* Automation & Optimization - a Salesforce Flow: a record trigger kicks off an
      orchestrated sequence and an execution token travels down the flow,
      illuminating each step in turn, framed by slowly turning automation gears. */
   const steps = [
@@ -576,8 +576,8 @@ function MultiCloudVisual({ accent }) {
 }
 
 function IntegrationVisual({ accent }) {
-  /* Integration & API Management — a live API client: a POST /sync call returns
-     200 OK with a JSON payload, with a small connected-systems chip for depth —
+  /* Integration & API Management - a live API client: a POST /sync call returns
+     200 OK with a JSON payload, with a small connected-systems chip for depth -
      a clean, premium focal card in the family of the code cards. */
   const body = `{
   "synced": true,
@@ -902,7 +902,7 @@ function ExperienceSection({
 /* ---------------- Certifications ---------------- */
 
 /**
- * cat: visual category — drives badge color strip / icon
+ * cat: visual category - drives badge color strip / icon
  *   'specialist' = dark navy hex, cyan strip, cloud icon (row 1)
  *   'consultant' = dark navy hex, yellow strip, cloud icon (row 2)
  *   'designer'   = dark navy hex, pink strip, cloud icon (row 3 first two)
@@ -1162,7 +1162,7 @@ const SF_CLOUDS = [
   {
     id: 'education',
     name: 'Education Cloud',
-    desc: 'Connected student journeys from recruitment to alumni — unified across institutions.',
+    desc: 'Connected student journeys from recruitment to alumni - unified across institutions.',
     glyph: '✦',
     grad: 'linear-gradient(135deg, #10B981, #24baac)',
   },
@@ -1176,7 +1176,7 @@ const SF_CLOUDS = [
   {
     id: 'pardot',
     name: 'Account Engagement (Pardot)',
-    desc: 'B2B marketing automation — lead nurturing, scoring, and revenue-driven campaign analytics.',
+    desc: 'B2B marketing automation - lead nurturing, scoring, and revenue-driven campaign analytics.',
     glyph: '▣',
     grad: 'linear-gradient(135deg, #F59E0B, #90eb61)',
   },
@@ -1295,7 +1295,7 @@ function SalesforceCloudsGrid({ accent }) {
           </div>
           <div className="lg:col-span-5">
             <RevealWords
-              text="Sales, Service, Marketing, Experience, Commerce, and Data — engineered together to unify your customer fabric end to end."
+              text="Sales, Service, Marketing, Experience, Commerce, and Data - engineered together to unify your customer fabric end to end."
               className="block text-sm md:text-base text-white/65 leading-relaxed"
             />
           </div>

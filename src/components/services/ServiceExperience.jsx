@@ -106,7 +106,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -648,7 +648,7 @@ function FinalCTA({ accent, onClose, service }) {
           <RevealWords text={`Ready to accelerate with ${service.title}?`} />
         </h2>
         <RevealWords
-          text="Bring us the ambition. We'll return strategy, design, and a working proof of value in weeks — not quarters."
+          text="Bring us the ambition. We'll return strategy, design, and a working proof of value in weeks - not quarters."
           className="block mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
         />
 
@@ -743,7 +743,7 @@ export default function ServiceExperience({ service, onClose, scrollRef }) {
           num="02"
           eyebrow="Outcomes"
           title="Business impact that compounds."
-          description="Measurable outcomes built into every engagement — designed to compound across teams, quarters, and platforms."
+          description="Measurable outcomes built into every engagement - designed to compound across teams, quarters, and platforms."
           benefits={service.benefits}
           visual={<OutcomesVisual accent={accent} items={service.benefits || []} />}
           accent={accent}
@@ -763,7 +763,7 @@ export default function ServiceExperience({ service, onClose, scrollRef }) {
           num="04"
           eyebrow="Stack"
           title="The technologies we use."
-          description="A modern, opinionated stack — proven at scale and continuously refined across engagements."
+          description="A modern, opinionated stack - proven at scale and continuously refined across engagements."
           visual={<StackVisual accent={accent} items={service.tech || []} />}
           accent={accent}
           flip

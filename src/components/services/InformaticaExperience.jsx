@@ -109,7 +109,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -384,7 +384,7 @@ function HeroScene({ service }) {
             />
             <RevealWords
               text="Genufy TechWorks empowers enterprises to harness the full
-power of Informatica's Intelligent Data Management Cloud (IDMC) — connecting, governing,
+power of Informatica's Intelligent Data Management Cloud (IDMC) - connecting, governing,
 and transforming data across cloud, hybrid, and on-premise environments."
               className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
             />
@@ -425,7 +425,7 @@ Trusted by leading enterprises, delivered by certified experts."
 
 /* ---------------- Section visuals ---------------- */
 
-/* One field row in the mapping canvas — anchored to the left or right column. */
+/* One field row in the mapping canvas - anchored to the left or right column. */
 function FieldChip({ side, y, children, accent, ai, delay = 0 }) {
   const isLeft = side === 'left';
   return (
@@ -954,8 +954,8 @@ function IPaaSEventStreamVisual({ accent }) {
 
 function AIAgentVisual({ accent }) {
   /* AI & agentic data management shown as an autonomous CLAIRE agent run: given
-     a goal, the agent plans and executes data steps across connected tools —
-     no code — completing each with a live status, last step still running. */
+     a goal, the agent plans and executes data steps across connected tools -
+     no code - completing each with a live status, last step still running. */
   const steps = [
     { t: 'Connected sources · Salesforce, SAP', done: true },
     { t: 'Profiled 2.4M records', done: true },
@@ -1491,7 +1491,7 @@ export default function InformaticaExperience({ service, onClose, scrollRef }) {
           num="04"
           eyebrow="AI-Powered Data Operations"
           title="AI & Agentic Data Management"
-          description="Leverage Informatica's cutting-edge agentic AI capabilities to build autonomous data workflows, connect large language models to enterprise data, and dramatically accelerate pipeline development — no code required."
+          description="Leverage Informatica's cutting-edge agentic AI capabilities to build autonomous data workflows, connect large language models to enterprise data, and dramatically accelerate pipeline development - no code required."
           features={[
             'CLAIRE Agents for autonomous data quality and integration workflows',
             'No-code AI Agent Engineering for rapid deployment',
@@ -1533,7 +1533,7 @@ methodology, minimizing downtime and business risk."
           eyebrow="Legacy ETL Transformation"
           title="PL/SQL to IDMC Conversion"
           description="Modernize your Oracle PL/SQL stored procedures, packages, functions, and
-ETL logic into native Informatica IDMC mappings and mapplets — fully cloud-ready,
+ETL logic into native Informatica IDMC mappings and mapplets - fully cloud-ready,
 maintainable, and governed."
           features={[
             'Conversion of PL/SQL procedures and packages into IDMC mappings',
@@ -1554,7 +1554,7 @@ maintainable, and governed."
           num="07"
           eyebrow="Unified Data Cloud Migration"
           title="IICS to IDMC Conversion"
-          description="Migrate your existing Informatica Intelligent Cloud Services (IICS) configurations, connections, mappings, and taskflows to the fully unified, AI-powered IDMC platform — unlocking CLAIRE AI, modern governance, and advanced cloud capabilities."
+          description="Migrate your existing Informatica Intelligent Cloud Services (IICS) configurations, connections, mappings, and taskflows to the fully unified, AI-powered IDMC platform - unlocking CLAIRE AI, modern governance, and advanced cloud capabilities."
           features={[
             'Comprehensive IICS environment audit and migration assessment',
             'IDMC org setup and Secure Agent configuration',
@@ -1573,7 +1573,7 @@ maintainable, and governed."
           num="08"
           eyebrow="Strategic Data Advisory"
           title="Advisory & Managed Services"
-          description="From data strategy workshops to hands-on managed services, Genufy's Informatica-certified team supports your entire data journey — so you can focus on business outcomes, not platform operations."
+          description="From data strategy workshops to hands-on managed services, Genufy's Informatica-certified team supports your entire data journey - so you can focus on business outcomes, not platform operations."
           features={[
             'Data strategy and Informatica roadmap consulting',
             'Industry-specific discovery workshops and assessments',

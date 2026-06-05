@@ -29,7 +29,7 @@ export default function ClosingCTA() {
           with <span className="text-gradient-gt">Genufy</span>.
         </h2>
         <p className="mt-7 mx-auto max-w-xl text-white/65 text-base md:text-lg">
-          A partnership designed for ambitious teams. Tell us where you're going — we'll engineer the system that gets you there.
+          A partnership designed for ambitious teams. Tell us where you're going - we'll engineer the system that gets you there.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <button

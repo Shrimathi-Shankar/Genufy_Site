@@ -50,7 +50,7 @@ function Logo() {
   return (
     <motion.a
       href="/"
-      aria-label="Genufy TechWorks — Home"
+      aria-label="Genufy TechWorks - Home"
       className="group relative flex items-center pl-1"
       initial={{ opacity: 0, x: -8, scale: 0.96 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -104,7 +104,7 @@ export default function Header() {
 
   useEffect(() => {
     const onScroll = (e) => {
-      // Read the scroll position from whatever element actually scrolled — the
+      // Read the scroll position from whatever element actually scrolled - the
       // window on normal pages, or an inner container (e.g. the fullscreen
       // service overlay) when that scrolls instead.
       const t = e?.target;
@@ -164,7 +164,7 @@ export default function Header() {
       return;
     }
     // If the target section is on the current page, smooth-scroll to it directly
-    // (don't rely on pathname — works on home and any page that has the section).
+    // (don't rely on pathname - works on home and any page that has the section).
     if (document.getElementById(id)) {
       scrollToHash(hash);
       if (window.history?.replaceState) window.history.replaceState(null, '', hash);
@@ -185,7 +185,7 @@ export default function Header() {
     >
       <div className="w-full max-w-5xl">
         <nav className="pointer-events-auto flex items-center justify-between rounded-full px-3 py-2 bg-white border border-gray-200/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.18)]">
-          {/* Logo — sits naturally on the white nav */}
+          {/* Logo - sits naturally on the white nav */}
           <Logo />
 
           {/* Nav links */}

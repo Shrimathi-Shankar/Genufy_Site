@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { CLIENTS } from './clientsManifest.js';
 
 /* ------------------------------------------------------------------
-   Trusted Clients — fully dynamic.
+   Trusted Clients - fully dynamic.
 
    CLIENTS is generated from public/clients/ by scripts/gen-clients.mjs,
    which runs automatically before `dev` and `build`. There is NO hardcoded
    list: drop a new logo into that folder (png/jpg/jpeg/webp/svg/avif) and it
-   appears here automatically — name and order derived from the filename.
+   appears here automatically - name and order derived from the filename.
 ------------------------------------------------------------------- */
 
 /* Scroll speed scales with how many logos there are, so the pace stays

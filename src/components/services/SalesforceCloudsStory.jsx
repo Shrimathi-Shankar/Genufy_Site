@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 /**
- * SalesforceCloudsStory — "Cloud Ecosystem" bento mosaic
+ * SalesforceCloudsStory - "Cloud Ecosystem" bento mosaic
  *
  * The 16 Salesforce Clouds are presented as a modern asymmetric bento grid
  * instead of a uniform card row. Each cloud owns its brand gradient (glow,
@@ -147,7 +147,7 @@ function CloudTile({ cloud, i, wide }) {
 export default function SalesforceCloudsStory() {
   return (
     <section
-      aria-label="Salesforce Clouds — ecosystem mosaic"
+      aria-label="Salesforce Clouds - ecosystem mosaic"
       className="relative px-6 md:px-12 py-24 md:py-36 overflow-hidden"
     >
       <AmbientDecor />
@@ -165,7 +165,7 @@ export default function SalesforceCloudsStory() {
             <span className="text-white/85">One connected ecosystem.</span>
           </h2>
           <p className="mt-5 max-w-2xl mx-auto text-sm md:text-base text-white/65 leading-relaxed">
-            Every Salesforce Cloud, mapped as one fabric — each tile carries its own
+            Every Salesforce Cloud, mapped as one fabric - each tile carries its own
             identity, grouped into four currents that power growth, commerce, industry, and operations.
           </p>
 
@@ -183,7 +183,7 @@ export default function SalesforceCloudsStory() {
           </div>
         </div>
 
-        {/* Bento mosaic — wide anchor tile per category, dense flow fills the rest */}
+        {/* Bento mosaic - wide anchor tile per category, dense flow fills the rest */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 grid-flow-dense auto-rows-[164px] sm:auto-rows-[182px]">
           {CLOUDS.map((c, i) => {
             const wide = i === 0 || c.cat !== CLOUDS[i - 1].cat;

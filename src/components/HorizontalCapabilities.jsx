@@ -48,7 +48,7 @@ function CapabilityCard({ service, index, progress, onSelect }) {
   const scrollScale = useTransform(progress, [start - 0.1, mid, end + 0.1], [0.94, 1, 0.94]);
   const scrollOpacity = useTransform(progress, [start - 0.15, mid, end + 0.15], [0.55, 1, 0.55]);
 
-  // Mouse-follow light (soft spotlight only — no tilt/shake)
+  // Mouse-follow light (soft spotlight only - no tilt/shake)
   const ref = useRef(null);
   const [light, setLight] = useState({ x: 50, y: 50, opacity: 0 });
 
@@ -104,7 +104,7 @@ function CapabilityCard({ service, index, progress, onSelect }) {
 
       {/* Glassmorphism panel */}
       <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01] backdrop-blur-xl">
-        {/* Image (shared layout target — morphs to fullscreen) */}
+        {/* Image (shared layout target - morphs to fullscreen) */}
         <motion.div
           layoutId={`${PREFIX}-svc-media-${service.id}`}
           className="absolute inset-0"

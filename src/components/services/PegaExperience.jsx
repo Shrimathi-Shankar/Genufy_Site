@@ -328,7 +328,7 @@ Drive faster operations, greater agility, and sustainable digital growth."
 /* ---------------- Section visuals ---------------- */
 
 function BPMVisual({ accent }) {
-  /* Pega BPM — enterprise process automation as a live case-lifecycle console:
+  /* Pega BPM - enterprise process automation as a live case-lifecycle console:
      each stage of the case advances in sequence, the active stage highlights as
      the case moves through the process, and an SLA gauge fills. */
   const stages = [
@@ -412,7 +412,7 @@ function BPMVisual({ accent }) {
 }
 
 function CRMVisual({ accent }) {
-  /* Pega CRM — a unified customer-engagement console: live interactions stream
+  /* Pega CRM - a unified customer-engagement console: live interactions stream
      in across every channel against one profile, with a CSAT gauge. */
   const rows = [
     { ch: 'chat', label: 'support · resolved' },
@@ -480,7 +480,7 @@ function CRMVisual({ accent }) {
 }
 
 function DecisioningVisual({ accent }) {
-  /* Pega AI & Decisioning — a real-time Next-Best-Action console: candidate
+  /* Pega AI & Decisioning - a real-time Next-Best-Action console: candidate
      actions are scored by propensity, the bars fill live, and the top action
      is locked in as the next best action. */
   const actions = [
@@ -626,7 +626,7 @@ function RPAVisual({ accent }) {
 }
 
 function WorkflowVisual({ accent }) {
-  /* Pega Workflow Automation — an adaptive case-orchestration console: cases
+  /* Pega Workflow Automation - an adaptive case-orchestration console: cases
      route dynamically across systems and stages, each with a live status, and
      resolution time trends down. */
   const cases = [

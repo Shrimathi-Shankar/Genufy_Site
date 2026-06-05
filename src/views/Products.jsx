@@ -60,7 +60,7 @@ function SplitText({ text, className = '', delay = 0, stagger = 0.025 }) {
 }
 
 // ------------------------------------------------------------------
-// Magnetic / tilt wrapper — listens to mouse, applies smoothed tilt + light glow
+// Magnetic / tilt wrapper - listens to mouse, applies smoothed tilt + light glow
 // ------------------------------------------------------------------
 function TiltCard({ children, className = '', strength = 14 }) {
   const ref = useRef(null);
@@ -483,7 +483,7 @@ function ProductsHero() {
           className="mt-8 text-base md:text-lg text-white/65 max-w-2xl mx-auto leading-relaxed"
         >
           Each one engineered to remove a particular kind of friction. Scroll to walk
-          through the chapters — every product tells its own short story.
+          through the chapters - every product tells its own short story.
         </motion.p>
 
         <motion.div

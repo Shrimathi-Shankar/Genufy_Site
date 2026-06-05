@@ -96,7 +96,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -303,7 +303,7 @@ function HeroScene({ service }) {
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
             <RevealWords
-              text="AI Systems That Don't Just Generate — They Execute"
+              text="AI Systems That Don't Just Generate - They Execute"
               className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
             />
             <RevealWords
@@ -419,7 +419,7 @@ function AIAgentVisual({ accent }) {
           </defs>
           {/* loop ring */}
           <circle cx="50" cy="50" r={ringR} fill="none" stroke="url(#agentG)" strokeWidth="0.6" strokeDasharray="2 2.4" opacity="0.45" />
-          {/* rotating accent arc — continuous motion (no straight connector over the core) */}
+          {/* rotating accent arc - continuous motion (no straight connector over the core) */}
           <motion.circle
             cx="50" cy="50" r={ringR} fill="none" stroke={accent} strokeWidth="0.9" strokeLinecap="round"
             strokeDasharray={`${2 * Math.PI * ringR * 0.18} ${2 * Math.PI * ringR}`}
@@ -429,7 +429,7 @@ function AIAgentVisual({ accent }) {
           />
         </svg>
 
-        {/* phase chips — anchored by their INNER edge (the side facing the ring)
+        {/* phase chips - anchored by their INNER edge (the side facing the ring)
             so the gap to the ring is identical regardless of label length. */}
         {phases.map((p, i) => {
           const on = i === step;
@@ -875,7 +875,7 @@ function MultimodalAIVisual({ accent }) {
           </motion.div>
         </div>
 
-        {/* modality chips — anchored by their INNER corner so each diagonal line
+        {/* modality chips - anchored by their INNER corner so each diagonal line
             ends exactly at the corner of its box (symmetric on all four sides). */}
         {modes.map((m, i) => {
           const p = pos(m.deg);
@@ -1143,7 +1143,7 @@ function ScrollDots({ scrollRef }) {
 /* ---------------- Main ---------------- */
 
 /* ============================================================
-   Section — Our Promise (AI Pillars)
+   Section - Our Promise (AI Pillars)
 ============================================================ */
 
 function PillarIcon({ type }) {
@@ -1168,17 +1168,17 @@ const PILLARS = [
   {
     icon: 'lifecycle',
     title: 'Full AI Lifecycle Ownership',
-    body: 'From data strategy and model design to deployment, monitoring, and continuous optimization — we own the entire journey.',
+    body: 'From data strategy and model design to deployment, monitoring, and continuous optimization - we own the entire journey.',
   },
   {
     icon: 'outcomes',
     title: 'Business Outcomes First',
-    body: 'Every model is engineered around measurable business goals, not novelty — AI that moves the metrics that matter.',
+    body: 'Every model is engineered around measurable business goals, not novelty - AI that moves the metrics that matter.',
   },
   {
     icon: 'secure',
     title: 'Secure & Compliant Deployment',
-    body: 'Privacy-first, audited, and compliant by design — deployed safely across cloud and on-premise environments.',
+    body: 'Privacy-first, audited, and compliant by design - deployed safely across cloud and on-premise environments.',
   },
   {
     icon: 'roi',
@@ -1251,7 +1251,7 @@ function AIPillars({ accent }) {
             <span className="text-gradient-gt">AI system</span> we ship.
           </h2>
           <p className="mt-5 mx-auto max-w-xl text-sm md:text-base text-white/60 leading-relaxed">
-            Enterprise AI you can trust — engineered for outcomes, security, and measurable impact from day one.
+            Enterprise AI you can trust - engineered for outcomes, security, and measurable impact from day one.
           </p>
         </motion.div>
 
@@ -1266,7 +1266,7 @@ function AIPillars({ accent }) {
 }
 
 /* ============================================================
-   Section — Industries We Serve (interactive AI explorer)
+   Section - Industries We Serve (interactive AI explorer)
 ============================================================ */
 
 function IndustryIcon({ type }) {
@@ -1341,12 +1341,12 @@ function IndustriesExplorer({ accent }) {
             <span className="text-gradient-gt">your industry</span>.
           </h2>
           <p className="mt-5 mx-auto max-w-xl text-sm md:text-base text-white/60 leading-relaxed">
-            Explore how we apply AI across sectors — each with battle-tested use cases engineered for real impact.
+            Explore how we apply AI across sectors - each with battle-tested use cases engineered for real impact.
           </p>
         </motion.div>
 
         <div className="mt-14 grid gap-6 lg:gap-10 lg:grid-cols-[0.85fr_1.5fr] items-stretch">
-          {/* Industry selector — horizontal scroll on mobile, vertical list on desktop */}
+          {/* Industry selector - horizontal scroll on mobile, vertical list on desktop */}
           <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-1 px-1 [scrollbar-width:none]">
             {INDUSTRIES.map((it, i) => {
               const isActive = i === active;
@@ -1389,7 +1389,7 @@ function IndustriesExplorer({ accent }) {
             })}
           </div>
 
-          {/* Detail panel — stretches to match the industry list height */}
+          {/* Detail panel - stretches to match the industry list height */}
           <div className="relative flex h-full min-h-[440px] flex-col rounded-[28px] border border-white/10 bg-white/[0.025] backdrop-blur-xl p-7 md:p-9 overflow-hidden">
             {/* ambient corner glows */}
             <div
@@ -1462,7 +1462,7 @@ function IndustriesExplorer({ accent }) {
                   {ind.tag}
                 </p>
 
-                {/* AI capability timeline — fills the available height */}
+                {/* AI capability timeline - fills the available height */}
                 <div className="mt-7 flex flex-1 flex-col justify-center">
                   <div className="mb-4 text-[10px] tracking-[0.4em] uppercase text-white/35">
                     AI Capabilities
@@ -1518,7 +1518,7 @@ function IndustriesExplorer({ accent }) {
               </motion.div>
             </AnimatePresence>
 
-            {/* Footer — pagination + auto-explore label */}
+            {/* Footer - pagination + auto-explore label */}
             <div className="relative mt-6 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 {INDUSTRIES.map((_, i) => (
@@ -1564,7 +1564,7 @@ export default function AIMLExperience({ service, onClose, scrollRef }) {
           eyebrow="Creating Content, Code, and Conversations at Scale"
           title="Generative AI Solutions"
           description="Build intelligent systems that generate high-quality text, images, code, and complete workflows 
-using state-of-the-art LLMs — securely integrated into your enterprise environment. We go 
+using state-of-the-art LLMs - securely integrated into your enterprise environment. We go 
 beyond chatbots to deliver production-grade generative systems tied to your business logic.."
           features={[
             'Custom LLM applications and enterprise AI copilots',
@@ -1585,7 +1585,7 @@ beyond chatbots to deliver production-grade generative systems tied to your busi
           eyebrow="Autonomous Agents That Reason, Plan & Execute "
           title="AI Agent Development"
           description="We build goal-oriented AI agents capable of complex multi-step reasoning, tool usage, API 
-integration, and autonomous workflow execution — with full observability, human-in-the-loop 
+integration, and autonomous workflow execution - with full observability, human-in-the-loop 
 controls, and audit trails built in. "
           features={[
             'Multi-agent orchestration and autonomous task execution',
@@ -1606,8 +1606,8 @@ controls, and audit trails built in. "
           num="03"
           eyebrow="Turning Language into Actionable Intelligence "
           title="Natural Language Processing"
-          description="Enable machines to truly understand human language — intent, emotion, context, and nuance 
-— from text, documents, and speech. Our NLP solutions power intelligent experiences that 
+          description="Enable machines to truly understand human language - intent, emotion, context, and nuance 
+- from text, documents, and speech. Our NLP solutions power intelligent experiences that 
 scale across customer, employee, and partner interactions. ."
           features={[
             'Conversational AI and intelligent chatbot development',
@@ -1629,7 +1629,7 @@ scale across customer, employee, and partner interactions. ."
           title="Predictive Analytics & Forecasting"
           description="Turn historical data into accurate forecasts and proactive decisions. Our predictive intelligence 
 solutions use advanced machine learning to surface risks, opportunities, and trends before they 
-happen — giving your teams an unfair competitive advantage.."
+happen - giving your teams an unfair competitive advantage.."
           features={[
             'Demand forecasting and trend prediction models',
             'Predictive maintenance and asset intelligence systems',
@@ -1672,7 +1672,7 @@ real-time visual understanding across industries."
           title="MLOps & AI Engineering."
           description="Bridge the gap between AI experimentation and reliable, production-grade systems. We design 
 and implement the infrastructure, pipelines, and governance needed for AI to perform 
-consistently at scale — across cloud, on-prem, and hybrid environments. ."
+consistently at scale - across cloud, on-prem, and hybrid environments. ."
           features={[
             'Automated CI/CD pipelines for machine learning workflows',
             'Model monitoring, drift detection, and retraining pipelines',
@@ -1693,7 +1693,7 @@ consistently at scale — across cloud, on-prem, and hybrid environments. ."
           eyebrow="Understanding Text, Image, Audio & Video Together "
           title="Multimodal AI."
           description="Next-generation AI that processes and reasons across multiple data modalities simultaneously 
-— enabling richer, more contextual intelligence than any single-modal system can achieve. ."
+- enabling richer, more contextual intelligence than any single-modal system can achieve. ."
           features={[
             'Vision-language AI systems for text and image understanding',
             'Audio and speech intelligence processing solutions',
@@ -1713,7 +1713,7 @@ consistently at scale — across cloud, on-prem, and hybrid environments. ."
           eyebrow="Precision Intelligence for Patient Outcomes "
           title="AI for Healthcare & Life Sciences"
           description="Purpose-built AI solutions for healthcare providers, pharmaceutical companies, health-tech 
-startups, and medical device manufacturers — designed to improve outcomes, reduce costs, 
+startups, and medical device manufacturers - designed to improve outcomes, reduce costs, 
 and accelerate discovery while meeting strict regulatory and privacy standards."
           features={[
             'Medical imaging AI for radiology and pathology analysis',

@@ -95,7 +95,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -314,7 +314,7 @@ function HeroScene({ service }) {
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             />
             {/* <RevealWords
-              text="Our expertise spans full-stack development, cloud-native architectures, headless CMS, and performance-driven UI/UX — delivering fast, secure, SEO-optimized, and conversion-focused web experiences."
+              text="Our expertise spans full-stack development, cloud-native architectures, headless CMS, and performance-driven UI/UX - delivering fast, secure, SEO-optimized, and conversion-focused web experiences."
               className="block mt-4 text-sm md:text-base text-white/65 leading-relaxed"
             /> */}
           </div>
@@ -474,7 +474,7 @@ function EcommerceVisual({ accent }) {
 }
 
 function HeadlessCMSVisual({ accent }) {
-  /* CMS & Headless CMS — an API-first content console: one structured content
+  /* CMS & Headless CMS - an API-first content console: one structured content
      set is delivered to every channel through the content API, each surface
      rendering live, with an edge cache-hit gauge. */
   const channels = [
@@ -536,7 +536,7 @@ function HeadlessCMSVisual({ accent }) {
 }
 
 function APIMicroservicesVisual({ accent }) {
-  /* API & Microservices — a live API gateway console: each microservice exposes
+  /* API & Microservices - a live API gateway console: each microservice exposes
      a REST/GraphQL endpoint behind JWT auth, with health and latency, plus an
      overall success-rate gauge. */
   const services = [

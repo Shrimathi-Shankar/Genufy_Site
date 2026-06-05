@@ -95,7 +95,7 @@ function StaggerFeatures({ items, accent }) {
 }
 
 function FloatingOrbs({ accent }) {
-  /* Premium section backdrop — a slowly drifting aurora mesh tinted by the
+  /* Premium section backdrop - a slowly drifting aurora mesh tinted by the
      section accent, layered with soft floating orbs. Kept low-opacity and
      blurred so it adds depth and domain identity without ever competing with
      the foreground text. */
@@ -419,7 +419,7 @@ function WarehouseVisual({ accent }) {
 
 function DataSharingVisual({ accent }) {
   /* Data sharing & collaboration shown as a single live, governed dataset that
-     multiple organisations work on at once — Google-Docs-style presence cursors
+     multiple organisations work on at once - Google-Docs-style presence cursors
      over one shared table. One source, many consumers across clouds, zero copy.
      A row-by-row "live update" highlight makes the real-time nature obvious. */
   const rows = [
@@ -430,7 +430,7 @@ function DataSharingVisual({ accent }) {
   ];
   const step = 0.8;
   const cycle = rows.length * step;
-  // Collaboration cursors — on-palette presence colours.
+  // Collaboration cursors - on-palette presence colours.
   const cursors = [
     { name: 'Partner · AWS', color: '#90eb61', x: 37, y: 39, dur: 5.5 },
     { name: 'Finance · Azure', color: accent, x: 61, y: 51, dur: 6.5 },
@@ -649,7 +649,7 @@ function SnowparkVisual({ accent }) {
   );
 }
 
-/* Single pipeline-graph node — a small glass chip anchored at (x%, y%). */
+/* Single pipeline-graph node - a small glass chip anchored at (x%, y%). */
 function PipeNode({ x, y, children, primary, accent, delay = 0 }) {
   return (
     <motion.div
@@ -675,7 +675,7 @@ function ELTPipelineVisual({ accent }) {
   /* Data engineering & ELT as a live pipeline DAG: multiple sources are
      ingested via Snowpipe, transformed (dbt · Streams & Tasks), then served to
      analytics and ML. Data packets flow along every edge, with a live
-     throughput readout — clearly "automated ELT at scale". */
+     throughput readout - clearly "automated ELT at scale". */
   const sources = [
     { label: 'Kafka', y: 18 },
     { label: 'S3 · Blob', y: 50 },
@@ -962,7 +962,7 @@ function FinalCTA({ accent, onClose }) {
           <RevealWords text="Ready to Unlock the Snowflake Data Cloud?" />
         </h2>
         <RevealWords
-          text="Let's design your modern data platform — migration, engineering, sharing, and AI — built for scale, governance, and speed."
+          text="Let's design your modern data platform - migration, engineering, sharing, and AI - built for scale, governance, and speed."
           className="block mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
         />
 

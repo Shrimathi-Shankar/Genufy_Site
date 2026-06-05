@@ -10,7 +10,7 @@ export const SERVICES = [
     image: '/AI_bg.jpg',
     accent: '#90eb61',
     description:
-      'We design, build, and operationalize enterprise-grade AI and ML systems — generative copilots, autonomous agents, computer vision, NLP, predictive analytics, and the MLOps backbone that keeps them reliable in production.',
+      'We design, build, and operationalize enterprise-grade AI and ML systems - generative copilots, autonomous agents, computer vision, NLP, predictive analytics, and the MLOps backbone that keeps them reliable in production.',
     features: [
       'Generative AI & enterprise copilots',
       'Autonomous AI agent systems',
@@ -45,7 +45,7 @@ export const SERVICES = [
     image: '/salesforce_bg.jpg',
     accent: '#24baac',
     description:
-      'We design and deliver Salesforce platforms that align Sales, Service, Marketing, and Experience Clouds into a single operating fabric — built to grow with you and intelligent by default.',
+      'We design and deliver Salesforce platforms that align Sales, Service, Marketing, and Experience Clouds into a single operating fabric - built to grow with you and intelligent by default.',
     features: [
       'Sales & Service Cloud architecture',
       'Experience Cloud journeys',
@@ -78,7 +78,7 @@ export const SERVICES = [
     image: '/snowflake_bg.jpg',
     accent: '#24baac',
     description:
-      'Genufy helps you unlock the full potential of the Snowflake Data Cloud — from migration and implementation to data engineering, sharing, and AI-powered analytics on a scalable, secure foundation.',
+      'Genufy helps you unlock the full potential of the Snowflake Data Cloud - from migration and implementation to data engineering, sharing, and AI-powered analytics on a scalable, secure foundation.',
     features: [
       'Modern Data Warehousing',
       'Secure Data Sharing & Marketplace',
@@ -111,7 +111,7 @@ export const SERVICES = [
     image: '/informatica_bg.jpg',
     accent: '#90eb61',
     description:
-      'Informatica empowers organizations to connect, cleanse, govern, and manage data across cloud, hybrid, and on-premise environments — turning trusted data into intelligent business outcomes.',
+      'Informatica empowers organizations to connect, cleanse, govern, and manage data across cloud, hybrid, and on-premise environments - turning trusted data into intelligent business outcomes.',
     features: [
       'Cloud Data Integration (ETL / ELT)',
       'Data Quality & Governance',
@@ -140,11 +140,11 @@ export const SERVICES = [
     title: 'DevOps',
     subtitle: 'Platform · SRE · FinOps',
     body:
-      'Production discipline as a feature — pipelines, infrastructure as code, and observability that make shipping fast feel safe.',
+      'Production discipline as a feature - pipelines, infrastructure as code, and observability that make shipping fast feel safe.',
     image: '/DevOps_bg.jpg',
     accent: '#24baac',
     description:
-      'We build platform layers that compound — golden paths for developers, infrastructure-as-code, SRE playbooks, and the kind of observability that turns 3am pages into one-line fixes.',
+      'We build platform layers that compound - golden paths for developers, infrastructure-as-code, SRE playbooks, and the kind of observability that turns 3am pages into one-line fixes.',
     features: [
       'Kubernetes & service meshes',
       'Terraform & Pulumi IaC',
@@ -177,7 +177,7 @@ export const SERVICES = [
     image: '/MuleSoft_bg.jpg',
     accent: '#90eb61',
     description:
-      'We design and operate MuleSoft estates that unlock the enterprise — clean API contracts, event-driven flows, and governance that scales as fast as the business does.',
+      'We design and operate MuleSoft estates that unlock the enterprise - clean API contracts, event-driven flows, and governance that scales as fast as the business does.',
     features: [
       'Anypoint Platform architecture',
       'API-led design (System / Process / Experience)',

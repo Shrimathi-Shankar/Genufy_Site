@@ -17,7 +17,7 @@ const STEPS = [
     title: 'Meet Our Cera',
     subtitle: 'Your Digital Success Guide',
     paragraphs: [
-      'At Genufy, innovation meets inspiration — and Cera is the face of it all. More than just a mascot, Cera is your friendly tech companion on a mission to transform dreams into milestones.',
+      'At Genufy, innovation meets inspiration - and Cera is the face of it all. More than just a mascot, Cera is your friendly tech companion on a mission to transform dreams into milestones.',
     ],
   },
   {
@@ -25,7 +25,7 @@ const STEPS = [
     title: 'Our Vision',
     subtitle: 'A future engineered for everyone',
     paragraphs: [
-      'Our vision is to become a global leader in digital innovation — empowering startups, enterprises, and brands to lead with technology, grow fearlessly, and build meaningful user experiences.',
+      'Our vision is to become a global leader in digital innovation - empowering startups, enterprises, and brands to lead with technology, grow fearlessly, and build meaningful user experiences.',
       'We envision a future where every organization harnesses the full power of digital to scale smarter, faster, and better.',
     ],
   },
@@ -35,7 +35,7 @@ const STEPS = [
     subtitle: 'Where vision becomes execution',
     paragraphs: [
       'At Genufy TechWorks, our mission is to accelerate digital transformation for businesses by delivering custom software solutions, Salesforce expertise, and next-gen digital platforms.',
-      'We exist to bridge the gap between vision and execution — turning bold ideas into scalable, efficient, and future-ready technology.',
+      'We exist to bridge the gap between vision and execution - turning bold ideas into scalable, efficient, and future-ready technology.',
     ],
   },
 ];
@@ -122,7 +122,7 @@ function RadarVisual({ progress, step }) {
         />
       </motion.div>
 
-      {/* Concentric rings — fewer, smaller, softer */}
+      {/* Concentric rings - fewer, smaller, softer */}
       <motion.div
         style={{ rotate: rot, scale }}
         className="absolute inset-0 flex items-center justify-center"
@@ -162,7 +162,7 @@ function RadarVisual({ progress, step }) {
         </div>
       </motion.div>
 
-      {/* Counter-rotating orbit of glow dots — depth + life */}
+      {/* Counter-rotating orbit of glow dots - depth + life */}
       <motion.div
         aria-hidden
         style={{ rotate: counterRot }}
@@ -201,7 +201,7 @@ function RadarVisual({ progress, step }) {
         </div>
       </motion.div>
 
-      {/* Center medallion — smaller, lighter glow */}
+      {/* Center medallion - smaller, lighter glow */}
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <motion.div
           style={{ scale }}
@@ -359,9 +359,9 @@ export default function PinnedShowcase() {
           }}
         />
 
-        {/* Tablet + desktop (md+) layout — unchanged */}
+        {/* Tablet + desktop (md+) layout - unchanged */}
         <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 hidden md:grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* LEFT — animated content */}
+          {/* LEFT - animated content */}
           <div className="order-2 lg:order-1 relative">
 
             {/* Step progress dots */}
@@ -412,7 +412,7 @@ export default function PinnedShowcase() {
                     <LineReveal text={active.subtitle} delay={0.35} />
                   </div>
 
-                  {/* Paragraphs — staggered fade-up + blur clear */}
+                  {/* Paragraphs - staggered fade-up + blur clear */}
                   <motion.div
                     initial="hidden"
                     animate="show"
@@ -457,13 +457,13 @@ export default function PinnedShowcase() {
             </div>
           </div>
 
-          {/* RIGHT — radar visual */}
+          {/* RIGHT - radar visual */}
           <div className="order-1 lg:order-2 relative">
             <RadarVisual progress={progress} step={step} />
           </div>
         </div>
 
-        {/* Cera video — flush in the very bottom-left corner of the screen,
+        {/* Cera video - flush in the very bottom-left corner of the screen,
             borderless, only on chapter 01 (Meet Our Cera). Slides out as soon
             as the story advances. Desktop only. */}
         <AnimatePresence>
@@ -490,7 +490,7 @@ export default function PinnedShowcase() {
           )}
         </AnimatePresence>
 
-        {/* Mobile (<md) layout — faded spiral in the background with
+        {/* Mobile (<md) layout - faded spiral in the background with
             scroll-driven, one-at-a-time content (Cera → Vision → Mission). */}
         <div className="md:hidden absolute inset-0 flex items-center justify-center px-6">
           <MobileSpiral />
@@ -520,7 +520,7 @@ export default function PinnedShowcase() {
               ))}
             </div>
 
-            {/* One step prominent at a time — fade + subtle scale */}
+            {/* One step prominent at a time - fade + subtle scale */}
             <div className="relative mt-8 min-h-[360px]">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -535,7 +535,7 @@ export default function PinnedShowcase() {
                     Chapter 0{step + 1}
                   </div>
                   {/* Styled as a div (not a second <h2>) so the step title isn't
-                      duplicated in the DOM — the desktop layout already provides
+                      duplicated in the DOM - the desktop layout already provides
                       the semantic <h2>. Both layouts coexist in the DOM (one is
                       CSS-hidden per viewport), so two <h2>s would be a duplicate
                       heading for crawlers. */}

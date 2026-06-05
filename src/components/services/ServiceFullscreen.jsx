@@ -11,7 +11,7 @@ import {
 import SiteFooter from '../SiteFooter.jsx';
 
 /* Each service experience is heavy (16–28 animations). Code-split them so the
-   home-page bundle stays light — only the opened service's module is fetched,
+   home-page bundle stays light - only the opened service's module is fetched,
    on demand, when the overlay opens. */
 const ExpLoader = () => (
   <div className="grid h-screen w-full place-items-center" aria-hidden>
@@ -73,7 +73,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
   // No scroll-lock here: the overlay is fixed full-screen and its inner scroll
   // container carries `data-lenis-prevent` (Lenis ignores it) + `overscroll-contain`
   // (no chaining to the page). Nothing is stopped or locked, so nothing can stay
-  // stuck after closing — this was the cause of the post-close scroll lock.
+  // stuck after closing - this was the cause of the post-close scroll lock.
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onCloseRef.current?.();

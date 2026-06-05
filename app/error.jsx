@@ -11,7 +11,7 @@ export default function Error({ error, reset }) {
           <span className="text-gradient-gt">Something went wrong</span>
         </h1>
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/55">
-          The page hit an unexpected error. Please try again — if it keeps
+          The page hit an unexpected error. Please try again - if it keeps
           happening, reach us at info@genufy.in.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
