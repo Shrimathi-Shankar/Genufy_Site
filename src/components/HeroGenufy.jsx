@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import AuroraBackground from './AuroraBackground.jsx';
+import useEnhancedMotion from '../hooks/useEnhancedMotion.js';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
 // ==========================================
@@ -80,8 +81,8 @@ function Particles({ density = 60 }) {
 function ParallaxStage() {
   const ref = useRef(null);
   const { scrollY } = useScroll();
-  // Reduce particle count on mobile to save GPU memory
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  // Only run the (GPU-heavy) canvas particle field on capable devices.
+  const enhanced = useEnhancedMotion();
 
   const yFar = useTransform(scrollY, [0, 800], [0, -60]);
   const yMid = useTransform(scrollY, [0, 800], [0, -150]);
@@ -162,10 +163,13 @@ function ParallaxStage() {
         />
       </div>
 
-      {/* Particles — halved on mobile */}
-      <motion.div style={{ y: yNear }} className="layer absolute inset-0">
-        <Particles density={isMobile ? 35 : 70} />
-      </motion.div>
+      {/* Particles — skipped entirely on mobile/low-end (the canvas RAF loop is
+          a common cause of freezing there). */}
+      {enhanced && (
+        <motion.div style={{ y: yNear }} className="layer absolute inset-0">
+          <Particles density={70} />
+        </motion.div>
+      )}
 
       {/* Vignette */}
       <div
@@ -445,6 +449,9 @@ function HeadlineLine({ text, delay = 0, accent = false, dimmed = false }) {
 export default function HeroGenufy() {
   useHeroSnap();
   const { openContact } = useContactModal();
+  // On mobile/low-end, skip the WebGL Spline robot + animated HUD (the biggest
+  // freeze culprits) and show a lightweight glow instead.
+  const enhanced = useEnhancedMotion();
   return (
     <>
       {/* 3D background / parallax stage layers */}
@@ -543,15 +550,27 @@ export default function HeroGenufy() {
               maskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
             }}
           >
-            <motion.div
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0, duration: 1.2 }}
-            >
-              <RobotHUD />
-            </motion.div>
-            <SplineRobot />
+            {enhanced ? (
+              <>
+                <motion.div
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0, duration: 1.2 }}
+                >
+                  <RobotHUD />
+                </motion.div>
+                <SplineRobot />
+              </>
+            ) : (
+              // Lightweight fallback for mobile/low-end — no WebGL, no HUD.
+              <div aria-hidden className="absolute inset-0 grid place-items-center">
+                <div
+                  className="h-56 w-56 rounded-full opacity-50 blur-3xl sm:h-72 sm:w-72"
+                  style={{ background: 'radial-gradient(circle, #24baac, #90eb61 55%, transparent 75%)' }}
+                />
+              </div>
+            )}
           </motion.div>
         </div>
 

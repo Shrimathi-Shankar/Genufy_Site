@@ -1,20 +1,34 @@
+'use client';
+
 import { useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import {
   motion,
   useMotionValue,
   useSpring,
   useTransform,
 } from 'framer-motion';
-import SalesforceExperience from './SalesforceExperience.jsx';
-import InformaticaExperience from './InformaticaExperience.jsx';
-import SnowflakeExperience from './SnowflakeExperience.jsx';
-import AIMLExperience from './AIMLExperience.jsx';
-import DevOpsExperience from './DevOpsExperience.jsx';
-import MuleSoftExperience from './MuleSoftExperience.jsx';
-import PegaExperience from './PegaExperience.jsx';
-import WebDevExperience from './WebDevExperience.jsx';
-import ServiceExperience from './ServiceExperience.jsx';
 import SiteFooter from '../SiteFooter.jsx';
+
+/* Each service experience is heavy (16–28 animations). Code-split them so the
+   home-page bundle stays light — only the opened service's module is fetched,
+   on demand, when the overlay opens. */
+const ExpLoader = () => (
+  <div className="grid h-screen w-full place-items-center" aria-hidden>
+    <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/15 border-t-lime" />
+  </div>
+);
+const dyn = (loader) => dynamic(loader, { ssr: false, loading: ExpLoader });
+
+const SalesforceExperience = dyn(() => import('./SalesforceExperience.jsx'));
+const InformaticaExperience = dyn(() => import('./InformaticaExperience.jsx'));
+const SnowflakeExperience = dyn(() => import('./SnowflakeExperience.jsx'));
+const AIMLExperience = dyn(() => import('./AIMLExperience.jsx'));
+const DevOpsExperience = dyn(() => import('./DevOpsExperience.jsx'));
+const MuleSoftExperience = dyn(() => import('./MuleSoftExperience.jsx'));
+const PegaExperience = dyn(() => import('./PegaExperience.jsx'));
+const WebDevExperience = dyn(() => import('./WebDevExperience.jsx'));
+const ServiceExperience = dyn(() => import('./ServiceExperience.jsx'));
 
 function FloatingGlow({ accent }) {
   const items = [
