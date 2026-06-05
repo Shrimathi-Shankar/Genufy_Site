@@ -9,41 +9,30 @@ const links = ['Services', 'Products', 'Insights'];
 
 function scrollToHash(hash) {
   const id = hash.replace(/^#/, '');
-  if (!document.getElementById(id)) return;
+  const el = document.getElementById(id);
+  if (!el) return;
 
-  // Absolute document position of the target's top, header-adjusted. Recomputed
-  // each pass so it self-corrects against the sticky/pinned sections in between.
-  const targetTop = () => {
-    const el = document.getElementById(id);
-    if (!el) return null;
-    const headerH =
-      document.querySelector('header[data-site-header]')?.getBoundingClientRect().height || 0;
-    return el.getBoundingClientRect().top + window.scrollY - headerH - 12;
-  };
-
+  const headerH =
+    document.querySelector('header[data-site-header]')?.getBoundingClientRect().height || 0;
   const easing = (t) => 1 - Math.pow(1 - t, 4);
-  const go = (top, opts = {}) => {
-    const lenis = window.__lenis;
-    if (lenis?.scrollTo) lenis.scrollTo(top, { easing, ...opts });
-    else window.scrollTo({ top, behavior: opts.immediate ? 'auto' : 'smooth' });
-  };
+  const lenis = window.__lenis;
 
-  go(targetTop(), { duration: 1.3 });
-
-  // Recompute-on-settle: after the smooth scroll, re-measure and snap precisely
-  // if we ended up off-target (sticky/pinned layout can land the first pass short).
-  let tries = 0;
-  const correct = () => {
-    if (tries >= 4) return;
-    tries += 1;
-    const top = targetTop();
-    if (top == null) return;
-    if (Math.abs(top - window.scrollY) > 4) {
-      go(top, { immediate: tries >= 2 }); // first nudge smooth, then snap exactly
-      window.setTimeout(correct, 350);
-    }
-  };
-  window.setTimeout(correct, 1400);
+  // Single, fast, locked pass straight to the target. Passing the element lets
+  // Lenis read its live position at scroll time (accurate across the pinned
+  // sections above) and `lock` blocks any interruption mid-flight - no
+  // intermediate stop and no delayed re-correction, so it never pauses on the
+  // way (e.g. at Manifesto).
+  if (lenis?.scrollTo) {
+    lenis.scrollTo(el, {
+      offset: -(headerH + 12),
+      duration: 0.9,
+      easing,
+      lock: true,
+    });
+  } else {
+    const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
 }
 
 function Logo() {
@@ -148,13 +137,32 @@ export default function Header() {
   useEffect(() => {
     const hash = window.location.hash;
     if (!hash) return;
-    const t = setTimeout(() => scrollToHash(hash), 600);
+    const t = setTimeout(() => {
+      scrollToHash(hash);
+      if (hash === '#services' && window.history?.replaceState) {
+        window.history.replaceState(null, '', '/services');
+      }
+    }, 600);
     return () => clearTimeout(t);
   }, []);
 
   const handleNav = (hash) => {
     setOpen(false);
     const id = hash.replace(/^#/, '');
+    if (id === 'services') {
+      // Stay on the landing page: scroll to the section and reflect /services
+      // in the URL (no route change). If the section is not on this page, go
+      // home and the on-mount handler scrolls there.
+      if (document.getElementById('services')) {
+        scrollToHash('#services');
+        if (window.history?.replaceState) {
+          window.history.replaceState(null, '', '/services');
+        }
+      } else {
+        router.push('/#services');
+      }
+      return;
+    }
     if (id === 'products') {
       router.push('/products');
       return;

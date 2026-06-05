@@ -7,6 +7,7 @@ export default function sitemap() {
     { path: '', priority: 1.0, changeFrequency: 'weekly' },
     { path: '/about', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/products', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/contact', priority: 0.7, changeFrequency: 'yearly' },
   ];
   return routes.map(({ path, priority, changeFrequency }) => ({
     url: `${SITE_URL}${path}`,

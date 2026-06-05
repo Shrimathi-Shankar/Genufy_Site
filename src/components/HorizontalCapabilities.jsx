@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
-  AnimatePresence,
   motion,
   useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import MagneticButton from './MagneticButton.jsx';
 import { SERVICES } from './services/serviceData.js';
-import ServiceFullscreen from './services/ServiceFullscreen.jsx';
 
 const PREFIX = 'carousel';
 
@@ -245,7 +244,7 @@ function CapabilityCard({ service, index, progress, onSelect }) {
 
 export default function HorizontalCapabilities() {
   const ref = useRef(null);
-  const [selected, setSelected] = useState(null);
+  const router = useRouter();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -257,20 +256,8 @@ export default function HorizontalCapabilities() {
   const x = useTransform(smooth, [0, 1], ['6%', '-82%']);
   const indicator = useTransform(smooth, [0, 1], [0, 1]);
 
-  // Pause Lenis scroll while the fullscreen overlay is open
-  useEffect(() => {
-    if (!selected) return;
-    // ServiceFullscreen already stops Lenis; nothing to do here.
-  }, [selected]);
-
-  // Deep-link: when arriving via ?service=<id> (e.g. a footer service link),
-  // open that service's fullscreen experience automatically.
-  useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get('service');
-    if (!id) return;
-    const svc = SERVICES.find((s) => s.id === id);
-    if (svc) setSelected(svc);
-  }, []);
+  // Each card navigates to its dedicated route (/services/<id>).
+  const openService = (svc) => router.push(`/services/${svc.id}`);
 
   return (
     <section
@@ -324,7 +311,7 @@ export default function HorizontalCapabilities() {
                   service={s}
                   index={i}
                   progress={smooth}
-                  onSelect={setSelected}
+                  onSelect={openService}
                 />
               ))}
               <div className="w-[10vw] shrink-0" aria-hidden />
@@ -355,17 +342,6 @@ export default function HorizontalCapabilities() {
           </div> */}
         </div>
       </div>
-
-      <AnimatePresence>
-        {selected && (
-          <ServiceFullscreen
-            key={selected.id}
-            service={selected}
-            onClose={() => setSelected(null)}
-            idPrefix={PREFIX}
-          />
-        )}
-      </AnimatePresence>
     </section>
   );
 }

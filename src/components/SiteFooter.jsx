@@ -247,7 +247,7 @@ export default function SiteFooter() {
             <ul className="space-y-2">
               {services.map((s) => (
                 <li key={s.id}>
-                  <FLink href={`/?service=${s.id}#services`}>{s.label}</FLink>
+                  <FLink href={`/services/${s.id}`}>{s.label}</FLink>
                 </li>
               ))}
             </ul>
@@ -318,10 +318,10 @@ export default function SiteFooter() {
             <ColLabel>Company</ColLabel>
             <ul className="space-y-2">
               {[
-                { label: 'About Us', href: '/about' },
-                { label: 'Careers', href: '#' },
-                { label: 'Partners', href: '#' },
-                { label: 'Contact', href: '#contact' },
+                { label: 'About Us', href: '/about-us' },
+                { label: 'Careers', href: '/careers' },
+                { label: 'Partners', href: '/partners' },
+                { label: 'Contact', href: '/contact' },
               ].map((item) => (
                 <li key={item.label}>
                   <FLink href={item.href}>{item.label}</FLink>
