@@ -125,7 +125,7 @@ function ContactChip({ href, icon, label }) {
 export default function SiteFooter() {
   return (
     <footer
-      className="relative overflow-hidden"
+      className="cv-section relative overflow-hidden"
       style={{
         // Starts near-black at the TOP so it blends seamlessly into the deep
         // black section above (no hard "box" seam), then the teal glow rises

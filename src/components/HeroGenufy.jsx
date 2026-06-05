@@ -58,16 +58,31 @@ function Particles({ density = 60 }) {
         ctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
         ctx.fill();
       }
-      raf = requestAnimationFrame(draw);
     };
 
     resize();
     seed();
-    draw();
+
+    // Only run the rAF loop while the hero is actually on screen — once it
+    // scrolls out, stop drawing so the main thread is free for the rest of the
+    // page (it resumes automatically on scroll-back).
+    let visible = true;
+    const loop = () => {
+      if (visible) draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => { visible = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
+    loop();
+
     const onResize = () => { resize(); seed(); };
     window.addEventListener('resize', onResize);
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       window.removeEventListener('resize', onResize);
     };
   }, [density]);

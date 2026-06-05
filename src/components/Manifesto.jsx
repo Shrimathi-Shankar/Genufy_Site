@@ -256,20 +256,44 @@ function HolographicMesh() {
         aria-hidden
         className="absolute inset-0 pointer-events-none"
       >
-        <motion.div
-          aria-hidden
-          className="absolute inset-0 opacity-70"
-          animate={{
-            background: [
-              'radial-gradient(45% 55% at 20% 30%, rgba(36,186,172,0.55), transparent 70%), radial-gradient(40% 50% at 80% 70%, rgba(144,235,97,0.45), transparent 70%), radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)',
-              'radial-gradient(45% 55% at 70% 30%, rgba(36,186,172,0.55), transparent 70%), radial-gradient(40% 50% at 30% 70%, rgba(144,235,97,0.45), transparent 70%), radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)',
-              'radial-gradient(45% 55% at 40% 75%, rgba(36,186,172,0.55), transparent 70%), radial-gradient(40% 50% at 65% 25%, rgba(144,235,97,0.45), transparent 70%), radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)',
-              'radial-gradient(45% 55% at 20% 30%, rgba(36,186,172,0.55), transparent 70%), radial-gradient(40% 50% at 80% 70%, rgba(144,235,97,0.45), transparent 70%), radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)',
-            ],
-          }}
-          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ filter: 'blur(30px)' }}
-        />
+        {/* Drifting glow blobs. Previously this morphed a multi-radial CSS
+            `background` between 4 keyframes — interpolating a gradient string and
+            repainting a blur(30px) layer EVERY frame (a top main-thread cost).
+            Now each blob is a pre-blurred layer animated via `x`/`y` transform
+            only (composited, off the main thread) — same drifting-glow look. */}
+        <div aria-hidden className="absolute inset-0 opacity-70">
+          {/* static faint sky-blue centre wash (was the 3rd, non-moving radial) */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)' }}
+          />
+          {/* teal blob */}
+          <motion.div
+            className="absolute h-[70%] w-[70%] rounded-full"
+            style={{
+              top: '5%',
+              left: '-5%',
+              background: 'radial-gradient(circle, rgba(36,186,172,0.55), transparent 70%)',
+              filter: 'blur(30px)',
+              willChange: 'transform',
+            }}
+            animate={{ x: ['0%', '70%', '30%', '0%'], y: ['0%', '0%', '60%', '0%'] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          {/* lime blob */}
+          <motion.div
+            className="absolute h-[60%] w-[60%] rounded-full"
+            style={{
+              top: '45%',
+              left: '50%',
+              background: 'radial-gradient(circle, rgba(144,235,97,0.45), transparent 70%)',
+              filter: 'blur(30px)',
+              willChange: 'transform',
+            }}
+            animate={{ x: ['0%', '-60%', '20%', '0%'], y: ['0%', '0%', '-55%', '0%'] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
 
         <div
           aria-hidden
@@ -446,7 +470,7 @@ export default function Manifesto() {
   return (
     <section
       ref={ref}
-      className="relative py-16 md:py-20 lg:py-28 px-6 md:px-12 overflow-hidden"
+      className="cv-section relative py-16 md:py-20 lg:py-28 px-6 md:px-12 overflow-hidden"
     >
       <GlowBackdrop />
 

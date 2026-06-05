@@ -43,7 +43,7 @@ export default function Marquee() {
 
   return (
     <section
-      className="relative py-16 overflow-hidden border-y border-white/5"
+      className="cv-section relative py-16 overflow-hidden border-y border-white/5"
       style={{
         background:
           'linear-gradient(135deg, rgba(144,235,97,0.04) 0%, rgba(36,186,172,0.06) 100%)',
