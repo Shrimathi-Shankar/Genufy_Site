@@ -534,9 +534,14 @@ export default function PinnedShowcase() {
                   <div className="text-[10px] tracking-[0.5em] uppercase text-white/50">
                     Chapter 0{step + 1}
                   </div>
-                  <h2 className="mt-3 font-display text-3xl font-bold leading-[1.1] tracking-tight">
+                  {/* Styled as a div (not a second <h2>) so the step title isn't
+                      duplicated in the DOM — the desktop layout already provides
+                      the semantic <h2>. Both layouts coexist in the DOM (one is
+                      CSS-hidden per viewport), so two <h2>s would be a duplicate
+                      heading for crawlers. */}
+                  <div className="mt-3 font-display text-3xl font-bold leading-[1.1] tracking-tight">
                     {active.title}
-                  </h2>
+                  </div>
                   <div className="mt-2 text-[11px] tracking-[0.35em] uppercase text-white/55">
                     {active.subtitle}
                   </div>

@@ -30,7 +30,8 @@ const DESCRIPTION =
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Genufy TechWorks',
+    // Longer, keyword-rich default (the bare brand name was flagged as too short).
+    default: 'Genufy TechWorks — Intelligent Digital Solutions & AI',
     template: '%s | Genufy TechWorks',
   },
   description: DESCRIPTION,
