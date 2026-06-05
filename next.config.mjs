@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Fully static HTML/JS export (deployable anywhere, like the old Vite build).
-  output: 'export',
+  // Standard Next.js server build — runs with `next start` on a Node host
+  // (binds 0.0.0.0 and reads PORT automatically). Pages with no dynamic data
+  // are still statically generated at build time.
   reactStrictMode: true,
-  // Required for static export — we use plain <img>, so no optimization server.
+  // We use plain <img> tags, so skip the image optimizer (no sharp needed).
   images: { unoptimized: true },
 };
 
