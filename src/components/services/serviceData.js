@@ -241,7 +241,7 @@ export const SERVICES = [
     subtitle: 'React · Next.js · WebGL',
     body:
       'Award-calibre digital products - performance-first, motion-rich, and built to convert from the first frame.',
-    image: '/web_bg.png',
+    image: '/web_bg.jpg',
     accent: '#24baac',
     description:
       'Premium web experiences engineered on modern stacks - every pixel, transition, and edge case earns its place. From design systems to WebGL, we ship sites worth stopping for.',
