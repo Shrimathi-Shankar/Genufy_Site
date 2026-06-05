@@ -25,7 +25,7 @@ function AnimatedGlyph({ accent }) {
         animate={{ rotate: 360 }}
         transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
       />
-      <div className="absolute inset-[2px] rounded-[14px] bg-black/85 backdrop-blur-xl grid place-items-center">
+      <div className="absolute inset-[2px] rounded-[14px] bg-black/90 grid place-items-center">
         <motion.div
           animate={{ scale: [1, 1.18, 1], opacity: [0.85, 1, 0.85] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -102,8 +102,11 @@ function CapabilityCard({ service, index, progress, onSelect }) {
         }}
       />
 
-      {/* Glassmorphism panel */}
-      <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01] backdrop-blur-xl">
+      {/* Panel — no backdrop-blur: each card already sits on its own image +
+          heavy dark gradient, so blurring the (dark) section behind it was
+          invisible but forced a per-frame backdrop re-blur on all 8 cards while
+          the track slid — the cause of the sliding lag. */}
+      <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01]">
         {/* Image (shared layout target - morphs to fullscreen) */}
         <motion.div
           layoutId={`${PREFIX}-svc-media-${service.id}`}
