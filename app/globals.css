@@ -102,6 +102,20 @@ body { -ms-overflow-style: none; }
     transparent 72%);
 }
 
+/* Phones (< 768px): drop backdrop-blur entirely. `backdrop-filter` is one of the
+   most expensive things WebKit composites - each blurred panel forces the GPU to
+   re-sample everything behind it, especially during scroll, which drives heat,
+   battery drain and the per-tab memory pressure that crashes iOS Safari. The
+   panels keep their own translucent background tint, so content stays readable -
+   it just looks flatter (solid tint instead of frosted glass). Desktop/tablet
+   keep the full effect. */
+@media (max-width: 767px) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
 /* On mobile the robot is below the text, so shift the aurora to top-centre */
 @media (max-width: 1023px) {
   .aurora-layer {

@@ -12,3 +12,6 @@ next-env.d.ts
 
 # Nested duplicate project copy — not part of the site source
 New_Gen_Web/
+
+# Local backup of full-res certificate originals (not for deploy)
+certificate_originals_backup/

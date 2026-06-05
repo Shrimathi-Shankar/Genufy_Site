@@ -4,6 +4,12 @@ export default function Particles({ density = 60 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Skip the canvas animation on phones (< 768px): the continuous rAF loop is
+    // pure battery/GPU/memory cost on the memory-constrained devices that need
+    // relief most. The canvas is also hidden via `hidden md:block` below, so
+    // nothing is drawn or shown on mobile. Desktop is unaffected.
+    if (window.innerWidth < 768) return;
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     let raf;
@@ -62,5 +68,5 @@ export default function Particles({ density = 60 }) {
     };
   }, [density]);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="hidden md:block absolute inset-0 w-full h-full" aria-hidden="true" />;
 }
