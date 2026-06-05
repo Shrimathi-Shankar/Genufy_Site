@@ -465,10 +465,10 @@ export default function HeroGenufy() {
         <HeroBackdrop />
 
         {/*
-          Mobile layout: grid-rows-[auto_1fr] stacks text (auto height) above
-          the robot (fills remaining space). Desktop: 2-col single row.
+          Mobile: single centred column (robot is hidden on mobile, so a text
+          hero — no awkward empty robot area). Desktop: 2-col with the robot.
         */}
-        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-[auto_1fr] px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
+        <div className="relative z-10 mx-auto grid h-full max-w-7xl grid-cols-1 grid-rows-1 items-center px-5 pt-16 pb-4 sm:px-6 sm:pt-20 sm:pb-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-1 lg:items-center lg:pt-16 lg:pb-4">
 
           {/* Left: text content - z-20 keeps the heading above the (larger) robot
               if they overlap horizontally. */}
@@ -537,14 +537,15 @@ export default function HeroGenufy() {
             </motion.div>
           </div>
 
-          {/* Right: Spline Robot + HUD - fills remaining height on mobile via grid-rows.
-              z-0 sits behind the heading; taller + negative top margin make the robot
-              larger and shifted upward. */}
+          {/* Right: Spline Robot + HUD — DESKTOP ONLY (hidden lg:block). On mobile
+              the robot is hidden entirely so the hero is a clean centred text
+              layout (no awkward empty robot area). On low-end desktops the
+              `enhanced` gate falls back to a lightweight glow instead of WebGL. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 1.2, ease }}
-            className="relative z-0 min-h-[200px] w-full min-w-0 lg:h-[100vh] lg:min-h-[640px] lg:-mt-[9vh] lg:w-[130%] lg:-ml-[18%]"
+            className="relative z-0 hidden w-full min-w-0 lg:block lg:h-[100vh] lg:min-h-[640px] lg:-mt-[9vh] lg:w-[130%] lg:-ml-[18%]"
             style={{
               WebkitMaskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
               maskImage: 'radial-gradient(ellipse 82% 76% at 52% 42%, black 22%, rgba(0,0,0,0.85) 48%, rgba(0,0,0,0.3) 70%, transparent 100%)',
