@@ -18,7 +18,14 @@ export default function useEnhancedMotion() {
       window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
     const wideEnough = window.innerWidth >= 1024;
     const cores = navigator.hardwareConcurrency || 4;
-    if (wideEnough && !reduced && cores >= 4) setEnhanced(true);
+    // Never enable the WebGL robot + canvas particles on touch devices. Width
+    // alone let iPads through (iPadOS reports as desktop Safari and is >=1024px
+    // in landscape), where the heavy GPU work risks the iOS memory crash loop.
+    const coarse = window.matchMedia?.('(pointer: coarse)')?.matches ?? false;
+    const touch = (navigator.maxTouchPoints || 0) > 1;
+    if (wideEnough && !reduced && cores >= 4 && !coarse && !touch) {
+      setEnhanced(true);
+    }
   }, []);
 
   return enhanced;

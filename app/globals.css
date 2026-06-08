@@ -152,3 +152,26 @@ body { -ms-overflow-style: none; }
   }
   .aurora-layer { animation: none !important; }
 }
+
+/* Touch devices (phones/tablets - iOS Safari especially) have a tight per-tab
+   memory budget. The two heaviest GPU/compositor costs are the full-screen
+   blur(60px) aurora and the fixed mix-blend-mode noise overlay; on phones they
+   can push the tab past iOS's limit, causing a crash-and-reload loop. Replace
+   the blurred animated aurora with a cheap static gradient and drop the noise.
+   Desktop (pointer: fine) is unaffected. */
+@media (pointer: coarse) {
+  .aurora-layer {
+    filter: none;
+    animation: none;
+    opacity: 0.55;
+    background: radial-gradient(
+      120% 85% at 65% 0%,
+      rgba(144, 235, 97, 0.20) 0%,
+      rgba(36, 186, 172, 0.14) 38%,
+      transparent 72%
+    );
+  }
+  .noise {
+    display: none;
+  }
+}

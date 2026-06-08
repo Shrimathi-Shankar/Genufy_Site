@@ -147,6 +147,31 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
+        {/* On-device debug overlay - ONLY active when the URL has ?debug=1.
+            Runs in <head> before the app JS so it captures errors that happen
+            during boot/hydration (incl. on iOS Safari, where we can't see a
+            console otherwise). No effect for normal visitors. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{
+  if(new URLSearchParams(location.search).get('debug')!=='1')return;
+  var buf=[];
+  function render(){var el=document.getElementById('__dbg');
+    if(!el){if(!document.body)return;el=document.createElement('div');el.id='__dbg';
+      el.style.cssText='position:fixed;z-index:2147483647;left:0;right:0;bottom:0;max-height:60vh;overflow:auto;background:rgba(0,0,0,.92);color:#7CFFB2;font:11px/1.45 monospace;padding:8px;white-space:pre-wrap;border-top:2px solid #24baac';
+      document.body.appendChild(el);}
+    el.textContent=buf.join('\\n');}
+  function log(m){buf.push(m);try{render()}catch(e){}}
+  window.addEventListener('error',function(e){log('JS ERROR: '+(e.message||'')+' @ '+(e.filename||'')+':'+(e.lineno||0)+(e.error&&e.error.stack?'\\n'+e.error.stack:''));});
+  window.addEventListener('unhandledrejection',function(e){var r=e.reason;log('PROMISE REJECT: '+((r&&(r.stack||r.message))||r));});
+  document.addEventListener('DOMContentLoaded',render);
+  log('debug on '+new Date().toISOString());
+  log('UA: '+navigator.userAgent);
+  log('vw x vh: '+window.innerWidth+'x'+window.innerHeight+' dpr:'+window.devicePixelRatio);
+  var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/eruda';s.onload=function(){try{eruda.init();log('eruda ready - tap the floating button for full console')}catch(e){}};s.onerror=function(){log('eruda failed to load (offline?) - using inline overlay only')};document.head.appendChild(s);
+}catch(e){}})();`,
+          }}
+        />
       </head>
       <body>
         <Providers>{children}</Providers>
