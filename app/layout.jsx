@@ -60,13 +60,15 @@ export const metadata = {
     title: 'Genufy TechWorks',
     description: DESCRIPTION,
     url: SITE_URL,
-    images: [{ url: '/logo.png', alt: 'Genufy TechWorks' }],
+    images: [
+      { url: '/og-image.png', width: 1200, height: 630, alt: 'Genufy TechWorks - Intelligent Digital Solutions & AI' },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Genufy TechWorks',
     description: DESCRIPTION,
-    images: ['/logo.png'],
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -133,6 +135,14 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}
     >
       <head>
+        {/* Resource hints - warm up the connections used after first paint:
+            EmailJS (contact form submit) and the external brand-logo CDNs used
+            in the Manifesto network. The Spline 3D scene is served locally
+            (/robot.splinecode), so it needs no preconnect. */}
+        <link rel="preconnect" href="https://api.emailjs.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://api.emailjs.com" />
+        <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
+        <link rel="dns-prefetch" href="https://logo.clearbit.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

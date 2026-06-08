@@ -137,3 +137,18 @@ body { -ms-overflow-style: none; }
       transparent 72%);
   }
 }
+
+/* Reduced motion: neutralise CSS animations/transitions and looping effects
+   site-wide. Framer Motion is handled by <MotionConfig reducedMotion="user">
+   and Lenis smooth scroll is skipped in useLenis for these users. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .aurora-layer { animation: none !important; }
+}

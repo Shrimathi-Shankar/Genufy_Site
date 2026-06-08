@@ -4,11 +4,13 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/convert-images.mjs && node scripts/gen-clients.mjs",
+    "predev": "node scripts/convert-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/convert-images.mjs && node scripts/gen-clients.mjs",
+    "prebuild": "node scripts/convert-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
     "build": "next build",
-    "start": "next start -H 0.0.0.0 -p ${PORT:-3000}"
+    "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
+    "analyze": "cross-env ANALYZE=true next build",
+    "lhci": "lhci autorun"
   },
   "dependencies": {
     "@splinetool/react-spline": "^4.1.0",
@@ -21,8 +23,10 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.2.7",
     "autoprefixer": "^10.4.19",
+    "cross-env": "^10.1.0",
     "postcss": "^8.4.40",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.7"

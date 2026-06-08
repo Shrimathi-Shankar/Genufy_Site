@@ -18,8 +18,46 @@ export function generateMetadata({ params }) {
   };
 }
 
+const SITE_URL = 'https://genufy.in';
+
 export default function Page({ params }) {
   const service = SERVICES.find((s) => s.id === params.slug);
   if (!service) notFound();
-  return <ServiceDetail slug={params.slug} />;
+
+  const url = `${SITE_URL}/services/${service.id}`;
+  // Service schema (what this page offers) + BreadcrumbList (Home > Services >
+  // this service) so search engines can show breadcrumb rich results.
+  const serviceLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    description: (service.description || service.body || '').slice(0, 300),
+    serviceType: service.title,
+    provider: { '@type': 'Organization', name: 'Genufy TechWorks', url: SITE_URL },
+    areaServed: ['IN', 'US'],
+    url,
+  };
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
+      { '@type': 'ListItem', position: 3, name: service.title, item: url },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <ServiceDetail slug={params.slug} />
+    </>
+  );
 }

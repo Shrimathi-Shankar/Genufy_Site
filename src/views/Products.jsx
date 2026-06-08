@@ -216,6 +216,8 @@ function ProductChapter({ product, index }) {
                 <img
                   src={product.image}
                   alt={product.name}
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                   className="absolute inset-0 w-full h-full object-cover opacity-90"
                 />

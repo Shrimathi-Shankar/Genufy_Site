@@ -48,7 +48,11 @@ function Logo() {
       <img
         src="/logo.png"
         alt="Genufy TechWorks"
+        width={905}
+        height={276}
         draggable={false}
+        decoding="async"
+        fetchPriority="high"
         className="h-9 md:h-10 w-auto select-none transition-transform duration-500 group-hover:scale-[1.04]"
       />
     </motion.a>

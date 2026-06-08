@@ -1,6 +1,6 @@
 'use client';
 
-import { LazyMotion } from 'framer-motion';
+import { LazyMotion, MotionConfig } from 'framer-motion';
 import { ContactModalProvider } from '../src/contexts/ContactModalContext.jsx';
 import useLenis from '../src/hooks/useLenis.js';
 
@@ -18,7 +18,11 @@ export default function Providers({ children }) {
   useLenis();
   return (
     <LazyMotion features={loadMotionFeatures}>
-      <ContactModalProvider>{children}</ContactModalProvider>
+      {/* reducedMotion="user" makes every motion component honor the OS
+          "reduce motion" setting (transforms/layout animations are skipped). */}
+      <MotionConfig reducedMotion="user">
+        <ContactModalProvider>{children}</ContactModalProvider>
+      </MotionConfig>
     </LazyMotion>
   );
 }

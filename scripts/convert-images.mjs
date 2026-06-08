@@ -26,7 +26,8 @@ const root = join(__dirname, '..');
 const publicDir = join(root, 'public');
 
 // Files (relative to public/, POSIX-style) to leave as their original format.
-const EXCLUDE = new Set(['favicon.png', 'logo.png']);
+// favicon + logo + the social/OG image need wide raster-format support.
+const EXCLUDE = new Set(['favicon.png', 'logo.png', 'og-image.png']);
 
 // Per-path max width (longest images don't need full resolution). Anything not
 // matched uses DEFAULT_MAX_WIDTH.

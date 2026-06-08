@@ -484,6 +484,7 @@ export default function PinnedShowcase() {
                 loop
                 muted
                 playsInline
+                preload="none"
                 className="block w-[118%] max-w-none"
               />
             </motion.div>

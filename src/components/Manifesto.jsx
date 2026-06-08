@@ -34,6 +34,7 @@ function BrandLogo({ sources = [], alt = '', scale = 1 }) {
       src={sources[idx]}
       alt={alt}
       loading="lazy"
+      decoding="async"
       onError={() => setIdx((i) => i + 1)}
       className="object-contain"
       style={{ width: size, height: size, transform: `scale(${scale})` }}
@@ -405,6 +406,8 @@ function HolographicMesh() {
                 <img
                   src="/favicon.png"
                   alt="Genufy"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full scale-[1.1] object-contain"
                 />
               </div>

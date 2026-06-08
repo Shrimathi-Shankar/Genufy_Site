@@ -31,6 +31,7 @@ function ClientLogo({ src, alt = '' }) {
       src={src}
       alt={alt}
       loading="lazy"
+      decoding="async"
       onError={() => setFailed(true)}
       className="max-h-[56px] max-w-[150px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
     />

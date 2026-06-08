@@ -7,6 +7,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function useLenis() {
   useEffect(() => {
+    // Respect "reduce motion": skip smooth scroll entirely so the page uses the
+    // browser's native (instant) scrolling. Components read window.__lenis with
+    // optional chaining, so leaving it undefined is safe.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
