@@ -112,14 +112,25 @@ function CapabilityCard({ service, index, progress, onSelect }) {
           className="absolute inset-0"
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <img
-            src={service.image}
-            alt=""
-            aria-hidden
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover opacity-50 scale-110 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.18] group-hover:opacity-65"
-          />
+          {/* Touch devices load the ~800px -sm variant (the 8 full-size images
+              decode to ~48MB of RAM together - a primary cause of the iOS Safari
+              memory crash on scroll; the -sm set is ~14MB). Desktop and the
+              full-screen detail page keep the full image. */}
+          <picture>
+            <source
+              media="(pointer: coarse)"
+              type="image/webp"
+              srcSet={service.image.replace(/\.webp$/, '-sm.webp')}
+            />
+            <img
+              src={service.image}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover opacity-50 scale-110 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.18] group-hover:opacity-65"
+            />
+          </picture>
           <div
             aria-hidden
             className="absolute inset-0"

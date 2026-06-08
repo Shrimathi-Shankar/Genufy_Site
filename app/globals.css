@@ -174,4 +174,26 @@ body { -ms-overflow-style: none; }
   .noise {
     display: none;
   }
+
+  /* backdrop-filter is the single most expensive effect WebKit composites, and
+     the scroll path renders many at once. Drop it on ALL touch devices (this
+     also covers iPhone landscape, which is wider than the 767px rule above). */
+  [class*='backdrop-blur'] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Large decorative glow blurs each allocate a big offscreen texture; many held
+     during a long scroll is what tips iOS over its memory limit. Cap the radius
+     hard (cost scales with radius) so they stay soft but cheap. */
+  [class*='blur-2xl'],
+  [class*='blur-3xl'],
+  [class*='blur-['] {
+    filter: blur(8px) !important;
+  }
+
+  /* mix-blend compositing forces extra offscreen passes; normal is fine here. */
+  [class*='mix-blend'] {
+    mix-blend-mode: normal !important;
+  }
 }

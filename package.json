@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/convert-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
+    "predev": "node scripts/convert-images.mjs && node scripts/gen-mobile-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/convert-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
+    "prebuild": "node scripts/convert-images.mjs && node scripts/gen-mobile-images.mjs && node scripts/gen-og-image.mjs && node scripts/gen-clients.mjs",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "analyze": "cross-env ANALYZE=true next build",
