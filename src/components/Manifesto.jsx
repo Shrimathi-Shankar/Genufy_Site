@@ -56,16 +56,16 @@ const SI = (slug, color = 'FFFFFF') => `https://cdn.simpleicons.org/${slug}/${co
 const CB = (domain) => `https://logo.clearbit.com/${domain}`;
 
 const NETWORK_SERVICES = [
-  { label: 'Salesforce', sources: ['/logos/salesforce.jpg'], scale: 1.20 },
-  { label: 'AI Solutions', sources: ['/logos/AI.png'] },
-  { label: 'DevOps', sources: ['/logos/devOps.png'] },
-  { label: 'Snowflake', sources: ['/logos/snowflake-color.png'] },
-  { label: 'MuleSoft', sources: ['/logos/mulesoft.png'], scale: 1.10 },
-  { label: 'Pega', sources: ['/logos/pega.png'], scale: 1.40 },
+  { label: 'Salesforce', sources: ['/logos/salesforce.webp'], scale: 1.20 },
+  { label: 'AI Solutions', sources: ['/logos/AI.webp'] },
+  { label: 'DevOps', sources: ['/logos/devOps.webp'] },
+  { label: 'Snowflake', sources: ['/logos/snowflake-color.webp'] },
+  { label: 'MuleSoft', sources: ['/logos/mulesoft.webp'], scale: 1.10 },
+  { label: 'Pega', sources: ['/logos/pega.webp'], scale: 1.40 },
   // Web Development is a category, not a brand - represented by the official
   // React mark (the ecosystem's most recognized symbol for modern web dev).
   { label: 'Web Development', sources: [SI('react', '61DAFB'), CB('react.dev')] },
-  { label: 'Informatica', sources: ['/logos/informatica.png'] },
+  { label: 'Informatica', sources: ['/logos/informatica.webp'] },
 ].map((s, i) => {
   const rad = ((NETWORK_START_ANGLE + (i * 360) / NETWORK_N) * Math.PI) / 180;
   return {

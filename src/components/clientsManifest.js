@@ -2,43 +2,43 @@
    Regenerated automatically before `dev` and `build`. */
 export const CLIENTS = [
   {
-    "src": "/clients/abbvie.png",
+    "src": "/clients/abbvie.webp",
     "label": "Abbvie"
   },
   {
-    "src": "/clients/alcority.png",
+    "src": "/clients/alcority.webp",
     "label": "Alcority"
   },
   {
-    "src": "/clients/Cedars.png",
+    "src": "/clients/Cedars.webp",
     "label": "Cedars"
   },
   {
-    "src": "/clients/cigna.png",
+    "src": "/clients/cigna.webp",
     "label": "Cigna"
   },
   {
-    "src": "/clients/comcast.png",
+    "src": "/clients/comcast.webp",
     "label": "Comcast"
   },
   {
-    "src": "/clients/cree.png",
+    "src": "/clients/cree.webp",
     "label": "Cree"
   },
   {
-    "src": "/clients/edf.png",
+    "src": "/clients/edf.webp",
     "label": "Edf"
   },
   {
-    "src": "/clients/FHL.png",
+    "src": "/clients/FHL.webp",
     "label": "FHL"
   },
   {
-    "src": "/clients/Hilton.png",
+    "src": "/clients/Hilton.webp",
     "label": "Hilton"
   },
   {
-    "src": "/clients/Ncaa.png",
+    "src": "/clients/Ncaa.webp",
     "label": "Ncaa"
   },
   {
@@ -46,23 +46,23 @@ export const CLIENTS = [
     "label": "Smbc"
   },
   {
-    "src": "/clients/vitalant.png",
+    "src": "/clients/vitalant.webp",
     "label": "Vitalant"
   },
   {
-    "src": "/clients/wex.png",
+    "src": "/clients/wex.webp",
     "label": "Wex"
   },
   {
-    "src": "/clients/Willscot.png",
+    "src": "/clients/Willscot.webp",
     "label": "Willscot"
   },
   {
-    "src": "/clients/woodstream.png",
+    "src": "/clients/woodstream.webp",
     "label": "Woodstream"
   },
   {
-    "src": "/clients/worldpay.png",
+    "src": "/clients/worldpay.webp",
     "label": "Worldpay"
   }
 ];

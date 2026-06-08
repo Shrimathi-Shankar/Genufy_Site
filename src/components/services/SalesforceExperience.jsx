@@ -909,24 +909,24 @@ function ExperienceSection({
  *   'associate'  = lighter blue hex, chat icon (row 3 last two)
  */
 const CERTS = [
-  { code: 'ADM', label: 'Associate', cat: 'specialist', img: '/certificate_folder/Certificate_1.png' },
-  { code: 'APP', label: 'Administrator', cat: 'specialist', img: '/certificate_folder/Certificate_2.png' },
-  { code: 'BA', label: 'Platform Builder', cat: 'specialist', img: '/certificate_folder/Certificate_3.png' },
-  { code: 'PD-I', label: 'Business Analyst', cat: 'specialist', img: '/certificate_folder/Certificate_4.png' },
-  { code: 'PD-II', label: 'Platform Developer I', cat: 'specialist', img: '/certificate_folder/Certificate_5.png' },
-  { code: 'OSD', label: 'Platform Developer II', cat: 'specialist', img: '/certificate_folder/Certificate_6.png' },
-  { code: 'CPQ', label: 'OmniStudio Developer', cat: 'specialist', img: '/certificate_folder/Certificate_7.png' },
-  { code: 'AIS', label: 'CPQ Specialist', cat: 'specialist', img: '/certificate_folder/Certificate_8.png' },
-  { code: 'SVC', label: 'AI Specialist', cat: 'consultant', img: '/certificate_folder/Certificate_9.png' },
-  { code: 'OSC', label: 'Service Cloud Consultant', cat: 'consultant', img: '/certificate_folder/Certificate_10.png' },
+  { code: 'ADM', label: 'Associate', cat: 'specialist', img: '/certificate_folder/Certificate_1.webp' },
+  { code: 'APP', label: 'Administrator', cat: 'specialist', img: '/certificate_folder/Certificate_2.webp' },
+  { code: 'BA', label: 'Platform Builder', cat: 'specialist', img: '/certificate_folder/Certificate_3.webp' },
+  { code: 'PD-I', label: 'Business Analyst', cat: 'specialist', img: '/certificate_folder/Certificate_4.webp' },
+  { code: 'PD-II', label: 'Platform Developer I', cat: 'specialist', img: '/certificate_folder/Certificate_5.webp' },
+  { code: 'OSD', label: 'Platform Developer II', cat: 'specialist', img: '/certificate_folder/Certificate_6.webp' },
+  { code: 'CPQ', label: 'OmniStudio Developer', cat: 'specialist', img: '/certificate_folder/Certificate_7.webp' },
+  { code: 'AIS', label: 'CPQ Specialist', cat: 'specialist', img: '/certificate_folder/Certificate_8.webp' },
+  { code: 'SVC', label: 'AI Specialist', cat: 'consultant', img: '/certificate_folder/Certificate_9.webp' },
+  { code: 'OSC', label: 'Service Cloud Consultant', cat: 'consultant', img: '/certificate_folder/Certificate_10.webp' },
 
 
-  { code: 'FSC', label: 'Strategy Designer', cat: 'consultant', img: '/certificate_folder/Certificate_13.png' },
+  { code: 'FSC', label: 'Strategy Designer', cat: 'consultant', img: '/certificate_folder/Certificate_13.webp' },
 
-  { code: 'STD', label: 'Field Service Consultant', cat: 'designer', img: '/certificate_folder/Certificate_16.png' },
-  { code: 'UXD', label: 'Sales Cloud Consultant', cat: 'designer', img: '/certificate_folder/Certificate_17.png' },
-  { code: 'AIA', label: 'Experience Cloud Consultant', cat: 'associate', img: '/certificate_folder/Certificate_18.png' },
-  { code: 'ASC', label: 'OmniStudio Consultant', cat: 'associate', img: '/certificate_folder/Certificate_19.png' },
+  { code: 'STD', label: 'Field Service Consultant', cat: 'designer', img: '/certificate_folder/Certificate_16.webp' },
+  { code: 'UXD', label: 'Sales Cloud Consultant', cat: 'designer', img: '/certificate_folder/Certificate_17.webp' },
+  { code: 'AIA', label: 'Experience Cloud Consultant', cat: 'associate', img: '/certificate_folder/Certificate_18.webp' },
+  { code: 'ASC', label: 'OmniStudio Consultant', cat: 'associate', img: '/certificate_folder/Certificate_19.webp' },
 ];
 
 /* Hexagonal Salesforce-style certification badge (SVG) */
