@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 

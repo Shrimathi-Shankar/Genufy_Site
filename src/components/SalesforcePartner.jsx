@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { m as motion, useInView } from 'framer-motion';
 
 /* ---------------- Partner data + branded SVG marks ---------------- */
 const PARTNERS = [

@@ -1,4 +1,4 @@
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, m as motion } from 'framer-motion';
 import { useRef } from 'react';
 import Particles from './Particles.jsx';
 

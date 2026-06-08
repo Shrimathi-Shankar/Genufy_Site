@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  motion,
+  m as motion,
   useMotionValue,
   useScroll,
   useSpring,

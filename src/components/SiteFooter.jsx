@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { products as ALL_PRODUCTS } from '../views/products/productData.js';
 
 // ─── Data ────────────────────────────────────────────────────────────────────

@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import {
-  motion,
+  m as motion,
   useScroll,
   useTransform,
   useSpring,

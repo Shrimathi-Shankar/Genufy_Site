@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
 const links = ['Services', 'Products', 'Insights'];

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { fadeUp } from '../animations/variants.js';
 
 export default function Reveal({ children, delay = 0, className, as = 'div' }) {

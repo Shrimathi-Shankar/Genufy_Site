@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
+import { m as motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
 
 /* ============================================================
    PortalTransition (Parallax edition)

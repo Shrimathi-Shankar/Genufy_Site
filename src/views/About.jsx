@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { pageTransition } from '../animations/variants.js';
 import Reveal from '../components/Reveal.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';

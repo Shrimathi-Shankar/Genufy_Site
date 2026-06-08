@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import {
-  motion,
+  m as motion,
   useMotionValue,
   useSpring,
   useTransform,

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { m as motion, useScroll, useTransform } from 'framer-motion';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
 export default function ClosingCTA() {

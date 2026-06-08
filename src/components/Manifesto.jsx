@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { m as motion, useScroll, useTransform } from 'framer-motion';
 
 const TEXT =
   'Genufy transforms complex business challenges into seamless digital experiences. We design intelligent platforms, automation systems, and AI-driven solutions that help businesses scale efficiently and operate smarter.';

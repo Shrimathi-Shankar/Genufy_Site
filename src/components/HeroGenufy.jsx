@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, m as motion } from 'framer-motion';
 import AuroraBackground from './AuroraBackground.jsx';
 import useEnhancedMotion from '../hooks/useEnhancedMotion.js';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
