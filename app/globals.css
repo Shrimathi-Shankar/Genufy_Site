@@ -185,10 +185,15 @@ body { -ms-overflow-style: none; }
 
   /* Large decorative glow blurs each allocate a big offscreen texture; many held
      during a long scroll is what tips iOS over its memory limit. Cap the radius
-     hard (cost scales with radius) so they stay soft but cheap. */
-  [class*='blur-2xl'],
-  [class*='blur-3xl'],
-  [class*='blur-['] {
+     hard (cost scales with radius) so they stay soft but cheap.
+     The :not([class*='backdrop-blur']) guard is essential: a Tailwind class like
+     `backdrop-blur-2xl` CONTAINS the substring `blur-2xl`, so without it this
+     rule would apply a real `filter: blur()` to those elements - blurring their
+     own content (e.g. the mobile nav dropdown text). backdrop-blur is already
+     neutralised by the backdrop-filter rule above. */
+  [class*='blur-2xl']:not([class*='backdrop-blur']),
+  [class*='blur-3xl']:not([class*='backdrop-blur']),
+  [class*='blur-[']:not([class*='backdrop-blur']) {
     filter: blur(8px) !important;
   }
 
