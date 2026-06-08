@@ -1,7 +1,20 @@
-import bundleAnalyzer from '@next/bundle-analyzer';
+import { createRequire } from 'node:module';
 
-// Visualise the bundle with `ANALYZE=true npm run build` (opens treemap HTML).
-const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === 'true' });
+const require = createRequire(import.meta.url);
+
+// Load the bundle analyzer ONLY when explicitly requested (ANALYZE=true).
+// It is a devDependency, so the import must be conditional - otherwise a
+// production install that omits devDependencies would fail to load this config,
+// breaking `next build` / `next start` (server never boots -> all browsers hang
+// on a perpetual load). `npm run analyze` sets ANALYZE=true.
+let withBundleAnalyzer = (config) => config;
+if (process.env.ANALYZE === 'true') {
+  try {
+    withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: true });
+  } catch {
+    console.warn('[next.config] @next/bundle-analyzer not installed; skipping analysis.');
+  }
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
