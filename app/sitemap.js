@@ -10,6 +10,7 @@ export default function sitemap() {
   const routes = [
     { path: '', priority: 1.0, changeFrequency: 'weekly' },
     { path: '/about', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/about-us', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/services', priority: 0.9, changeFrequency: 'monthly' },
     // Each service experience has its own indexable route (/services/<id>).
     ...SERVICES.map((s) => ({
@@ -18,6 +19,7 @@ export default function sitemap() {
       changeFrequency: 'monthly',
     })),
     { path: '/products', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/careers', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/contact', priority: 0.7, changeFrequency: 'yearly' },
   ];
   return routes.map(({ path, priority, changeFrequency }) => ({

@@ -320,8 +320,6 @@ export default function SiteFooter() {
               {[
                 { label: 'About Us', href: '/about-us' },
                 { label: 'Careers', href: '/careers' },
-                { label: 'Partners', href: '/partners' },
-                { label: 'Contact', href: '/contact' },
               ].map((item) => (
                 <li key={item.label}>
                   <FLink href={item.href}>{item.label}</FLink>

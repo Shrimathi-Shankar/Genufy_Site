@@ -2,10 +2,9 @@ import Careers from '../../src/views/Careers.jsx';
 
 export const metadata = {
   title: 'Careers',
-  description: 'Careers at Genufy TechWorks - open roles coming soon.',
+  description:
+    'Career opportunities at Genufy TechWorks. No open roles right now, but we are always interested in connecting with talented people - share your details and resume.',
   alternates: { canonical: '/careers' },
-  // Placeholder page - keep it out of the index until there are real openings.
-  robots: { index: false, follow: true },
 };
 
 export default function Page() {
