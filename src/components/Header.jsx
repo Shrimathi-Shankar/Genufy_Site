@@ -17,6 +17,12 @@ function scrollToHash(hash) {
   const easing = (t) => 1 - Math.pow(1 - t, 4);
   const lenis = window.__lenis;
 
+  // The services section is sticky-pinned and its own top padding already clears
+  // the fixed nav, so land it near the very top with only a small gap. Using the
+  // full -(headerH + 12) offset there double-counted the nav clearance and left
+  // a large empty gap above the heading. Other sections keep the nav offset.
+  const offset = id === 'services' ? -8 : -(headerH + 12);
+
   // Single, fast, locked pass straight to the target. Passing the element lets
   // Lenis read its live position at scroll time (accurate across the pinned
   // sections above) and `lock` blocks any interruption mid-flight - no
@@ -24,13 +30,13 @@ function scrollToHash(hash) {
   // way (e.g. at Manifesto).
   if (lenis?.scrollTo) {
     lenis.scrollTo(el, {
-      offset: -(headerH + 12),
+      offset,
       duration: 0.9,
       easing,
       lock: true,
     });
   } else {
-    const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+    const top = el.getBoundingClientRect().top + window.scrollY + offset;
     window.scrollTo({ top, behavior: 'smooth' });
   }
 }
