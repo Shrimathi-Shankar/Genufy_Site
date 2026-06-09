@@ -472,10 +472,13 @@ export default function HeroGenufy() {
       {/* 3D background / parallax stage layers */}
       <ParallaxStage />
 
-      {/* Main hero section - h-screen with dvh override for mobile browser chrome */}
+      {/* Main hero section. Use svh (small viewport height) - it is STABLE and
+          does NOT change as the mobile URL bar hides on scroll, unlike dvh which
+          made the hero resize/reflow during the scroll-out (the stutter near the
+          robot area). h-screen (100vh) is the fallback if svh is unsupported. */}
       <section
         className="relative h-screen overflow-hidden isolate"
-        style={{ height: '100dvh' }}
+        style={{ height: '100svh' }}
       >
         <HeroBackdrop />
 

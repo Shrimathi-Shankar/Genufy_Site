@@ -473,7 +473,12 @@ export default function Manifesto() {
   return (
     <section
       ref={ref}
-      className="cv-section relative py-16 md:py-20 lg:py-28 px-6 md:px-12 overflow-hidden"
+      /* No `cv-section` here: content-visibility:auto defers this section's first
+         render until it scrolls in, which on mobile produced a visible
+         render-pop/scroll-jump right at the hero->Manifesto boundary (the area
+         where the desktop robot sits). It renders eagerly so the transition is
+         smooth. Heavier lower sections keep cv-section. */
+      className="relative py-16 md:py-20 lg:py-28 px-6 md:px-12 overflow-hidden"
     >
       <GlowBackdrop />
 
