@@ -19,6 +19,7 @@ export default function sitemap() {
       changeFrequency: 'monthly',
     })),
     { path: '/products', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/qr-code', priority: 0.6, changeFrequency: 'yearly' },
     { path: '/careers', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/contact', priority: 0.7, changeFrequency: 'yearly' },
   ];
