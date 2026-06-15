@@ -27,7 +27,16 @@ const publicDir = join(root, 'public');
 
 // Files (relative to public/, POSIX-style) to leave as their original format.
 // favicon + logo + the social/OG image need wide raster-format support.
-const EXCLUDE = new Set(['favicon.png', 'logo.png', 'og-image.png']);
+// Email signature icons must stay as PNG — the signature HTML references them by URL.
+const EXCLUDE = new Set([
+  'favicon.png',
+  'logo.png',
+  'og-image.png',
+  'sf_partner.png',
+  'genufy_sign/Chrome.png',
+  'genufy_sign/Email.png',
+  'genufy_sign/Call.png',
+]);
 
 // Per-path max width (longest images don't need full resolution). Anything not
 // matched uses DEFAULT_MAX_WIDTH.
