@@ -33,6 +33,14 @@ const nextConfig = {
   // /AI_bg.webp) is reused across deploys. `immutable` means browsers will not
   // revalidate for a year, so if you REPLACE an image with the same filename,
   // bust the cache by renaming it or appending a version query (?v=2).
+  // Permanent redirect so Google drops the old /about sitelink ("About New Gen")
+  // and transfers any remaining link equity to the real /about-us page.
+  async redirects() {
+    return [
+      { source: '/about', destination: '/about-us', permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {

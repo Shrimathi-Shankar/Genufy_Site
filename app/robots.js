@@ -1,4 +1,4 @@
-const SITE_URL = 'https://genufy.in';
+const SITE_URL = 'https://www.genufy.in';
 
 // Generates /robots.txt at build time (included in the static export).
 export default function robots() {

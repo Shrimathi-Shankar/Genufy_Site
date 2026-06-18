@@ -23,7 +23,7 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
-const SITE_URL = 'https://genufy.in';
+const SITE_URL = 'https://www.genufy.in';
 const DESCRIPTION =
   'Genufy TechWorks engineers intelligent digital solutions - Salesforce expertise, AI automation, data engineering, and enterprise-grade platforms built to scale.';
 
@@ -37,16 +37,19 @@ export const metadata = {
   description: DESCRIPTION,
   applicationName: 'Genufy TechWorks',
   keywords: [
-    'Genufy',
     'Genufy TechWorks',
     'Salesforce partner',
-    'AI solutions',
+    'Salesforce implementation',
+    'Snowflake data platform',
+    'Informatica cloud data management',
+    'AI ML solutions',
+    'enterprise AI',
+    'MuleSoft integration',
+    'Informatica IDMC',
     'digital transformation',
     'data engineering',
-    'MuleSoft',
-    'Snowflake',
-    'Informatica',
-    'DevOps',
+    'DevOps platform engineering',
+    'Pega BPM',
     'enterprise software',
   ],
   authors: [{ name: 'Genufy TechWorks' }],
@@ -129,6 +132,31 @@ const orgJsonLd = {
       addressCountry: 'US',
     },
   ],
+  // Signals to Google which services are core to the business — ordered by priority.
+  knowsAbout: [
+    'Salesforce CRM Implementation',
+    'Snowflake Data Platform',
+    'Informatica Cloud Data Management',
+    'Enterprise AI and Machine Learning',
+    'MuleSoft API Integration',
+    'DevOps Platform Engineering',
+    'Pega BPM',
+    'Web Development',
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Technology Services',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Salesforce Implementation', url: `${SITE_URL}/services/salesforce` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Snowflake Data Platform', url: `${SITE_URL}/services/snowflake` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Informatica Cloud Data Management', url: `${SITE_URL}/services/informatica` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'AI & Machine Learning Solutions', url: `${SITE_URL}/services/ai-ml` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'MuleSoft API Integration', url: `${SITE_URL}/services/mulesoft` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'DevOps Platform Engineering', url: `${SITE_URL}/services/devops` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Pega BPM', url: `${SITE_URL}/services/pega` } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Web Development', url: `${SITE_URL}/services/web` } },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
