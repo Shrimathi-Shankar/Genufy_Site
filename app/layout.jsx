@@ -52,7 +52,10 @@ export const metadata = {
   authors: [{ name: 'Genufy TechWorks' }],
   creator: 'Genufy TechWorks',
   publisher: 'Genufy TechWorks',
-  alternates: { canonical: '/' },
+  alternates: {
+    canonical: '/',
+    types: { 'application/xml': '/sitemap.xml' },
+  },
   icons: { icon: '/favicon.png', apple: '/favicon.png' },
   openGraph: {
     type: 'website',
@@ -139,6 +142,7 @@ export default function RootLayout({ children }) {
             EmailJS (contact form submit) and the external brand-logo CDNs used
             in the Manifesto network. The Spline 3D scene is served locally
             (/robot.splinecode), so it needs no preconnect. */}
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <link rel="preconnect" href="https://api.emailjs.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.emailjs.com" />
         <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
