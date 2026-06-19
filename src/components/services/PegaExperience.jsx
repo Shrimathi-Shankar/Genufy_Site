@@ -966,7 +966,6 @@ export default function PegaExperience({ service, onClose, scrollRef }) {
           ]}
           visual={<WorkflowVisual accent={accent} />}
           accent={accent}
-          flip
         />
 
         <FinalCTA accent={accent} onClose={onClose} />

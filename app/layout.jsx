@@ -92,6 +92,37 @@ export const viewport = {
   themeColor: '#000000',
 };
 
+/* WebSite structured data — enables Google to understand site structure and
+   display sitelinks. SiteNavigationElement signals the four most important pages. */
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Genufy TechWorks',
+  url: SITE_URL,
+  description: DESCRIPTION,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/insights?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+/* SiteNavigationElement — explicitly tells Google which pages are primary
+   navigation destinations. Directly influences sitelink selection. */
+const siteNavJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Main Navigation',
+  itemListElement: [
+    { '@type': 'SiteNavigationElement', position: 1, name: 'About Us',  url: `${SITE_URL}/about-us`  },
+    { '@type': 'SiteNavigationElement', position: 2, name: 'Services',  url: `${SITE_URL}/services`  },
+    { '@type': 'SiteNavigationElement', position: 3, name: 'Products',  url: `${SITE_URL}/products`  },
+    { '@type': 'SiteNavigationElement', position: 4, name: 'Careers',   url: `${SITE_URL}/careers`   },
+    { '@type': 'SiteNavigationElement', position: 5, name: 'Insights',  url: `${SITE_URL}/insights`  },
+    { '@type': 'SiteNavigationElement', position: 6, name: 'Contact',   url: `${SITE_URL}/contact`   },
+  ],
+};
+
 /* Organization structured data (JSON-LD) - helps search engines understand the
    brand (rich results / knowledge panel signals). */
 const orgJsonLd = {
@@ -175,6 +206,14 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://api.emailjs.com" />
         <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
         <link rel="dns-prefetch" href="https://logo.clearbit.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavJsonLd) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

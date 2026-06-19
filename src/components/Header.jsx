@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import { m as motion } from 'framer-motion';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
 
-const links = ['Services', 'Products', 'Insights'];
+// Hash-based links scroll to homepage sections; path-based links navigate directly.
+const links = [
+  { label: 'Services',  hash: '#services',  route: '/services'  },
+  { label: 'Products',  hash: '#products',  route: '/products'  },
+  { label: 'Insights',  hash: '#insights',  route: '/insights'  },
+];
 
 function scrollToHash(hash) {
   const id = hash.replace(/^#/, '');
@@ -71,14 +76,13 @@ function NavLinkItem({ label, hash, i, isActive, onClick }) {
       href={hash}
       onClick={(e) => {
         e.preventDefault();
-        onClick(hash);
+        onClick();
       }}
       initial={{ y: -8, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.2 + i * 0.06, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative px-4 py-2 text-sm font-medium tracking-tight rounded-full transition-colors duration-300 ${
-        isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'
-      }`}
+      className={`relative px-4 py-2 text-sm font-medium tracking-tight rounded-full transition-colors duration-300 ${isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'
+        }`}
     >
       {isActive && (
         <motion.span
@@ -122,7 +126,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const ids = links.map((l) => l.toLowerCase());
+    const ids = links.filter((l) => l.hash).map((l) => l.hash.replace(/^#/, ''));
     const targets = ids.map((id) => document.getElementById(id)).filter(Boolean);
     if (!targets.length) return;
     const headerH = headerRef.current?.getBoundingClientRect().height || 80;
@@ -156,9 +160,14 @@ export default function Header() {
     return () => clearTimeout(t);
   }, []);
 
-  const handleNav = (hash) => {
+  const handleNav = (item) => {
     setOpen(false);
-    const id = hash.replace(/^#/, '');
+    // Path-only links (About Us, Careers) — navigate directly.
+    if (!item.hash) {
+      router.push(item.route);
+      return;
+    }
+    const id = item.hash.replace(/^#/, '');
     if (id === 'services') {
       // Stay on the landing page: scroll to the section and reflect /services
       // in the URL (no route change). If the section is not on this page, go
@@ -181,15 +190,14 @@ export default function Header() {
       router.push('/insights');
       return;
     }
-    // If the target section is on the current page, smooth-scroll to it directly
-    // (don't rely on pathname - works on home and any page that has the section).
+    // If the target section is on the current page, smooth-scroll to it directly.
     if (document.getElementById(id)) {
-      scrollToHash(hash);
-      if (window.history?.replaceState) window.history.replaceState(null, '', hash);
+      scrollToHash(item.hash);
+      if (window.history?.replaceState) window.history.replaceState(null, '', item.hash);
       return;
     }
     // Otherwise go home to that section; the on-mount handler scrolls after load.
-    router.push('/' + hash);
+    router.push('/' + item.hash);
   };
 
   return (
@@ -209,19 +217,16 @@ export default function Header() {
           {/* Nav links */}
           <div className="flex-1 flex justify-center md:pl-8 lg:pl-12">
             <div className="hidden md:flex items-center gap-1">
-              {links.map((l, i) => {
-                const hash = `#${l.toLowerCase()}`;
-                return (
-                  <NavLinkItem
-                    key={l}
-                    label={l}
-                    hash={hash}
-                    i={i}
-                    isActive={activeHash === hash}
-                    onClick={handleNav}
-                  />
-                );
-              })}
+              {links.map((item, i) => (
+                <NavLinkItem
+                  key={item.label}
+                  label={item.label}
+                  hash={item.hash || item.route}
+                  i={i}
+                  isActive={item.hash ? activeHash === item.hash : false}
+                  onClick={() => handleNav(item)}
+                />
+              ))}
             </div>
           </div>
 
@@ -274,22 +279,19 @@ export default function Header() {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="pointer-events-auto md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/95 backdrop-blur-2xl p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
           >
-            {links.map((l) => {
-              const hash = `#${l.toLowerCase()}`;
-              return (
-                <a
-                  key={l}
-                  href={hash}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNav(hash);
-                  }}
-                  className="px-4 py-3 rounded-full text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-900/[0.05] transition"
-                >
-                  {l}
-                </a>
-              );
-            })}
+            {links.map((item) => (
+              <a
+                key={item.label}
+                href={item.hash || item.route}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNav(item);
+                }}
+                className="px-4 py-3 rounded-full text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-900/[0.05] transition"
+              >
+                {item.label}
+              </a>
+            ))}
           </motion.div>
         )}
       </div>

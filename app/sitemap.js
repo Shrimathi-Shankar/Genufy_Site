@@ -6,9 +6,9 @@ const SITE_URL = 'https://www.genufy.in';
 // Priority tiers:
 //   1.0  homepage
 //   0.9  services hub + high-priority services (Salesforce, Snowflake, Informatica, AI/ML)
-//   0.8  about-us, products, other core pages
+//   0.8  about-us, products, careers, other core pages
 //   0.7  supporting services (DevOps, MuleSoft, Pega, Web), contact, insights hub
-//   0.6  careers, qr-code utility
+//   0.6  qr-code utility
 //   0.5  individual insight/blog posts
 
 // Services that should rank higher in sitelinks and search signals.
@@ -24,7 +24,7 @@ export default function sitemap() {
     { path: '/products',   priority: 0.8, changeFrequency: 'monthly' },
     { path: '/insights',   priority: 0.7, changeFrequency: 'weekly'  },
     { path: '/contact',    priority: 0.7, changeFrequency: 'yearly'  },
-    { path: '/careers',    priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/careers',    priority: 0.8, changeFrequency: 'monthly' },
     { path: '/qr-code',    priority: 0.6, changeFrequency: 'yearly'  },
   ];
 
