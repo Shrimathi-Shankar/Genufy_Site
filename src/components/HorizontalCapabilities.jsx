@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import {
   m as motion,
   useScroll,
@@ -8,23 +8,42 @@ import {
 import { useRouter } from 'next/navigation';
 import MagneticButton from './MagneticButton.jsx';
 import { SERVICES } from './services/serviceData.js';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const PREFIX = 'carousel';
 
 /* ---------- Premium futuristic capability card ---------- */
 
 function AnimatedGlyph({ accent }) {
+  const { theme } = useTheme();
+  const glyphRef = useRef(null);
+  const [spinning, setSpinning] = useState(false);
+
+  useEffect(() => {
+    if (!glyphRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSpinning(entry.isIntersecting),
+      { rootMargin: '100px' }
+    );
+    observer.observe(glyphRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="relative h-12 w-12">
-      <motion.div
+    <div ref={glyphRef} className="relative h-12 w-12">
+      <div
         className="absolute inset-0 rounded-2xl"
         style={{
           background: `conic-gradient(from 0deg, ${accent}, #90eb61, ${accent})`,
+          animation: spinning ? 'spin-cw 8s linear infinite' : 'none',
+          willChange: spinning ? 'transform' : 'auto',
         }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
       />
-      <div className="absolute inset-[2px] rounded-[14px] bg-black/90 grid place-items-center">
+      {/* Keep inner panel dark in both themes — glowing icon widget is a design accent */}
+      <div
+        className="absolute inset-[2px] rounded-[14px] grid place-items-center"
+        style={{ background: theme === 'light' ? 'rgba(10,15,35,0.90)' : 'rgba(0,0,0,0.90)' }}
+      >
         <motion.div
           animate={{ scale: [1, 1.18, 1], opacity: [0.85, 1, 0.85] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -40,27 +59,29 @@ function AnimatedGlyph({ accent }) {
 }
 
 function CapabilityCard({ service, index, progress, onSelect }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const total = SERVICES.length;
   const start = index / total;
   const end = (index + 1) / total;
   const mid = (start + end) / 2;
   const scrollScale = useTransform(progress, [start - 0.1, mid, end + 0.1], [0.94, 1, 0.94]);
-  const scrollOpacity = useTransform(progress, [start - 0.15, mid, end + 0.15], [0.55, 1, 0.55]);
+  const scrollOpacity = 1;
 
   // Mouse-follow light (soft spotlight only - no tilt/shake)
   const ref = useRef(null);
   const [light, setLight] = useState({ x: 50, y: 50, opacity: 0 });
 
-  const onMove = (e) => {
+  const onMove = useCallback((e) => {
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
     const x = (e.clientX - r.left) / r.width;
     const y = (e.clientY - r.top) / r.height;
     setLight({ x: x * 100, y: y * 100, opacity: 1 });
-  };
-  const onLeave = () => {
+  }, []);
+  const onLeave = useCallback(() => {
     setLight((s) => ({ ...s, opacity: 0 }));
-  };
+  }, []);
 
   return (
     <motion.article
@@ -76,13 +97,12 @@ function CapabilityCard({ service, index, progress, onSelect }) {
           onSelect(service);
         }
       }}
-      initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.08 * index }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.05 * index }}
       style={{
         scale: scrollScale,
-        opacity: scrollOpacity,
         willChange: 'transform',
       }}
       className="group relative w-[82vw] sm:w-[44vw] lg:w-[28vw] xl:w-[26vw] shrink-0 aspect-[4/5] cursor-pointer rounded-3xl focus:outline-none focus:ring-2 focus:ring-white/30"
@@ -105,17 +125,18 @@ function CapabilityCard({ service, index, progress, onSelect }) {
           heavy dark gradient, so blurring the (dark) section behind it was
           invisible but forced a per-frame backdrop re-blur on all 8 cards while
           the track slid — the cause of the sliding lag. */}
-      <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.01]">
+      <div
+        className={`relative h-full w-full overflow-hidden rounded-3xl border ${isLight ? 'border-[rgba(36,186,172,0.22)] bg-white' : 'border-white/10 bg-black'}`}
+        style={isLight ? {
+          boxShadow: '0 12px 40px rgba(36,186,172,0.16), 0 0 0 1px rgba(36,186,172,0.18), 0 0 50px rgba(144,235,97,0.08)'
+        } : undefined}
+      >
         {/* Image (shared layout target - morphs to fullscreen) */}
         <motion.div
           layoutId={`${PREFIX}-svc-media-${service.id}`}
           className="absolute inset-0"
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Touch devices load the ~800px -sm variant (the 8 full-size images
-              decode to ~48MB of RAM together - a primary cause of the iOS Safari
-              memory crash on scroll; the -sm set is ~14MB). Desktop and the
-              full-screen detail page keep the full image. */}
           <picture>
             <source
               media="(pointer: coarse)"
@@ -128,15 +149,16 @@ function CapabilityCard({ service, index, progress, onSelect }) {
               aria-hidden
               loading="lazy"
               decoding="async"
-              className="absolute inset-0 h-full w-full object-cover opacity-50 scale-110 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.18] group-hover:opacity-65"
+              width={800}
+              height={1000}
+              className="absolute inset-0 h-full w-full object-cover opacity-100 scale-110 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.18] group-hover:opacity-100"
             />
           </picture>
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
-              background:
-                'linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.92) 100%)',
+              background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.70) 100%)',
             }}
           />
         </motion.div>
@@ -192,9 +214,9 @@ function CapabilityCard({ service, index, progress, onSelect }) {
             className="flex items-center justify-between"
           >
             <AnimatedGlyph accent={service.accent} />
-            <div className="flex flex-col items-end text-[10px] tracking-[0.45em] uppercase text-white/55">
+            <div className="flex flex-col items-end text-[10px] tracking-[0.45em] uppercase" style={{ color: 'rgba(255,255,255,0.80)' }}>
               <span>{service.code}</span>
-              <span className="mt-1 text-[9px] text-white/45">{service.tag}</span>
+              <span className="mt-1 text-[9px]" style={{ color: 'rgba(255,255,255,0.65)' }}>{service.tag}</span>
             </div>
           </motion.div>
 
@@ -202,11 +224,12 @@ function CapabilityCard({ service, index, progress, onSelect }) {
 
           <motion.h3
             layoutId={`${PREFIX}-svc-title-${service.id}`}
-            className="font-display text-3xl md:text-4xl font-bold leading-[1.05] tracking-tight text-white"
+            className="font-display text-3xl md:text-4xl font-bold leading-[1.05] tracking-tight"
+            style={{ color: '#ffffff' }}
           >
             {service.title}
           </motion.h3>
-          <p className="mt-3 max-w-sm text-sm md:text-[15px] text-white/70 leading-relaxed">
+          <p className="mt-3 max-w-sm text-sm md:text-[15px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.90)' }}>
             {service.body}
           </p>
 
@@ -222,7 +245,10 @@ function CapabilityCard({ service, index, progress, onSelect }) {
               as="button"
               onClick={() => onSelect(service)}
               aria-label={`View more about ${service.title}`}
-              className="group/btn relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-white/15 bg-white/[0.04] pl-5 pr-2 py-2 text-xs md:text-sm font-medium text-white/90 backdrop-blur transition-colors hover:border-white/30"
+              className={`group/btn relative inline-flex items-center gap-3 overflow-hidden rounded-full border pl-5 pr-2 py-2 text-xs md:text-sm font-medium transition-colors ${isLight
+                ? 'border-[rgba(36,186,172,0.30)] bg-white text-slate-800 hover:border-[rgba(36,186,172,0.55)] hover:bg-[#f0fdf8]'
+                : 'border-white/15 bg-white/[0.04] text-white/90 hover:border-white/30 backdrop-blur'
+                }`}
             >
               <span
                 aria-hidden
@@ -239,12 +265,9 @@ function CapabilityCard({ service, index, progress, onSelect }) {
                   boxShadow: `0 0 20px -2px ${service.accent}aa`,
                 }}
               >
-                <motion.span
-                  animate={{ x: [0, 2, 0] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                >
+                <span style={{ display: 'inline-block', animation: 'arrow-nudge 1.6s ease-in-out infinite' }}>
                   →
-                </motion.span>
+                </span>
               </span>
             </MagneticButton>
           </div>
@@ -260,35 +283,55 @@ export default function HorizontalCapabilities() {
   const ref = useRef(null);
   const router = useRouter();
 
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   });
-  const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 28, mass: 0.3 });
+  // Stiffer spring = cards respond almost instantly to scroll, no lag
+  const smooth = useSpring(scrollYProgress, { stiffness: 400, damping: 45, mass: 0.1 });
 
   // Horizontal translation across viewport
   const x = useTransform(smooth, [0, 1], ['6%', '-82%']);
   const indicator = useTransform(smooth, [0, 1], [0, 1]);
 
   // Each card navigates to its dedicated route (/services/<id>).
-  const openService = (svc) => router.push(`/services/${svc.id}`);
+  // Scroll position is saved so the Home page can restore it on Back navigation.
+  const openService = (svc) => {
+    try { sessionStorage.setItem('__restore_home_scroll', String(window.scrollY)); } catch { }
+    router.push(`/services/${svc.id}`);
+  };
+
+  // Arrow button scrolls the section by one card's worth of scroll distance
+  const scrollByCard = useCallback((dir) => {
+    if (!ref.current) return;
+    const { top, height } = ref.current.getBoundingClientRect();
+    const sectionTop = window.scrollY + top;
+    const step = height / SERVICES.length;
+    window.scrollBy({ top: dir * step, behavior: 'smooth' });
+  }, []);
 
   return (
     <section
       id="services"
       ref={ref}
       className="relative"
-      style={{ height: '420vh' }}
+      style={{ height: '250vh' }}
       aria-label="Services"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="absolute inset-0 bg-ink" />
+        <div
+          className={`absolute inset-0 ${isLight ? '' : 'bg-ink'}`}
+          style={isLight ? { background: '#f2faf4' } : undefined}
+        />
         <div
           aria-hidden
           className="absolute inset-0 opacity-50"
           style={{
             background:
-              'radial-gradient(60% 50% at 20% 60%, rgba(36,186,172,0.18), transparent 70%), radial-gradient(50% 40% at 80% 30%, rgba(144,235,97,0.16), transparent 70%)',
+              'radial-gradient(60% 50% at 20% 60%, rgba(36,186,172,0.30), transparent 70%), radial-gradient(50% 40% at 80% 30%, rgba(144,235,97,0.28), transparent 70%)',
           }}
         />
         <div
@@ -306,7 +349,7 @@ export default function HorizontalCapabilities() {
         <div className="relative h-full flex flex-col">
           {/* Header */}
           <div className="pt-28 md:pt-20 pb-10 md:pb-8 px-6 md:px-12 max-w-7xl mx-auto w-full">
-            <h2 className="mt-5 font-display text-4xl md:text-4.5xl tracking-tight leading-[1.05]">
+            <h2 className="mt-5 font-display text-4xl md:text-4.5xl tracking-tight leading-[1.05]" style={{ color: isLight ? '#0f172a' : '#ffffff' }}>
               A platform of <span className="text-gradient-gt">services</span>
               <br />
               engineered as one.
@@ -332,28 +375,6 @@ export default function HorizontalCapabilities() {
             </motion.div>
           </div>
 
-          {/* Progress bar */}
-          {/* <div className="px-6 md:px-12 pb-10">
-            <div className="max-w-7xl mx-auto flex items-center gap-4">
-              <span className="text-[10px] tracking-[0.4em] uppercase text-white/40">
-                Scroll →
-              </span>
-              <div className="relative flex-1 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                <motion.div
-                  style={{ scaleX: indicator, transformOrigin: 'left' }}
-                  className="absolute inset-0"
-                >
-                  <div
-                    className="h-full w-full"
-                    style={{ background: 'linear-gradient(90deg,#90eb61,#24baac)' }}
-                  />
-                </motion.div>
-              </div>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-white/40">
-                {String(SERVICES.length).padStart(2, '0')}
-              </span>
-            </div>
-          </div> */}
         </div>
       </div>
     </section>

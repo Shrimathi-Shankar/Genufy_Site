@@ -1,4 +1,5 @@
 import { m as motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
 
 /**
  * SalesforceCloudsStory - "Cloud Ecosystem" bento mosaic
@@ -63,6 +64,8 @@ function AmbientDecor() {
 /* ---------------- Bento tile ---------------- */
 
 function CloudTile({ cloud, i, wide }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
@@ -70,8 +73,7 @@ function CloudTile({ cloud, i, wide }) {
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.6, delay: (i % 5) * 0.05, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-5 ${wide ? 'col-span-2' : 'col-span-1'
-        }`}
+      className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl p-5 ${wide ? 'col-span-2' : 'col-span-1'} ${isLight ? 'border border-slate-200 bg-white' : 'border border-white/10 bg-white/[0.02]'}`}
       style={{ boxShadow: `0 22px 50px -30px ${cloud.from}77, inset 0 1px 0 rgba(255,255,255,0.05)` }}
     >
       {/* Unique brand corner glow */}
@@ -118,10 +120,10 @@ function CloudTile({ cloud, i, wide }) {
               {CATEGORIES[cloud.cat].label}
             </div>
           )}
-          <div className="font-display text-base md:text-lg text-white leading-snug">
+          <div className={`font-display text-base md:text-lg leading-snug ${isLight ? 'text-slate-900' : 'text-white'}`}>
             {cloud.name}
           </div>
-          <div className="mt-1 text-[9px] tracking-[0.3em] uppercase text-white/45">
+          <div className={`mt-1 text-[9px] tracking-[0.3em] uppercase ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
             {cloud.tag}
           </div>
           {/* {wide && (
@@ -145,6 +147,8 @@ function CloudTile({ cloud, i, wide }) {
 /* ---------------- Main ---------------- */
 
 export default function SalesforceCloudsStory() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <section
       aria-label="Salesforce Clouds - ecosystem mosaic"
@@ -155,16 +159,16 @@ export default function SalesforceCloudsStory() {
       <div className="relative max-w-7xl mx-auto">
         {/* Heading */}
         <div className="mb-14 md:mb-20 text-center">
-          <div className="inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/55 mb-5">
-            <span className="h-px w-10 bg-white/30" />
+          <div className={`inline-flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase mb-5 ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
+            <span className={`h-px w-10 ${isLight ? 'bg-slate-300' : 'bg-white/30'}`} />
             The Cloud Ecosystem
-            <span className="h-px w-10 bg-white/30" />
+            <span className={`h-px w-10 ${isLight ? 'bg-slate-300' : 'bg-white/30'}`} />
           </div>
           <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
             <span className="text-gradient-gt">16 clouds.</span>{' '}
-            <span className="text-white/85">One connected ecosystem.</span>
+            <span className={isLight ? 'text-slate-800' : 'text-white/85'}>One connected ecosystem.</span>
           </h2>
-          <p className="mt-5 max-w-2xl mx-auto text-sm md:text-base text-white/65 leading-relaxed">
+          <p className={`mt-5 max-w-2xl mx-auto text-sm md:text-base leading-relaxed ${isLight ? 'text-slate-600' : 'text-white/65'}`}>
             Every Salesforce Cloud, mapped as one fabric - each tile carries its own
             identity, grouped into four currents that power growth, commerce, industry, and operations.
           </p>
@@ -172,7 +176,7 @@ export default function SalesforceCloudsStory() {
           {/* Category legend */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {CATEGORIES.map((c) => (
-              <span key={c.label} className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase text-white/50">
+              <span key={c.label} className={`inline-flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase ${isLight ? 'text-slate-500' : 'text-white/50'}`}>
                 <span
                   className="h-1.5 w-1.5 rounded-full"
                   style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
@@ -202,7 +206,7 @@ export default function SalesforceCloudsStory() {
             className="mx-auto h-px max-w-sm mb-6 origin-center"
             style={{ background: 'linear-gradient(90deg, transparent, rgba(36,186,172,0.7), transparent)' }}
           />
-          <div className="text-[10px] tracking-[0.5em] uppercase text-white/45">
+          <div className={`text-[10px] tracking-[0.5em] uppercase ${isLight ? 'text-slate-400' : 'text-white/45'}`}>
             16 clouds · 4 currents · one Salesforce
           </div>
         </div>

@@ -1,3 +1,4 @@
+// import InsightsListing from '../../src/views/InsightsListing.jsx';
 import ComingSoon from '../../src/components/ComingSoon.jsx';
 
 export const metadata = {
@@ -8,6 +9,7 @@ export const metadata = {
 };
 
 export default function Page() {
+  // return <InsightsListing />;
   return (
     <ComingSoon
       eyebrow="Genufy TechWorks · Insights"

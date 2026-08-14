@@ -13,6 +13,7 @@ import {
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import ScrollProgress from '../components/ScrollProgress.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 import { products } from './products/productData.js';
 
 // === Unified palette (same as Contact CTA) ===
@@ -113,6 +114,8 @@ function TiltCard({ children, className = '', strength = 14 }) {
 // One product chapter
 // ------------------------------------------------------------------
 function ProductChapter({ product, index }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -133,7 +136,6 @@ function ProductChapter({ product, index }) {
   // Sweep mask reveal for the visual
   const maskY = useTransform(scrollYProgress, [0.05, 0.45], ['100%', '0%']);
 
-  // Show the "Visit website" button when the product has a real link, else "Coming soon".
   const isLinked = Boolean(product.href);
 
   return (
@@ -141,7 +143,7 @@ function ProductChapter({ product, index }) {
       ref={ref}
       className="relative min-h-[100vh] flex items-center py-0"
     >
-      {/* Giant ghost chapter numeral with subtle gradient */}
+      {/* Giant ghost chapter numeral */}
       <motion.div
         aria-hidden
         style={{ y: yChapter }}
@@ -202,7 +204,7 @@ function ProductChapter({ product, index }) {
 
               <TiltCard
                 strength={10}
-                className="relative w-full h-full rounded-[36px] overflow-hidden border border-white/10 backdrop-blur-xl"
+                className={`relative w-full h-full rounded-[36px] overflow-hidden border ${isLight ? 'border-slate-200' : 'border-white/10'} backdrop-blur-xl`}
               >
                 <div
                   className="absolute inset-0 rounded-[36px]"
@@ -216,8 +218,6 @@ function ProductChapter({ product, index }) {
                 <img
                   src={product.image}
                   alt={product.name}
-                  loading="lazy"
-                  decoding="async"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                   className="absolute inset-0 w-full h-full object-cover opacity-90"
                 />
@@ -238,7 +238,9 @@ function ProductChapter({ product, index }) {
                   aria-hidden
                   style={{
                     y: maskY,
-                    background: `linear-gradient(180deg, rgba(8,10,14,0.96), rgba(8,10,14,0.4))`,
+                    background: theme === 'light'
+                      ? `linear-gradient(180deg, rgba(248,250,252,0.96), rgba(248,250,252,0.4))`
+                      : `linear-gradient(180deg, rgba(8,10,14,0.96), rgba(8,10,14,0.4))`,
                   }}
                   className="absolute inset-0 pointer-events-none"
                 />
@@ -256,7 +258,7 @@ function ProductChapter({ product, index }) {
                   }}
                 />
 
-                {/* Centerpiece label (used as placeholder when no image) */}
+                {/* Centerpiece label */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none">
                   <div
                     className="text-[10px] tracking-[0.4em] uppercase mb-4"
@@ -269,12 +271,12 @@ function ProductChapter({ product, index }) {
                   >
                     {product.tagline}
                   </div>
-                  <div className="text-4xl md:text-5xl font-semibold text-white/90 tracking-tight">
+                  <div className={`text-4xl md:text-5xl font-semibold ${isLight ? 'text-slate-800' : 'text-white/90'} tracking-tight`}>
                     {product.name}
                   </div>
                 </div>
 
-                <div className="absolute bottom-5 right-5 text-[10px] tracking-[0.3em] uppercase text-white/40">
+                <div className={`absolute bottom-5 right-5 text-[10px] tracking-[0.3em] uppercase ${isLight ? 'text-slate-400' : 'text-white/40'}`}>
                   {String(index + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}
                 </div>
               </TiltCard>
@@ -306,7 +308,7 @@ function ProductChapter({ product, index }) {
               </span>
             </motion.div>
 
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-white leading-[1.02] overflow-hidden">
+            <h2 className={`text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'} leading-[1.02] overflow-hidden`}>
               <SplitText text={product.name} />
             </h2>
 
@@ -315,7 +317,7 @@ function ProductChapter({ product, index }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-15%' }}
               transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-7 text-base md:text-lg text-white/65 max-w-xl leading-relaxed"
+              className={`mt-7 text-base md:text-lg ${isLight ? 'text-slate-600' : 'text-white/65'} max-w-xl leading-relaxed`}
             >
               {product.blurb}
             </motion.p>
@@ -336,7 +338,7 @@ function ProductChapter({ product, index }) {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={{ y: -3 }}
-                  className="group relative overflow-hidden px-3.5 py-1.5 rounded-full text-xs text-white/80 border border-white/10 bg-white/[0.03] backdrop-blur transition-colors hover:text-white"
+                  className={`group relative overflow-hidden px-3.5 py-1.5 rounded-full text-xs ${isLight ? 'text-slate-700 border-slate-200 bg-slate-100 hover:text-slate-900' : 'text-white/80 border-white/10 bg-white/[0.03] hover:text-white'} border backdrop-blur transition-colors`}
                 >
                   <span className="relative z-10">{p}</span>
                   <span
@@ -376,12 +378,12 @@ function ProductChapter({ product, index }) {
                     }}
                   />
                   <span className="relative">Visit website</span>
-                  <span className="relative grid h-7 w-7 place-items-center rounded-full bg-black/85 text-white text-xs transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  <span className={`relative grid h-7 w-7 place-items-center rounded-full text-xs transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${isLight ? 'bg-slate-800 text-white' : 'bg-black/85 text-white'}`}>
                     ↗
                   </span>
                 </motion.a>
               ) : (
-                <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-widest uppercase text-white/55 border border-white/10">
+                <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-widest uppercase ${isLight ? 'text-slate-500 border-slate-200' : 'text-white/55 border-white/10'} border`}>
                   <span
                     className="h-1.5 w-1.5 rounded-full animate-pulse"
                     style={{ background: ACCENT }}
@@ -401,13 +403,14 @@ function ProductChapter({ product, index }) {
 // Hero
 // ------------------------------------------------------------------
 function ProductsHero() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
   const blur = useTransform(scrollYProgress, [0, 1], ['blur(0px)', 'blur(8px)']);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
-  // Cursor-following spotlight
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.4);
   const sx = useSpring(mx, { stiffness: 60, damping: 20 });
@@ -437,7 +440,7 @@ function ProductsHero() {
         className="absolute inset-0 pointer-events-none"
       />
 
-      {/* Drifting ambient orbs (unified palette) */}
+      {/* Drifting ambient orbs */}
       <motion.div aria-hidden style={{ y }} className="absolute inset-0 pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
@@ -457,7 +460,7 @@ function ProductsHero() {
         style={{ filter: blur, opacity }}
         className="relative mx-auto max-w-6xl px-6 md:px-10 text-center"
       >
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-white leading-[1.02] overflow-hidden">
+        <h1 className={`text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'} leading-[1.02] overflow-hidden`}>
           <span className="block">
             <SplitText text="Every product." />
           </span>
@@ -482,7 +485,7 @@ function ProductsHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8 text-base md:text-lg text-white/65 max-w-2xl mx-auto leading-relaxed"
+          className={`mt-8 text-base md:text-lg ${isLight ? 'text-slate-600' : 'text-white/65'} max-w-2xl mx-auto leading-relaxed`}
         >
           Each one engineered to remove a particular kind of friction. Scroll to walk
           through the chapters - every product tells its own short story.
@@ -492,7 +495,7 @@ function ProductsHero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 1 }}
-          className="mt-16 flex flex-col items-center gap-3 text-white/40"
+          className={`mt-16 flex flex-col items-center gap-3 ${isLight ? 'text-slate-400' : 'text-white/40'}`}
         >
           <span className="text-[10px] tracking-[0.4em] uppercase">Scroll</span>
           <motion.span
@@ -513,6 +516,8 @@ function ProductsHero() {
 // Left vertical rail showing scroll progress + product dots
 // ------------------------------------------------------------------
 function ChapterRail() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { scrollYProgress } = useScroll();
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.3 });
   const height = useTransform(smooth, [0, 1], ['0%', '100%']);
@@ -530,10 +535,10 @@ function ChapterRail() {
 
   return (
     <div className="pointer-events-none fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center gap-4">
-      <div className="text-[9px] tracking-[0.4em] uppercase text-white/40 [writing-mode:vertical-rl] rotate-180">
+      <div className={`text-[9px] tracking-[0.4em] uppercase ${isLight ? 'text-slate-400' : 'text-white/40'} [writing-mode:vertical-rl] rotate-180`}>
         Products
       </div>
-      <div className="relative h-48 w-px bg-white/10 overflow-hidden">
+      <div className={`relative h-48 w-px ${isLight ? 'bg-slate-200' : 'bg-white/10'} overflow-hidden`}>
         <motion.div
           style={{ height, background: GRAD }}
           className="absolute top-0 left-0 w-full"
@@ -559,13 +564,15 @@ function ChapterRail() {
 
 // ------------------------------------------------------------------
 export default function Products() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <>
       <ScrollProgress />
       <Header />
       <ChapterRail />
 
-      <main className="relative z-10 overflow-hidden">
+      <main className={`relative z-10 overflow-hidden${isLight ? ' bg-slate-50' : ''}`}>
         <ProductsHero />
 
         {products.map((p, i) => (
@@ -585,7 +592,7 @@ export default function Products() {
               background: `linear-gradient(90deg, transparent, ${ACCENT2}, transparent)`,
             }}
           />
-          <h3 className="text-3xl md:text-5xl font-semibold tracking-tight text-white max-w-3xl mx-auto leading-tight overflow-hidden">
+          <h3 className={`text-3xl md:text-5xl font-semibold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'} max-w-3xl mx-auto leading-tight overflow-hidden`}>
             <SplitText text="More chapters in the making." />
           </h3>
           <motion.p
@@ -593,7 +600,7 @@ export default function Products() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.4 }}
-            className="mt-5 text-white/55 max-w-xl mx-auto"
+            className={`mt-5 ${isLight ? 'text-slate-500' : 'text-white/55'} max-w-xl mx-auto`}
           >
             We ship slowly, deliberately, and only when it earns the Genufy name.
           </motion.p>

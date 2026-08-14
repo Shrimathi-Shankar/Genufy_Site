@@ -8,6 +8,7 @@ import {
 import { HERO_TITLE_CLASS } from './heroTitle.js';
 import MagneticButton from '../MagneticButton.jsx';
 import CinematicContact from '../CinematicContact.jsx';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
 
 /* ---------------- Shared atoms (mirror Informatica) ---------------- */
 
@@ -51,24 +52,28 @@ function RevealWords({ text, className, once = true, gradient = false }) {
 }
 
 function Eyebrow({ children }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/45">
-      <span className="h-px w-10 bg-white/30" />
+    <div className={`flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
+      <span className={`h-px w-10 ${isLight ? 'bg-slate-300' : 'bg-white/30'}`} />
       {children}
     </div>
   );
 }
 
 function FeatureItem({ children, accent }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <li className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 backdrop-blur-sm">
+    <li className={`flex items-start gap-4 rounded-2xl border px-5 py-4 backdrop-blur-sm ${isLight ? 'border-slate-200 bg-slate-100' : 'border-white/10 bg-white/[0.025]'}`}>
       <span
         className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full text-[10px] font-bold text-black"
         style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }}
       >
         ✓
       </span>
-      <span className="text-white/85 text-[15px] md:text-base leading-relaxed">{children}</span>
+      <span className={`text-[15px] md:text-base leading-relaxed ${isLight ? 'text-slate-700' : 'text-white/85'}`}>{children}</span>
     </li>
   );
 }
@@ -250,7 +255,7 @@ function CapabilitiesVisual({ accent, items }) {
   return (
     <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden rounded-3xl border border-white/10 bg-black/40 backdrop-blur-sm p-5 md:p-7">
       <div className="flex items-center justify-between">
-        <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Capabilities</div>
+        <div className="text-[10px] tracking-[0.45em] uppercase text-white/65">Capabilities</div>
         <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} className="h-2 w-2 rounded-full" style={{ background: accent, boxShadow: `0 0 12px ${accent}` }} />
       </div>
       <div className="mt-4 space-y-2 relative">
@@ -268,7 +273,7 @@ function CapabilitiesVisual({ accent, items }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2.5 text-[12px] text-white/80 font-mono"
+            className="flex items-center gap-3 rounded-lg border border-white/20 bg-white/[0.1] px-3 py-2.5 text-[12px] text-white/90 font-mono"
           >
             <span className="text-white/40">›</span>
             <span className="flex-1 truncate">{r}</span>
@@ -407,7 +412,7 @@ function StackVisual({ accent, items }) {
           WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 85%)',
         }}
       />
-      <div className="text-[10px] tracking-[0.45em] uppercase text-white/45">Stack</div>
+      <div className="text-[10px] tracking-[0.45em] uppercase text-white/65">Stack</div>
       <div className="mt-6 flex flex-wrap gap-3 relative">
         {items.map((t, i) => (
           <motion.div
@@ -416,7 +421,7 @@ function StackVisual({ accent, items }) {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.55, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-full border border-white/12 bg-white/[0.04] px-5 py-2.5 text-xs md:text-sm tracking-wide text-white/85 backdrop-blur-sm"
+            className="rounded-full border border-white/20 bg-white/[0.08] px-5 py-2.5 text-xs md:text-sm tracking-wide text-white/90 backdrop-blur-sm"
             style={{ boxShadow: `0 0 26px -10px ${accent}aa` }}
           >
             {t}
@@ -442,6 +447,8 @@ function StackVisual({ accent, items }) {
 /* ---------------- Hero ---------------- */
 
 function HeroScene({ service }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const letters = Array.from((service.title || '').toUpperCase());
   const ref = useRef(null);
   const mx = useMotionValue(0);
@@ -465,13 +472,23 @@ function HeroScene({ service }) {
     >
       <motion.div
         aria-hidden
-        animate={{ scale: [1, 1.08, 1], opacity: [0.55, 0.85, 0.55] }}
+        animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.55, 0.35] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[120vmin] w-[120vmin] rounded-full blur-[120px]"
         style={{ background: `radial-gradient(circle, #24baac55 0%, ${service.accent}33 45%, transparent 75%)` }}
       />
 
       <DataParticles accent={service.accent} count={44} />
+
+      {/* Content scrim — deepens the lower portion so text stays readable */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 pointer-events-none"
+        style={{
+          height: '75%',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
+        }}
+      />
 
       <motion.div style={{ x: tx, y: ty }} className="relative max-w-7xl mx-auto w-full">
 
@@ -505,10 +522,7 @@ function HeroScene({ service }) {
                   className={i < Math.ceil(letters.length / 2) ? 'text-gradient-gt' : 'text-white'}
                   style={{
                     display: 'inline-block',
-                    textShadow:
-                      i < Math.ceil(letters.length / 2)
-                        ? 'none'
-                        : 'none',
+                    textShadow: '0 2px 32px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5)',
                   }}
                 >
                   {ch === ' ' ? ' ' : ch}
@@ -520,21 +534,25 @@ function HeroScene({ service }) {
 
         <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] items-end">
           <div className="max-w-2xl">
-            <RevealWords
-              text={service.subtitle}
-              className="block text-base md:text-2xl text-white/85 font-display tracking-tight leading-snug"
-            />
-            <RevealWords
-              text={service.description}
-              className="block mt-6 text-sm md:text-base text-white/65 leading-relaxed"
-            />
+            <span style={{ textShadow: '0 1px 20px rgba(0,0,0,0.65)' }}>
+              <RevealWords
+                text={service.subtitle}
+                className="block text-base md:text-2xl font-display tracking-tight leading-snug text-white/95"
+              />
+            </span>
+            <span style={{ textShadow: '0 1px 14px rgba(0,0,0,0.6)' }}>
+              <RevealWords
+                text={service.description}
+                className="block mt-6 text-sm md:text-base leading-relaxed text-white/80"
+              />
+            </span>
           </div>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.8 }}
-            className="text-[10px] tracking-[0.4em] uppercase text-white/40 flex items-center gap-3"
+            className={`text-[10px] tracking-[0.4em] uppercase flex items-center gap-3 ${isLight ? 'text-slate-400' : 'text-white/40'}`}
           >
             Scroll
             <span className="relative inline-block h-10 w-[2px] overflow-hidden rounded-full bg-white/10">
@@ -555,8 +573,10 @@ function HeroScene({ service }) {
 /* ---------------- ExperienceSection template ---------------- */
 
 function ExperienceSection({ num, eyebrow, title, description, features, benefits, visual, accent, flip = false }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <section className="relative px-6 md:px-12 py-28 md:py-40">
+    <section className={`relative px-6 md:px-12 py-28 md:py-40 ${isLight ? 'bg-slate-50' : ''}`}>
       <FloatingOrbs accent={accent} />
       <GridBackdrop />
 
@@ -581,7 +601,7 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight leading-[1.05]">
               <RevealWords text={title} gradient />
             </h2>
-            <p className="mt-8 max-w-2xl text-sm md:text-base text-white/72 leading-relaxed line-clamp-3">
+            <p className={`mt-8 max-w-2xl text-sm md:text-base leading-relaxed line-clamp-3 ${isLight ? 'text-slate-600' : 'text-white/72'}`}>
               {description}
             </p>
 
@@ -625,6 +645,8 @@ function ExperienceSection({ num, eyebrow, title, description, features, benefit
 
 function FinalCTA({ accent, onClose, service }) {
   const [contactOpen, setContactOpen] = useState(false);
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <section className="relative px-6 md:px-12 py-40 md:py-56 overflow-hidden">
       <motion.div
@@ -649,7 +671,7 @@ function FinalCTA({ accent, onClose, service }) {
         </h2>
         <RevealWords
           text="Bring us the ambition. We'll return strategy, design, and a working proof of value in weeks - not quarters."
-          className="block mt-8 max-w-2xl mx-auto text-base md:text-lg text-white/75 leading-relaxed"
+          className={`block mt-8 max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${isLight ? 'text-slate-600' : 'text-white/75'}`}
         />
 
         <motion.div
@@ -721,6 +743,8 @@ function ScrollDots({ scrollRef }) {
 
 export default function ServiceExperience({ service, onClose, scrollRef }) {
   const accent = service.accent || '#90eb61';
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   return (
     <>
@@ -728,7 +752,7 @@ export default function ServiceExperience({ service, onClose, scrollRef }) {
 
       <HeroScene service={service} />
 
-      <div className="bg-ink relative z-10">
+      <div className={`${isLight ? 'bg-slate-50' : 'bg-ink'} relative z-10`}>
         <ExperienceSection
           num="01"
           eyebrow="Capabilities"

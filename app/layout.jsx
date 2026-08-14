@@ -194,9 +194,13 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}
     >
       <head>
+        {/* Anti-FOUC: reads localStorage before first paint so the correct
+            data-theme attribute is on <html> before any CSS is applied. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('gf-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();` }} />
         {/* Resource hints - warm up the connections used after first paint:
             EmailJS (contact form submit) and the external brand-logo CDNs used
             in the Manifesto network. The Spline 3D scene is served locally

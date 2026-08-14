@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 /* ============================================================
    CinematicContact - single-screen premium contact form
@@ -166,10 +167,10 @@ function Field({ label, name, type = 'text', as = 'input', value, onChange, erro
       initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
       animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      className="block group"
+      className={`block group ${as === 'textarea' ? 'flex-1 flex flex-col' : ''}`}
     >
-      <span className="block text-[10px] tracking-[0.32em] uppercase text-white/45 mb-2">
-        {label}<span className="text-emerald-300/80"> *</span>
+      <span className="block text-[9px] tracking-[0.3em] uppercase mb-1.5" style={{ color: 'rgba(255,255,255,0.80)' }}>
+        {label}<span style={{ color: 'rgba(134,239,172,0.95)' }}> *</span>
       </span>
       <Cmp
         type={type}
@@ -177,15 +178,25 @@ function Field({ label, name, type = 'text', as = 'input', value, onChange, erro
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
-        rows={as === 'textarea' ? 5 : undefined}
+        rows={as === 'textarea' ? 8 : undefined}
         placeholder={label}
-        className={
-          'w-full rounded-xl border bg-white/[0.03] backdrop-blur-md px-4 py-3 text-white placeholder-white/25 outline-none transition ' +
-          'focus:bg-white/[0.06] focus:shadow-[0_0_30px_rgba(80,200,255,0.18)] ' +
-          (error
-            ? 'border-rose-400/50 focus:border-rose-300/70'
-            : 'border-white/10 focus:border-cyan-300/60')
-        }
+        className={`w-full rounded-xl border backdrop-blur-md px-3.5 py-3.5 text-sm outline-none transition ${as === 'textarea' ? 'flex-1 min-h-[200px] resize-none' : ''}`}
+        style={{
+          background:  'rgba(255,255,255,0.08)',
+          borderColor: error ? 'rgba(248,113,113,0.60)' : 'rgba(255,255,255,0.25)',
+          color:       '#ffffff',
+          boxShadow:   'inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}
+        onFocus={e => {
+          e.target.style.background    = 'rgba(255,255,255,0.13)';
+          e.target.style.borderColor   = error ? 'rgba(248,113,113,0.80)' : 'rgba(103,232,249,0.70)';
+          e.target.style.boxShadow     = '0 0 28px rgba(80,200,255,0.18), inset 0 1px 0 rgba(255,255,255,0.10)';
+        }}
+        onBlur={e => {
+          e.target.style.background    = 'rgba(255,255,255,0.08)';
+          e.target.style.borderColor   = error ? 'rgba(248,113,113,0.60)' : 'rgba(255,255,255,0.25)';
+          e.target.style.boxShadow     = 'inset 0 1px 0 rgba(255,255,255,0.06)';
+        }}
       />
       <AnimatePresence>
         {error && (
@@ -201,6 +212,72 @@ function Field({ label, name, type = 'text', as = 'input', value, onChange, erro
         )}
       </AnimatePresence>
     </motion.label>
+  );
+}
+
+/* --------------------------- direct contact info ------------------------
+   Small glass "pill" cards for the phone number and email, sitting beside
+   the form so visitors who'd rather call/email directly can do so at a
+   glance - without the form itself losing any space or fields. */
+const PHONE_DISPLAY = '+91 81100 33344';
+const PHONE_TEL = 'tel:+918110033344';
+
+function PhoneIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 5a2 2 0 0 1 2-2h2.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.05 11.05 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498a1 1 0 0 1 .684.949V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+    </svg>
+  );
+}
+
+function MailIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="M3.5 7l8.5 6 8.5-6" />
+    </svg>
+  );
+}
+
+function ContactInfoCard({ icon, label, value, href, delay = 0 }) {
+  return (
+    <motion.a
+      href={href}
+      initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      className="group inline-flex w-fit items-center gap-2.5 rounded-2xl border px-3 py-2.5 backdrop-blur-md transition"
+      style={{
+        borderColor: 'rgba(255,255,255,0.15)',
+        background: 'rgba(255,255,255,0.05)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(103,232,249,0.45)';
+        e.currentTarget.style.background = 'rgba(255,255,255,0.09)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+      }}
+    >
+      <span
+        className="grid h-8 w-8 flex-none place-items-center rounded-full text-black"
+        style={{ background: 'linear-gradient(135deg, #90eb61, #24baac)', boxShadow: '0 8px 20px -8px rgba(36,186,172,0.75)' }}
+      >
+        {icon}
+      </span>
+      <span>
+        <span className="block text-[9px] tracking-[0.3em] uppercase text-white/50">{label}</span>
+        <span className="block mt-0.5 text-[13px] font-medium text-white/95 whitespace-nowrap">{value}</span>
+      </span>
+      <span
+        aria-hidden
+        className="ml-auto text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white/60"
+      >
+        ↗
+      </span>
+    </motion.a>
   );
 }
 
@@ -457,7 +534,7 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
       {open && (
         <motion.div
           key="cinematic-contact"
-          className="fixed inset-0 z-[2147483647] flex items-center justify-center overflow-hidden"
+          className="contact-overlay fixed inset-0 z-[2147483647] flex items-center justify-center overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -528,7 +605,8 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.96 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-[1] w-[min(94vw,720px)] max-h-[92vh] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-black/60 backdrop-blur-2xl px-6 pt-12 pb-6 md:px-9 md:pt-14 md:pb-8"
+            className="relative z-[1] w-[min(96vw,920px)] h-[900px] max-h-[90vh] flex flex-col overflow-y-auto overscroll-contain rounded-3xl border border-white/20 bg-black/70 backdrop-blur-2xl px-5 pt-10 pb-5 md:px-7 md:pt-11 md:pb-6"
+            style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 32px 80px rgba(0,0,0,0.55), 0 0 60px rgba(36,186,172,0.10)' }}
           >
             {/* X close button - top-right corner of the form panel only */}
             <button
@@ -559,65 +637,107 @@ export default function CinematicContact({ open, onClose, cta = "Let's Build Tog
             {showSuccess ? (
               <SuccessScene onClose={onClose} inbox={INBOX} />
             ) : (
-              <>
-                {/* Header - compact so the CTA sits in view without scrolling */}
-                <div className="text-center mb-5 md:mb-6">
-                  <div className="text-[10px] md:text-[11px] tracking-[0.45em] uppercase text-white/55">
-                    Begin the conversation
+              <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 md:gap-7 flex-1 min-h-0">
+                {/* Left - direct contact details, so visitors who'd rather
+                    call or email can do that at a glance, without the form
+                    losing any space. Stacks above the form on mobile. */}
+                <div className="flex flex-col justify-center gap-3 md:border-r md:border-white/10 md:pr-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="text-[10px] tracking-[0.4em] uppercase text-white/50">
+                      Prefer to talk directly?
+                    </div>
+                    <h3 className="mt-1.5 font-display text-base md:text-lg font-semibold text-white leading-snug">
+                      Reach our team right away.
+                    </h3>
+                  </motion.div>
+
+                  <div className="flex flex-col gap-2.5">
+                    <ContactInfoCard
+                      icon={<PhoneIcon className="h-[16px] w-[16px]" />}
+                      label="Call us"
+                      value={PHONE_DISPLAY}
+                      href={PHONE_TEL}
+                      delay={0.1}
+                    />
+                    <ContactInfoCard
+                      icon={<MailIcon className="h-[16px] w-[16px]" />}
+                      label="Email us"
+                      value={INBOX}
+                      href={`mailto:${INBOX}`}
+                      delay={0.17}
+                    />
                   </div>
-                  <h2 className="mt-2 font-display text-xl md:text-2xl lg:text-[28px] font-semibold tracking-tight leading-[1.2]">
-                    <span className="block text-white">Tell us where you're going.</span>
-                    <span
-                      className="block mt-0.5"
-                      style={{
-                        background: 'linear-gradient(90deg,#90eb61,#24baac)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        filter: 'drop-shadow(0 0 18px rgba(36,186,172,0.25))',
-                      }}
-                    >
-                      We'll engineer the way there.
-                    </span>
-                  </h2>
+
+                  <p className="text-[10px] text-white/40 leading-relaxed">
+                    Available Mon–Sat, 9am–6pm IST.
+                  </p>
                 </div>
 
-                <form onSubmit={submit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Field label="First Name" name="firstName" value={form.firstName} onChange={update} error={errors.firstName} autoComplete="given-name" delay={0.05} />
-                    <Field label="Last Name" name="lastName" value={form.lastName} onChange={update} error={errors.lastName} autoComplete="family-name" delay={0.12} />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Field label="Email Address" name="email" type="email" value={form.email} onChange={update} error={errors.email} autoComplete="email" delay={0.19} />
-                    <Field label="Contact Number" name="phone" type="tel" value={form.phone} onChange={update} error={errors.phone} autoComplete="tel" delay={0.26} />
-                  </div>
-                  <Field label="Message" name="message" as="textarea" value={form.message} onChange={update} error={errors.message} delay={0.33} />
-
-                  {/* Inline status row - only takes space when there's an error */}
-                  {status === 'error' && (
-                    <div className="text-xs text-rose-300">
-                      Something went wrong. Please try again, or email us directly at {INBOX}.
-                      {errDetail && (
-                        <span className="mt-1 block break-words text-rose-400/80">{errDetail}</span>
-                      )}
+                {/* Right - the existing form, untouched */}
+                <div className="flex flex-col min-h-0">
+                  {/* Header - compact so the CTA sits in view without scrolling */}
+                  <div className="text-center md:text-left mb-6">
+                    <div className="text-[9px] md:text-[10px] tracking-[0.4em] uppercase text-white/55">
+                      Begin the conversation
                     </div>
-                  )}
-
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                    <span className="text-[11px] text-white/40">
-                      We typically respond within one business day.
-                    </span>
-                    <button
-                      type="submit"
-                      disabled={status === 'sending'}
-                      className="group relative inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_0_45px_rgba(110,255,180,0.40)]"
-                      style={{ background: 'linear-gradient(90deg,#7CFFB2,#24baac)' }}
-                    >
-                      {status === 'sending' ? 'Sending…' : cta}
-                      <span aria-hidden className="transition-transform group-hover:translate-x-1">↗</span>
-                    </button>
+                    <h2 className="mt-1.5 font-display text-lg md:text-xl lg:text-2xl font-semibold tracking-tight leading-[1.2]">
+                      <span className="block text-white">Tell us where you're going.</span>
+                      <span
+                        className="block mt-0.5"
+                        style={{
+                          background: 'linear-gradient(90deg,#90eb61,#24baac)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          filter: 'drop-shadow(0 0 18px rgba(36,186,172,0.25))',
+                        }}
+                      >
+                        We'll engineer the way there.
+                      </span>
+                    </h2>
                   </div>
-                </form>
-              </>
+
+                  <form onSubmit={submit} className="flex flex-col flex-1 space-y-5 min-h-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Field label="First Name" name="firstName" value={form.firstName} onChange={update} error={errors.firstName} autoComplete="given-name" delay={0.05} />
+                      <Field label="Last Name" name="lastName" value={form.lastName} onChange={update} error={errors.lastName} autoComplete="family-name" delay={0.12} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <Field label="Email Address" name="email" type="email" value={form.email} onChange={update} error={errors.email} autoComplete="email" delay={0.19} />
+                      <Field label="Contact Number" name="phone" type="tel" value={form.phone} onChange={update} error={errors.phone} autoComplete="tel" delay={0.26} />
+                    </div>
+                    <Field label="Message" name="message" as="textarea" value={form.message} onChange={update} error={errors.message} delay={0.33} />
+
+                    {/* Inline status row - only takes space when there's an error */}
+                    {status === 'error' && (
+                      <div className="text-xs text-rose-300">
+                        Something went wrong. Please try again, or email us directly at {INBOX}.
+                        {errDetail && (
+                          <span className="mt-1 block break-words text-rose-400/80">{errDetail}</span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <span className="text-[10px] text-white/40">
+                        We typically respond within one business day.
+                      </span>
+                      <button
+                        type="submit"
+                        disabled={status === 'sending'}
+                        className="group relative inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_0_45px_rgba(110,255,180,0.40)]"
+                        style={{ background: 'linear-gradient(90deg,#7CFFB2,#24baac)' }}
+                      >
+                        {status === 'sending' ? 'Sending…' : cta}
+                        <span aria-hidden className="transition-transform group-hover:translate-x-1">↗</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             )}
           </motion.div>
         </motion.div>

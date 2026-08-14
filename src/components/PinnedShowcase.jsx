@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 import {
   AnimatePresence,
   m as motion,
@@ -10,6 +11,33 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+/* Cera has two source videos: /cera3.mp4 for dark theme (black backdrop),
+   and /cera2-final.mp4 for light theme (mint/light-green backdrop, baked
+   in by design for the light theme). Note: /public/cera2.mp4 is corrupted
+   at the file-path level in this project - even re-writing identical,
+   independently-verified-valid bytes to that exact path still fails to
+   decode ("moov atom not found"), so it cannot be used until that file is
+   deleted and replaced outside this environment. This just swaps the
+   <video src> by theme - no runtime chroma-key needed since each file
+   already carries the correct background color. */
+const CERA_VIDEO_DARK = '/cera3.mp4';
+const CERA_VIDEO_LIGHT = '/cera2-final.mp4';
+
+function CeraVideo({ isLight, className }) {
+  return (
+    <video
+      key={isLight ? 'light' : 'dark'}
+      src={isLight ? CERA_VIDEO_LIGHT : CERA_VIDEO_DARK}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      className={className}
+    />
+  );
+}
 
 const STEPS = [
   {
@@ -86,7 +114,7 @@ function LineReveal({ text, className, delay = 0 }) {
 
 /* ---------- Right-side cinematic radar visual ---------- */
 
-function RadarVisual({ progress, step }) {
+function RadarVisual({ progress, step, isLight }) {
   const rot = useTransform(progress, [0, 1], [0, 360]);
   const counterRot = useTransform(progress, [0, 1], [0, -180]);
   const scale = useTransform(progress, [0, 0.5, 1], [0.96, 1.04, 0.98]);
@@ -139,7 +167,9 @@ function RadarVisual({ progress, step }) {
                 top: -s / 2,
                 left: -s / 2,
                 borderColor:
-                  i % 2 ? 'rgba(144,235,97,0.12)' : 'rgba(36,186,172,0.12)',
+                  isLight
+                    ? (i % 2 ? 'rgba(100,180,60,0.45)' : 'rgba(20,150,130,0.40)')
+                    : (i % 2 ? 'rgba(144,235,97,0.12)' : 'rgba(36,186,172,0.12)'),
                 borderStyle: i === 2 ? 'dashed' : 'solid',
               }}
             />
@@ -205,7 +235,7 @@ function RadarVisual({ progress, step }) {
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <motion.div
           style={{ scale }}
-          className="relative h-44 w-44 md:h-52 md:w-52 rounded-full grid place-items-center border border-white/12 backdrop-blur-xl bg-white/[0.03]"
+          className="relative h-44 w-44 md:h-52 md:w-52 rounded-full grid place-items-center border border-white/12 backdrop-blur-sm bg-white/[0.06]"
         >
           <div
             aria-hidden
@@ -296,6 +326,8 @@ function MobileSpiral() {
 export default function PinnedShowcase() {
   const ref = useRef(null);
   const [step, setStep] = useState(0);
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   // Framer-motion progress drives the radar visual (smooth, GPU-only).
   const { scrollYProgress } = useScroll({
@@ -341,8 +373,11 @@ export default function PinnedShowcase() {
       aria-label="Brand storytelling"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Dark base */}
-        <div className="absolute inset-0 bg-ink" />
+        {/* Base */}
+        <div
+          className={`absolute inset-0 ${isLight ? '' : 'bg-ink'}`}
+          style={isLight ? { background: 'linear-gradient(180deg, #f2faf4 0%, #e8f5ee 60%, #f2faf4 100%)' } : undefined}
+        />
 
         {/* Grid backdrop */}
         <div
@@ -408,7 +443,7 @@ export default function PinnedShowcase() {
                   </h2>
 
                   {/* Subtitle */}
-                  <div className="mt-3 text-[11px] md:text-xs tracking-[0.4em] uppercase text-white/55">
+                  <div className={`mt-3 text-[11px] md:text-xs tracking-[0.4em] uppercase ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
                     <LineReveal text={active.subtitle} delay={0.35} />
                   </div>
 
@@ -446,7 +481,7 @@ export default function PinnedShowcase() {
                             },
                           },
                         }}
-                        className="text-base md:text-lg text-white/75 leading-relaxed"
+                        className={`text-base md:text-lg leading-relaxed ${isLight ? 'text-slate-600' : 'text-white/75'}`}
                       >
                         {p}
                       </motion.p>
@@ -459,7 +494,7 @@ export default function PinnedShowcase() {
 
           {/* RIGHT - radar visual */}
           <div className="order-1 lg:order-2 relative">
-            <RadarVisual progress={progress} step={step} />
+            <RadarVisual progress={progress} step={step} isLight={isLight} />
           </div>
         </div>
 
@@ -477,16 +512,10 @@ export default function PinnedShowcase() {
               className="hidden md:block absolute bottom-0 left-0 w-80 lg:w-[28rem] xl:w-[30rem] overflow-hidden pointer-events-none"
             >
               {/* Video is wider than its container so the right side is cropped
-                  by the overflow-hidden parent. */}
-              <video
-                src="/cera2.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
-                className="block w-[118%] max-w-none"
-              />
+                  by the overflow-hidden parent. Swaps between /cera3.mp4
+                  (dark theme) and /cera2-final.mp4 (light theme)
+                  based on the active theme. */}
+              <CeraVideo isLight={isLight} className="block w-[118%] max-w-none" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -496,7 +525,11 @@ export default function PinnedShowcase() {
         <div className="md:hidden absolute inset-0 flex items-center justify-center px-6">
           <MobileSpiral />
           {/* Readability scrim so content stays crisp over the spiral */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-ink/40" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={isLight ? { background: 'rgba(242,250,244,0.40)' } : { background: 'rgba(0,0,0,0.40)' }}
+          />
 
           <div className="relative z-10 w-full max-w-sm">
 
@@ -532,7 +565,7 @@ export default function PinnedShowcase() {
                   transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0 text-center"
                 >
-                  <div className="text-[10px] tracking-[0.5em] uppercase text-white/50">
+                  <div className={`text-[10px] tracking-[0.5em] uppercase ${isLight ? 'text-slate-500' : 'text-white/50'}`}>
                     Chapter 0{step + 1}
                   </div>
                   {/* Styled as a div (not a second <h2>) so the step title isn't
@@ -543,12 +576,12 @@ export default function PinnedShowcase() {
                   <div className="mt-3 font-display text-3xl font-bold leading-[1.1] tracking-tight">
                     {active.title}
                   </div>
-                  <div className="mt-2 text-[11px] tracking-[0.35em] uppercase text-white/55">
+                  <div className={`mt-2 text-[11px] tracking-[0.35em] uppercase ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
                     {active.subtitle}
                   </div>
                   <div className="mt-6 space-y-3 text-left">
                     {active.paragraphs.map((p, i) => (
-                      <p key={i} className="text-sm text-white/75 leading-relaxed">
+                      <p key={i} className={`text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-white/75'}`}>
                         {p}
                       </p>
                     ))}

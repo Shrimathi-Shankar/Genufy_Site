@@ -6,6 +6,7 @@ import { useScroll, useTransform, m as motion } from 'framer-motion';
 import AuroraBackground from './AuroraBackground.jsx';
 import useEnhancedMotion from '../hooks/useEnhancedMotion.js';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 // ==========================================
 // 1. Interactive Canvas Particles Component
@@ -28,16 +29,37 @@ function Particles({ density = 60 }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
+    const makeSprite = (color) => {
+      const oc = document.createElement('canvas');
+      oc.width = oc.height = 64;
+      const octx = oc.getContext('2d');
+      const grd = octx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grd.addColorStop(0, `rgba(${color},1)`);
+      grd.addColorStop(1, `rgba(${color},0)`);
+      octx.fillStyle = grd;
+      octx.fillRect(0, 0, 64, 64);
+      return oc;
+    };
+    const sprites = {
+      '144,235,97': makeSprite('144,235,97'),
+      '36,186,172': makeSprite('36,186,172'),
+    };
+
     const seed = () => {
-      particles = Array.from({ length: density }).map(() => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 1.6 + 0.4,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        c: Math.random() > 0.5 ? '144,235,97' : '36,186,172',
-        a: Math.random() * 0.6 + 0.2,
-      }));
+      particles = Array.from({ length: density }).map(() => {
+        const r = Math.random() * 1.6 + 0.4;
+        const c = Math.random() > 0.5 ? '144,235,97' : '36,186,172';
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r,
+          half: r * 16,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          c,
+          a: Math.random() * 0.6 + 0.2,
+        };
+      });
     };
 
     const draw = () => {
@@ -50,14 +72,10 @@ function Particles({ density = 60 }) {
         if (p.y < -10) p.y = h + 10;
         if (p.y > h + 10) p.y = -10;
 
-        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
-        grd.addColorStop(0, `rgba(${p.c},${p.a})`);
-        grd.addColorStop(1, `rgba(${p.c},0)`);
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 8, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.globalAlpha = p.a;
+        ctx.drawImage(sprites[p.c], p.x - p.half, p.y - p.half, p.half * 2, p.half * 2);
       }
+      ctx.globalAlpha = 1;
     };
 
     resize();
@@ -96,13 +114,14 @@ function Particles({ density = 60 }) {
 function ParallaxStage() {
   const ref = useRef(null);
   const { scrollY } = useScroll();
-  // Only run the (GPU-heavy) canvas particle field on capable devices.
   const enhanced = useEnhancedMotion();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const yFar = useTransform(scrollY, [0, 800], [0, -60]);
-  const yMid = useTransform(scrollY, [0, 800], [0, -150]);
-  const yNear = useTransform(scrollY, [0, 800], [0, -260]);
-  const rot = useTransform(scrollY, [0, 1200], [0, 25]);
+  const yMid = useTransform(scrollY, [0, 800], [0, -100]);
+  const yNear = useTransform(scrollY, [0, 800], [0, -180]);
+  const rot = useTransform(scrollY, [0, 1200], [0, 18]);
   const opacity = useTransform(scrollY, [0, 600], [1, 0.55]);
 
   return (
@@ -128,8 +147,9 @@ function ParallaxStage() {
         <div
           className="absolute inset-0 opacity-[0.18]"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundImage: isLight
+              ? 'linear-gradient(rgba(15,23,42,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.07) 1px, transparent 1px)'
+              : 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
             backgroundSize: '56px 56px',
             maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
@@ -140,15 +160,15 @@ function ParallaxStage() {
       {/* Glow orbs */}
       <motion.div style={{ y: yMid, rotate: rot }} className="layer absolute inset-0">
         <div
-          className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full blur-[120px] opacity-50"
+          className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full blur-[80px] opacity-50"
           style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 60%)' }}
         />
         <div
-          className="absolute bottom-[-180px] right-[-120px] w-[600px] h-[600px] rounded-full blur-[140px] opacity-45"
+          className="absolute bottom-[-180px] right-[-120px] w-[600px] h-[600px] rounded-full blur-[100px] opacity-45"
           style={{ background: 'radial-gradient(circle, #90eb61 0%, transparent 60%)' }}
         />
         <div
-          className="absolute top-[40%] left-[55%] w-[380px] h-[380px] rounded-full blur-[120px] opacity-30 animate-hueGlow"
+          className="absolute top-[40%] left-[55%] w-[380px] h-[380px] rounded-full blur-[80px] opacity-30 animate-hueGlow"
           style={{ background: 'radial-gradient(circle, #24baac 0%, transparent 65%)' }}
         />
       </motion.div>
@@ -189,7 +209,11 @@ function ParallaxStage() {
       {/* Vignette */}
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.85) 100%)' }}
+        style={{
+          background: isLight
+            ? 'radial-gradient(ellipse at center, transparent 50%, rgba(242,250,248,0.55) 100%)'
+            : 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.85) 100%)',
+        }}
       />
     </motion.div>
   );
@@ -223,7 +247,7 @@ function RobotHUD() {
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
       {/* Core radial glow */}
       <motion.div
-        className="absolute rounded-full blur-[88px]"
+        className="absolute rounded-full blur-[60px]"
         style={{
           inset: '4% 2% 10%',
           background: 'radial-gradient(ellipse at 50% 56%, rgba(36,186,172,0.38) 0%, rgba(36,186,172,0.08) 52%, transparent 72%)',
@@ -234,7 +258,7 @@ function RobotHUD() {
 
       {/* Lime secondary bloom */}
       <motion.div
-        className="absolute rounded-full blur-[60px]"
+        className="absolute rounded-full blur-[40px]"
         style={{
           inset: '22% 18%',
           background: 'radial-gradient(circle, rgba(144,235,97,0.16), transparent 70%)',
@@ -299,53 +323,58 @@ function RobotHUD() {
         <circle cx={cx} cy={cy} r={3} fill="#24baac" filter="url(#hg2)" opacity={0.9} />
         <circle cx={cx} cy={cy} r={1.2} fill="white" opacity={0.85} />
 
+        {/* Corner brackets — CSS hud-blink-hi replaces 4 motion.path animations */}
         {[
           'M 110,152 L 88,152 L 88,174',
           'M 290,152 L 312,152 L 312,174',
           'M 110,372 L 88,372 L 88,350',
           'M 290,372 L 312,372 L 312,350',
         ].map((d, i) => (
-          <motion.path key={i} d={d}
-            fill="none" stroke="#24baac" strokeWidth={1.6} filter="url(#hg1)"
-            animate={{ opacity: [0.3, 0.85, 0.3] }}
-            transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.25 }}
+          <path key={i} d={d}
+            fill="none" stroke="#24baac" strokeWidth={1.6}
+            className="hud-corner"
+            style={{ animationDelay: `${i * 0.25}s` }}
           />
         ))}
 
+        {/* Sweep scan — kept as motion.line (significant y movement) */}
         <motion.line x1={68} x2={332} stroke="url(#sg)" strokeWidth={1.3} opacity={0.7}
           animate={{ y1: [160, 368], y2: [160, 368] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'linear', repeatDelay: 2.2 }}
         />
 
+        {/* Left scanlines — CSS hud-scan-l replaces 5 motion.line animations */}
         {[0, 1, 2, 3, 4].map(i => (
-          <motion.line key={i}
+          <line key={i}
+            x1={48} x2={i % 2 === 0 ? 68 : 60}
             y1={190 + i * 30} y2={190 + i * 30}
             stroke={i % 2 === 0 ? '#24baac' : '#90eb61'} strokeWidth={0.7}
-            animate={{
-              opacity: [0.15, 0.65, 0.15],
-              x1: [48, 44, 48],
-              x2: [i % 2 === 0 ? 68 : 60, i % 2 === 0 ? 72 : 64, i % 2 === 0 ? 68 : 60],
-            }}
-            transition={{ duration: 1.6 + i * 0.22, repeat: Infinity, delay: i * 0.38 }}
+            className="hud-scan-l"
+            style={{ '--dur': `${1.6 + i * 0.22}s`, '--delay': `${i * 0.38}s` }}
           />
         ))}
 
+        {/* Right scanlines — CSS hud-scan-r replaces 3 motion.line animations */}
         {[0, 1, 2].map(i => (
-          <motion.line key={i}
+          <line key={i}
+            x1={340} x2={352}
             y1={210 + i * 38} y2={210 + i * 38}
             stroke="#24baac" strokeWidth={0.6}
-            animate={{ opacity: [0.1, 0.5, 0.1], x1: [340, 344, 340], x2: [352, 356, 352] }}
-            transition={{ duration: 2 + i * 0.3, repeat: Infinity, delay: i * 0.5 + 0.8 }}
+            className="hud-scan-r"
+            style={{ '--dur': `${2 + i * 0.3}s`, '--delay': `${i * 0.5 + 0.8}s` }}
           />
         ))}
       </svg>
 
-      {/* Rising particles */}
+      {/* Rising particles — CSS keyframe (hud-rise) instead of 16 JS-driven
+          Framer Motion loops. Same visual, zero main-thread cost per frame. */}
       {particles.map(p => (
-        <motion.span
+        <span
           key={p.id}
-          className="absolute rounded-full"
+          className="hud-particle absolute rounded-full"
           style={{
+            '--dur': `${p.dur}s`,
+            '--delay': `${p.delay}s`,
             left: p.left,
             bottom: 0,
             width: `${p.size}px`,
@@ -353,8 +382,6 @@ function RobotHUD() {
             background: p.color,
             boxShadow: `0 0 ${p.size * 4}px ${p.color}`,
           }}
-          animate={{ y: [0, -520], opacity: [0, 0.85, 0.85, 0] }}
-          transition={{ duration: p.dur, repeat: Infinity, delay: p.delay, ease: 'linear' }}
         />
       ))}
     </div>
@@ -378,33 +405,54 @@ function useHeroSnap() {
       if (scroll < 10) snapped = false;
     };
 
-    let lenis = window.__lenis;
-    if (lenis) {
-      lenis.on('scroll', handleScroll);
-      return () => lenis.off('scroll', handleScroll);
-    }
+    // Lenis may not be initialised yet when this effect runs. Rather than
+    // polling with setInterval (fires every 80 ms regardless of frame budget,
+    // causing micro-updates during scroll), retry via requestAnimationFrame —
+    // at most once per frame and only until Lenis is ready or 30 frames (~500ms
+    // at 60 fps) have passed.
+    let rafId;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 30;
 
-    const t = setInterval(() => {
-      lenis = window.__lenis;
+    const tryAttach = () => {
+      const lenis = window.__lenis;
       if (lenis) {
         lenis.on('scroll', handleScroll);
-        clearInterval(t);
+        return;
       }
-    }, 80);
+      if (attempts < MAX_ATTEMPTS) {
+        attempts++;
+        rafId = requestAnimationFrame(tryAttach);
+      }
+    };
+
+    const lenis = window.__lenis;
+    if (lenis) {
+      lenis.on('scroll', handleScroll);
+    } else {
+      rafId = requestAnimationFrame(tryAttach);
+    }
+
     return () => {
-      clearInterval(t);
+      cancelAnimationFrame(rafId);
       window.__lenis?.off('scroll', handleScroll);
     };
   }, []);
 }
 
 function HeroBackdrop() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <div aria-hidden className="absolute inset-0 z-0 overflow-hidden">
-      {/* Deep cool-charcoal base */}
+      {/* Base — deep charcoal (dark) / soft blue-indigo (light) */}
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(160deg, #0b0e16 0%, #060810 55%, #020405 100%)' }}
+        style={{
+          background: isLight
+            ? 'linear-gradient(160deg, #e2f7f3 0%, #edf9f6 45%, #f4fcfa 100%)'
+            : 'linear-gradient(160deg, #0b0e16 0%, #060810 55%, #020405 100%)',
+        }}
       />
       {/* Aurora animated layer */}
       <AuroraBackground animationSpeed={10} />
@@ -412,30 +460,46 @@ function HeroBackdrop() {
       <div
         className="absolute inset-0 opacity-[0.055]"
         style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1px)',
+          backgroundImage: isLight
+            ? 'radial-gradient(circle, rgba(36,186,172,0.30) 1px, transparent 1px)'
+            : 'radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1px)',
           backgroundSize: '52px 52px',
           maskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 80%)',
           WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 80%)',
         }}
       />
       {/* Top fade for nav */}
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 to-transparent" />
-      {/* Bottom fade */}
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black to-transparent" />
+      <div
+        className="absolute inset-x-0 top-0 h-40"
+        style={{
+          background: isLight
+            ? 'linear-gradient(to bottom, rgba(226,247,243,0.7), transparent)'
+            : 'linear-gradient(to bottom, rgba(0,0,0,0.5), transparent)',
+        }}
+      />
+      {/* Bottom fade — matches page bg */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-48"
+        style={{
+          background: isLight
+            ? 'linear-gradient(to top, #f2faf8, transparent)'
+            : 'linear-gradient(to top, #000000, transparent)',
+        }}
+      />
     </div>
   );
 }
 
 function HeadlineLine({ text, delay = 0, accent = false, dimmed = false }) {
   const words = text.split(' ');
-  const colorClass = accent ? 'text-lime' : dimmed ? 'text-white/35' : 'text-white';
+  const colorClass = accent ? 'text-lime' : dimmed ? 'text-white/60' : 'text-white';
   return (
     <motion.span
       initial="hidden"
       animate="show"
       variants={{
         hidden: {},
-        show: { transition: { delayChildren: delay, staggerChildren: 0.18 } },
+        show: { transition: { delayChildren: delay, staggerChildren: 0.06 } },
       }}
       className="block"
     >
@@ -443,10 +507,11 @@ function HeadlineLine({ text, delay = 0, accent = false, dimmed = false }) {
         <motion.span
           key={i}
           variants={{
-            hidden: { opacity: 0 },
+            hidden: { opacity: 0, y: 10 },
             show: {
               opacity: 1,
-              transition: { duration: 2.0, ease: [0.455, 0.03, 0.515, 0.955] },
+              y: 0,
+              transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
             },
           }}
           className={`inline-block mr-[0.12em] ${colorClass}`}
@@ -464,9 +529,9 @@ function HeadlineLine({ text, delay = 0, accent = false, dimmed = false }) {
 export default function HeroGenufy() {
   useHeroSnap();
   const { openContact } = useContactModal();
-  // On mobile/low-end, skip the WebGL Spline robot + animated HUD (the biggest
-  // freeze culprits) and show a lightweight glow instead.
   const enhanced = useEnhancedMotion();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <>
       {/* 3D background / parallax stage layers */}
@@ -494,8 +559,8 @@ export default function HeroGenufy() {
             <motion.span
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6, ease }}
-              className="mb-0.5 font-brand text-base font-semibold text-white/75 sm:text-xl lg:text-2xl"
+              transition={{ delay: 0.05, duration: 0.4, ease }}
+              className="mb-0.5 font-brand text-base font-semibold text-white sm:text-xl lg:text-2xl"
             >
               We Build
             </motion.span>
@@ -503,29 +568,29 @@ export default function HeroGenufy() {
             <h1 className="font-brand font-extrabold leading-none tracking-tight w-full">
               {/* clamp() sets a minimum size so text stays legible on 320px phones */}
               <span className="block text-[clamp(28px,8vw,88px)] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-2 lg:mb-4">
-                <HeadlineLine text="Intelligent" delay={0.2} />
+                <HeadlineLine text="Intelligent" delay={0.1} />
               </span>
               <span className="block text-[clamp(28px,8vw,88px)] sm:text-[7.5vw] lg:text-[5.2vw] xl:text-[4.8vw] mb-2 lg:mb-4">
-                <HeadlineLine text="Digital Solutions" delay={0.7} accent />
+                <HeadlineLine text="Digital Solutions" delay={0.25} accent />
               </span>
               <span className="block text-[clamp(18px,4.8vw,52px)] sm:text-[4.5vw] lg:text-[3.2vw] xl:text-[3vw]">
-                <HeadlineLine text="That Scale." delay={1.35} dimmed />
+                <HeadlineLine text="That Scale." delay={0.45} dimmed />
               </span>
             </h1>
 
             <motion.div
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ delay: 2.1, duration: 0.9, ease: 'easeOut' }}
+              transition={{ delay: 0.7, duration: 0.5, ease: 'easeOut' }}
               className="mt-3 h-px w-28 origin-left md:w-40 lg:mt-4"
-              style={{ background: 'linear-gradient(90deg, #90eb61, transparent)' }}
+              style={{ background: isLight ? 'linear-gradient(90deg, #0f766e, transparent)' : 'linear-gradient(90deg, #90eb61, transparent)' }}
             />
 
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.4, duration: 0.75, ease }}
-              className="mt-3 max-w-sm text-sm leading-relaxed text-white/50 md:text-[0.93rem] lg:mt-8"
+              transition={{ delay: 0.8, duration: 0.5, ease }}
+              className="mt-3 max-w-sm text-sm leading-relaxed text-white/80 md:text-[0.93rem] lg:mt-8"
             >
               Genufy transforms ideas into scalable digital ecosystems powered by
               AI, intelligent automation, and deep domain expertise.
@@ -534,7 +599,7 @@ export default function HeroGenufy() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.75, duration: 0.7 }}
+              transition={{ delay: 0.95, duration: 0.45 }}
               className="mt-3 flex flex-wrap items-center gap-3 lg:mt-5"
             >
               <a
@@ -548,7 +613,16 @@ export default function HeroGenufy() {
               <button
                 type="button"
                 onClick={openContact}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-medium text-white/75 backdrop-blur-sm transition-all duration-300 hover:border-teal/40 hover:bg-white/[0.05] hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-medium backdrop-blur-sm transition-all duration-300"
+                style={isLight ? {
+                  border: '1px solid #cbd5e1',
+                  color: '#475569',
+                  background: 'rgba(255,255,255,0.80)',
+                } : {
+                  border: '1px solid rgba(255,255,255,0.20)',
+                  color: 'rgba(255,255,255,0.75)',
+                  background: 'transparent',
+                }}
               >
                 Talk to Us
               </button>

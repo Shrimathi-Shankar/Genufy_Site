@@ -1,15 +1,15 @@
 export const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
+    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: i * 0.06 },
   }),
 };
 
 export const fadeIn = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.8, ease: 'easeOut' } },
+  show: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
 export const stagger = {
@@ -18,7 +18,7 @@ export const stagger = {
 };
 
 export const pageTransition = {
-  initial: { opacity: 0, y: 16, filter: 'blur(6px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
-  exit: { opacity: 0, y: -16, filter: 'blur(6px)', transition: { duration: 0.35, ease: 'easeIn' } },
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2, ease: 'easeIn' } },
 };

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
 import {
   m as motion,
   useMotionValue,
@@ -56,24 +57,28 @@ function RevealWords({ text, className, once = true, gradient = false }) {
 }
 
 function Eyebrow({ children }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/45">
-      <span className="h-px w-10 bg-white/30" />
+    <div className={`flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
+      <span className={`h-px w-10 ${isLight ? 'bg-slate-300' : 'bg-white/30'}`} />
       {children}
     </div>
   );
 }
 
 function FeatureItem({ children, accent }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <li className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 backdrop-blur-sm">
+    <li className={`flex items-start gap-4 rounded-2xl border px-5 py-4 backdrop-blur-sm ${isLight ? 'border-slate-200 bg-slate-100' : 'border-white/10 bg-white/[0.025]'}`}>
       <span
         className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full text-[10px] font-bold text-black"
         style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }}
       >
         ✓
       </span>
-      <span className="text-white/85 text-[15px] md:text-base leading-relaxed">{children}</span>
+      <span className={`text-[15px] md:text-base leading-relaxed ${isLight ? 'text-slate-700' : 'text-white/85'}`}>{children}</span>
     </li>
   );
 }
@@ -210,6 +215,8 @@ function Particles({ count = 32, accent = '#24baac' }) {
 /* ---------------- Hero ---------------- */
 
 function HeroScene({ service }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const letters = Array.from('SALESFORCE');
   const ref = useRef(null);
   const mx = useMotionValue(0);
@@ -1097,7 +1104,7 @@ function CertCard({ cert, accent }) {
   );
 }
 
-function CertificationsWall({ accent }) {
+function CertificationsWall({ accent, isLight }) {
   // Duplicate for seamless marquee
   const row = [...CERTS, ...CERTS];
   return (
@@ -1118,12 +1125,12 @@ function CertificationsWall({ accent }) {
         <div
           aria-hidden
           className="absolute inset-y-0 left-0 w-32 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(90deg, #000 0%, transparent 100%)' }}
+          style={{ background: `linear-gradient(90deg, var(--c-bg) 0%, transparent 100%)` }}
         />
         <div
           aria-hidden
           className="absolute inset-y-0 right-0 w-32 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(270deg, #000 0%, transparent 100%)' }}
+          style={{ background: `linear-gradient(270deg, var(--c-bg) 0%, transparent 100%)` }}
         />
         <motion.div
           className="flex gap-5"
@@ -1182,7 +1189,7 @@ const SF_CLOUDS = [
   },
 ];
 
-function CloudCard({ cloud, i, accent }) {
+function CloudCard({ cloud, i, accent, isLight }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
@@ -1226,7 +1233,7 @@ function CloudCard({ cloud, i, accent }) {
           <div className="text-[10px] tracking-[0.4em] uppercase text-white/45">
             Salesforce
           </div>
-          <div className="mt-1 font-display text-xl md:text-2xl text-white">{cloud.name}</div>
+          <div className={`mt-1 font-display text-xl md:text-2xl ${isLight ? 'text-slate-900' : 'text-white'}`}>{cloud.name}</div>
         </div>
       </div>
 
@@ -1265,7 +1272,7 @@ function CloudCard({ cloud, i, accent }) {
   );
 }
 
-function SalesforceCloudsGrid({ accent }) {
+function SalesforceCloudsGrid({ accent, isLight }) {
   return (
     <section className="relative px-6 md:px-12 py-28 md:py-40">
       <FloatingOrbs accent={accent} />
@@ -1303,7 +1310,7 @@ function SalesforceCloudsGrid({ accent }) {
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SF_CLOUDS.map((cloud, i) => (
-            <CloudCard key={cloud.id} cloud={cloud} i={i} accent={accent} />
+            <CloudCard key={cloud.id} cloud={cloud} i={i} accent={accent} isLight={isLight} />
           ))}
         </div>
       </div>
@@ -1411,6 +1418,8 @@ function ScrollDots({ scrollRef }) {
 
 export default function SalesforceExperience({ service, onClose, scrollRef }) {
   const accent = service.accent || '#24baac';
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   return (
     <>
@@ -1418,7 +1427,7 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
       <HeroScene service={service} />
 
-      <div className="bg-ink relative z-10">
+      <div className={`${isLight ? 'bg-slate-50' : 'bg-ink'} relative z-10`}>
         <ExperienceSection
           num="01"
           eyebrow="Salesforce Delivery Excellence"
@@ -1538,7 +1547,7 @@ export default function SalesforceExperience({ service, onClose, scrollRef }) {
 
         <SalesforceCloudsStory scrollContainer={scrollRef} />
 
-        <CertificationsWall accent={accent} />
+        <CertificationsWall accent={accent} isLight={isLight} />
 
         <FinalCTA accent={accent} onClose={onClose} />
       </div>

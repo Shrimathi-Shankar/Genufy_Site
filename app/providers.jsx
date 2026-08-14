@@ -2,6 +2,7 @@
 
 import { LazyMotion, MotionConfig } from 'framer-motion';
 import { ContactModalProvider } from '../src/contexts/ContactModalContext.jsx';
+import { ThemeProvider } from '../src/contexts/ThemeContext.jsx';
 import useLenis from '../src/hooks/useLenis.js';
 
 /* Framer Motion features are loaded lazily (after hydration) and code-split into
@@ -21,7 +22,9 @@ export default function Providers({ children }) {
       {/* reducedMotion="user" makes every motion component honor the OS
           "reduce motion" setting (transforms/layout animations are skipped). */}
       <MotionConfig reducedMotion="user">
-        <ContactModalProvider>{children}</ContactModalProvider>
+        <ThemeProvider>
+          <ContactModalProvider>{children}</ContactModalProvider>
+        </ThemeProvider>
       </MotionConfig>
     </LazyMotion>
   );

@@ -13,6 +13,7 @@ import {
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import { POSTS } from '../components/insightsData.js';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 const CATEGORIES = ['All', 'Salesforce', 'Snowflake', 'MuleSoft', 'AI / ML', 'Informatica', 'DevOps', 'Pega'];
@@ -81,7 +82,7 @@ function SplitReveal({ text, className, delay = 0, stagger = 0.06 }) {
             }}
           >
             {word}
-            {i < words.length - 1 ? ' ' : ''}
+            {i < words.length - 1 ? ' ' : ''}
           </motion.span>
         </span>
       ))}
@@ -99,7 +100,7 @@ function SectionLabel({ children }) {
 }
 
 // ─── Category pill ─────────────────────────────────────────────────────────────
-function CategoryPill({ label, active, onClick }) {
+function CategoryPill({ label, active, onClick, isLight }) {
   return (
     <motion.button
       onClick={onClick}
@@ -107,9 +108,9 @@ function CategoryPill({ label, active, onClick }) {
       whileTap={{ scale: 0.97 }}
       className="relative rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors duration-300"
       style={{
-        background: active ? 'linear-gradient(110deg,#90eb61,#24baac)' : 'rgba(255,255,255,0.05)',
-        color: active ? '#040508' : 'rgba(255,255,255,0.45)',
-        border: active ? 'none' : '1px solid rgba(255,255,255,0.09)',
+        background: active ? 'linear-gradient(110deg,#90eb61,#24baac)' : (isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'),
+        color: active ? '#040508' : (isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.45)'),
+        border: active ? 'none' : (isLight ? '1px solid rgba(0,0,0,0.09)' : '1px solid rgba(255,255,255,0.09)'),
         boxShadow: active ? '0 4px 22px rgba(36,186,172,0.35)' : 'none',
       }}
     >
@@ -119,7 +120,7 @@ function CategoryPill({ label, active, onClick }) {
 }
 
 // ─── Featured story card ───────────────────────────────────────────────────────
-function FeaturedCard({ post }) {
+function FeaturedCard({ post, isLight }) {
   return (
     <motion.div {...fadeUp(0.1)}>
       <Tilt intensity={6}>
@@ -129,9 +130,9 @@ function FeaturedCard({ post }) {
             style={{
               background: `radial-gradient(ellipse 80% 70% at 20% 40%, ${post.accentColor}18, transparent 55%),
                            radial-gradient(ellipse 60% 80% at 80% 60%, rgba(144,235,97,0.07), transparent 60%),
-                           rgba(255,255,255,0.025)`,
-              border: '1px solid rgba(255,255,255,0.07)',
-              boxShadow: `0 0 0 1px rgba(255,255,255,0.04), 0 40px 100px -20px ${post.accentColor}20`,
+                           ${isLight ? 'rgba(0,0,0,0.025)' : 'rgba(255,255,255,0.025)'}`,
+              border: isLight ? '1px solid rgba(0,0,0,0.07)' : '1px solid rgba(255,255,255,0.07)',
+              boxShadow: `0 0 0 1px ${isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.04)'}, 0 40px 100px -20px ${post.accentColor}20`,
             }}
           >
             {/* Top shimmer line */}
@@ -147,15 +148,15 @@ function FeaturedCard({ post }) {
                   >
                     {post.category}
                   </span>
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-white/25">
+                  <span className={`font-mono text-[10px] font-semibold uppercase tracking-widest ${isLight ? 'text-slate-400' : 'text-white/25'}`}>
                     Featured Story
                   </span>
                 </div>
 
-                <h2 className="mt-6 font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-white md:text-[2.6rem]">
+                <h2 className={`mt-6 font-display text-3xl font-extrabold leading-[1.08] tracking-tight md:text-[2.6rem] ${isLight ? 'text-slate-900' : 'text-white'}`}>
                   {post.title}
                 </h2>
-                <p className="mt-5 max-w-lg text-base leading-relaxed text-white/55">
+                <p className={`mt-5 max-w-lg text-base leading-relaxed ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
                   {post.excerpt}
                 </p>
 
@@ -167,7 +168,7 @@ function FeaturedCard({ post }) {
                   >
                     Read article <span>→</span>
                   </motion.span>
-                  <span className="text-xs text-white/30">{post.readTime}</span>
+                  <span className={`text-xs ${isLight ? 'text-slate-400' : 'text-white/30'}`}>{post.readTime}</span>
                 </div>
 
                 <div className="mt-10 flex items-center gap-3">
@@ -175,13 +176,13 @@ function FeaturedCard({ post }) {
                     className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold"
                     style={{ background: 'linear-gradient(135deg,#90eb61,#24baac)', color: '#040508' }}
                   >G</div>
-                  <span className="text-xs text-white/40">{post.author} · {post.date}</span>
+                  <span className={`text-xs ${isLight ? 'text-slate-400' : 'text-white/40'}`}>{post.author} · {post.date}</span>
                 </div>
               </div>
 
               {/* Right — visual */}
               <div
-                className="relative flex items-center justify-center overflow-hidden border-t border-white/[0.05] md:border-l md:border-t-0"
+                className={`relative flex items-center justify-center overflow-hidden md:border-l md:border-t-0 ${isLight ? 'border-t border-black/[0.05]' : 'border-t border-white/[0.05]'}`}
                 style={{ background: `radial-gradient(ellipse 100% 100% at 50% 50%, ${post.accentColor}10, transparent 70%)`, minHeight: '280px' }}
               >
                 <motion.span
@@ -215,7 +216,7 @@ function FeaturedCard({ post }) {
 }
 
 // ─── Editorial blog card ───────────────────────────────────────────────────────
-function BlogCard({ post, index, size = 'normal' }) {
+function BlogCard({ post, index, size = 'normal', isLight }) {
   const isLarge = size === 'large';
 
   return (
@@ -233,8 +234,8 @@ function BlogCard({ post, index, size = 'normal' }) {
             transition={{ duration: 0.35, ease: EASE }}
             className="group relative flex h-full flex-col overflow-hidden rounded-2xl"
             style={{
-              background: 'rgba(255,255,255,0.025)',
-              border: '1px solid rgba(255,255,255,0.07)',
+              background: isLight ? 'rgba(0,0,0,0.025)' : 'rgba(255,255,255,0.025)',
+              border: isLight ? '1px solid rgba(0,0,0,0.07)' : '1px solid rgba(255,255,255,0.07)',
             }}
           >
             {/* Top visual band */}
@@ -242,7 +243,7 @@ function BlogCard({ post, index, size = 'normal' }) {
               className="relative overflow-hidden"
               style={{
                 height: isLarge ? '200px' : '148px',
-                background: `radial-gradient(ellipse 90% 90% at 30% 40%, ${post.accentColor}1a, rgba(4,5,8,0.6) 65%)`,
+                background: `radial-gradient(ellipse 90% 90% at 30% 40%, ${post.accentColor}1a, ${isLight ? 'rgba(248,250,252,0.6)' : 'rgba(4,5,8,0.6)'} 65%)`,
               }}
             >
               {/* Noise texture overlay */}
@@ -282,18 +283,18 @@ function BlogCard({ post, index, size = 'normal' }) {
             <div className="flex flex-1 flex-col p-6">
               <span className="text-[11px] font-semibold" style={{ color: post.accentColor }}>{post.tag}</span>
               <h3
-                className="mt-2 font-display font-bold leading-snug tracking-tight text-white transition-colors duration-300 group-hover:text-white/90"
+                className={`mt-2 font-display font-bold leading-snug tracking-tight transition-colors duration-300 ${isLight ? 'text-slate-900 group-hover:text-slate-700' : 'text-white group-hover:text-white/90'}`}
                 style={{ fontSize: isLarge ? '1.2rem' : '1rem' }}
               >
                 {post.title}
               </h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-white/45">{post.excerpt}</p>
+              <p className={`mt-3 flex-1 text-sm leading-relaxed ${isLight ? 'text-slate-500' : 'text-white/45'}`}>{post.excerpt}</p>
 
               <div
                 className="mt-5 flex items-center justify-between border-t pt-4"
-                style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+                style={{ borderColor: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)' }}
               >
-                <span className="text-[10px] text-white/30">{post.date} · {post.readTime}</span>
+                <span className={`text-[10px] ${isLight ? 'text-slate-400' : 'text-white/30'}`}>{post.date} · {post.readTime}</span>
                 <motion.span
                   className="flex items-center gap-1.5 text-[11px] font-semibold"
                   style={{ color: post.accentColor }}
@@ -318,19 +319,19 @@ function BlogCard({ post, index, size = 'normal' }) {
 }
 
 // ─── Marquee text strip ────────────────────────────────────────────────────────
-function MarqueeStrip() {
+function MarqueeStrip({ isLight }) {
   const tags = ['Salesforce', 'AgentForce', 'Snowflake', 'Cortex AI', 'MuleSoft', 'API Design', 'MLOps', 'Informatica', 'Platform Eng', 'Pega NBA', 'Data Cloud', 'DevOps'];
   const doubled = [...tags, ...tags];
   return (
-    <div className="relative my-20 overflow-hidden border-y border-white/[0.05] py-5">
+    <div className={`relative my-20 overflow-hidden py-5 ${isLight ? 'border-y border-black/[0.05]' : 'border-y border-white/[0.05]'}`}>
       <motion.div
         animate={{ x: ['0%', '-50%'] }}
         transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
         className="flex whitespace-nowrap"
       >
         {doubled.map((t, i) => (
-          <span key={i} className="mx-8 text-xs font-bold uppercase tracking-[0.3em] text-white/18">
-            {t} <span className="mx-6 text-white/10">✦</span>
+          <span key={i} className={`mx-8 text-xs font-bold uppercase tracking-[0.3em] ${isLight ? 'text-slate-400' : 'text-white/18'}`}>
+            {t} <span className={`mx-6 ${isLight ? 'text-slate-300' : 'text-white/10'}`}>✦</span>
           </span>
         ))}
       </motion.div>
@@ -340,6 +341,9 @@ function MarqueeStrip() {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 export default function Insights() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   const [activeCategory, setActiveCategory] = useState('All');
   const heroRef = useRef(null);
 
@@ -364,7 +368,7 @@ export default function Insights() {
     <>
       <Header />
 
-      <main className="relative overflow-hidden bg-[#040508]">
+      <main className={`relative overflow-hidden ${isLight ? 'bg-slate-50' : 'bg-[#040508]'}`}>
 
         {/* Global grain */}
         <div className="noise" aria-hidden />
@@ -410,7 +414,7 @@ export default function Insights() {
                 initial={{ y: '100%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, ease: EASE, delay: 0.15 }}
-                className="font-display text-[clamp(3.5rem,12vw,9rem)] font-extrabold leading-[0.92] tracking-[-0.04em] text-white"
+                className={`font-display text-[clamp(3.5rem,12vw,9rem)] font-extrabold leading-[0.92] tracking-[-0.04em] ${isLight ? 'text-slate-900' : 'text-white'}`}
               >
                 <span className="text-gradient-gt">Ideas.</span>
               </motion.h1>
@@ -420,7 +424,7 @@ export default function Insights() {
                 initial={{ y: '100%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, ease: EASE, delay: 0.25 }}
-                className="font-display text-[clamp(3.5rem,12vw,9rem)] font-extrabold leading-[0.92] tracking-[-0.04em] text-white/85"
+                className={`font-display text-[clamp(3.5rem,12vw,9rem)] font-extrabold leading-[0.92] tracking-[-0.04em] ${isLight ? 'text-slate-700' : 'text-white/85'}`}
               >
                 Perspectives.
               </motion.h1>
@@ -431,7 +435,7 @@ export default function Insights() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, ease: EASE, delay: 0.55 }}
-              className="mx-auto mt-8 max-w-lg text-base leading-relaxed text-white/45 md:text-lg"
+              className={`mx-auto mt-8 max-w-lg text-base leading-relaxed md:text-lg ${isLight ? 'text-slate-500' : 'text-white/45'}`}
             >
               Engineering depth on AI, data platforms, and the infrastructure of the next enterprise.
             </motion.p>
@@ -445,8 +449,8 @@ export default function Insights() {
             >
               {[['8', 'Articles'], ['7', 'Topics'], ['1', 'Team']].map(([num, label]) => (
                 <div key={label} className="text-center">
-                  <p className="font-display text-2xl font-bold text-white">{num}</p>
-                  <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/30">{label}</p>
+                  <p className={`font-display text-2xl font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{num}</p>
+                  <p className={`mt-0.5 text-[10px] font-semibold uppercase tracking-widest ${isLight ? 'text-slate-400' : 'text-white/30'}`}>{label}</p>
                 </div>
               ))}
             </motion.div>
@@ -458,12 +462,12 @@ export default function Insights() {
               transition={{ delay: 1.2 }}
               className="mx-auto mt-16 flex flex-col items-center gap-2"
             >
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/20">Scroll</span>
+              <span className={`text-[10px] font-semibold uppercase tracking-[0.3em] ${isLight ? 'text-slate-400' : 'text-white/20'}`}>Scroll</span>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
                 className="h-8 w-[1px]"
-                style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }}
+                style={{ background: isLight ? 'linear-gradient(180deg, rgba(0,0,0,0.2), transparent)' : 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }}
               />
             </motion.div>
           </motion.div>
@@ -475,7 +479,7 @@ export default function Insights() {
           {/* Manifesto text */}
           <div className="py-24 text-center">
             <p
-              className="mx-auto max-w-4xl font-display text-2xl font-bold leading-relaxed tracking-tight text-white/30 md:text-4xl"
+              className={`mx-auto max-w-4xl font-display text-2xl font-bold leading-relaxed tracking-tight md:text-4xl ${isLight ? 'text-slate-400' : 'text-white/30'}`}
             >
               <SplitReveal
                 text="We write about the technology reshaping enterprise — with the depth only practitioners can offer."
@@ -487,7 +491,7 @@ export default function Insights() {
           {/* ── CATEGORY FILTER ── */}
           <motion.div {...fadeUp()} className="mb-14 flex flex-wrap justify-center gap-2.5">
             {CATEGORIES.map((cat) => (
-              <CategoryPill key={cat} label={cat} active={activeCategory === cat} onClick={() => setActiveCategory(cat)} />
+              <CategoryPill key={cat} label={cat} active={activeCategory === cat} onClick={() => setActiveCategory(cat)} isLight={isLight} />
             ))}
           </motion.div>
 
@@ -498,7 +502,7 @@ export default function Insights() {
                 transition={{ duration: 0.4 }} className="mb-16"
               >
                 <SectionLabel>Featured Story</SectionLabel>
-                <FeaturedCard post={featuredPost} />
+                <FeaturedCard post={featuredPost} isLight={isLight} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -509,7 +513,7 @@ export default function Insights() {
               {gridPosts.length === 0 ? (
                 <div className="py-24 text-center">
                   <p className="text-3xl opacity-20">✦</p>
-                  <p className="mt-5 text-sm text-white/35">No articles in this category yet — check back soon.</p>
+                  <p className={`mt-5 text-sm ${isLight ? 'text-slate-400' : 'text-white/35'}`}>No articles in this category yet — check back soon.</p>
                 </div>
               ) : (
                 <>
@@ -520,10 +524,10 @@ export default function Insights() {
                   {/* Row 1: big + two stacked */}
                   {firstBig && (
                     <div className="mb-5 grid gap-5 md:grid-cols-[1.45fr_1fr]">
-                      <BlogCard post={firstBig} index={0} size="large" />
+                      <BlogCard post={firstBig} index={0} size="large" isLight={isLight} />
                       <div className="flex flex-col gap-5">
                         {firstStack.map((p, i) => (
-                          <BlogCard key={p.id} post={p} index={i + 1} />
+                          <BlogCard key={p.id} post={p} index={i + 1} isLight={isLight} />
                         ))}
                       </div>
                     </div>
@@ -533,7 +537,7 @@ export default function Insights() {
                   {remaining.length > 0 && (
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                       {remaining.map((p, i) => (
-                        <BlogCard key={p.id} post={p} index={i} />
+                        <BlogCard key={p.id} post={p} index={i} isLight={isLight} />
                       ))}
                     </div>
                   )}
@@ -543,7 +547,7 @@ export default function Insights() {
           </AnimatePresence>
 
           {/* ── MARQUEE ── */}
-          <MarqueeStrip />
+          <MarqueeStrip isLight={isLight} />
 
           {/* ── NEWSLETTER ── */}
           <motion.div
@@ -552,8 +556,8 @@ export default function Insights() {
             style={{
               background: `radial-gradient(ellipse 80% 90% at 20% 50%, rgba(36,186,172,0.12), transparent 55%),
                            radial-gradient(ellipse 60% 70% at 80% 50%, rgba(144,235,97,0.08), transparent 55%),
-                           rgba(255,255,255,0.025)`,
-              border: '1px solid rgba(255,255,255,0.07)',
+                           ${isLight ? 'rgba(0,0,0,0.025)' : 'rgba(255,255,255,0.025)'}`,
+              border: isLight ? '1px solid rgba(0,0,0,0.07)' : '1px solid rgba(255,255,255,0.07)',
             }}
           >
             <div className="h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(36,186,172,0.6), transparent)' }} />
@@ -562,17 +566,17 @@ export default function Insights() {
               <motion.p {...fadeUp(0.05)} className="text-[10px] font-bold uppercase tracking-[0.45em] text-teal">
                 Stay Ahead
               </motion.p>
-              <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-white md:text-5xl">
+              <h2 className={`mt-4 font-display text-3xl font-extrabold tracking-tight md:text-5xl ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 <SplitReveal text="The best insights, straight to you." delay={0.05} />
               </h2>
-              <motion.p {...fadeUp(0.15)} className="mx-auto mt-5 max-w-md text-base text-white/45">
+              <motion.p {...fadeUp(0.15)} className={`mx-auto mt-5 max-w-md text-base ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
                 Engineering deep-dives, product launches, and case studies — no noise, no cadence pressure.
               </motion.p>
               <motion.div {...fadeUp(0.2)} className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="w-full max-w-[280px] rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-colors duration-200 focus:border-teal"
+                  className={`w-full max-w-[280px] rounded-xl px-5 py-3.5 text-sm outline-none transition-colors duration-200 focus:border-teal ${isLight ? 'border border-black/10 bg-black/[0.04] text-slate-900 placeholder-slate-400' : 'border border-white/10 bg-white/[0.04] text-white placeholder-white/25'}`}
                 />
                 <motion.button
                   whileHover={{ scale: 1.03 }}

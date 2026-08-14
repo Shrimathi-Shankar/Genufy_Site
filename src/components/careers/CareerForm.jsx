@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -18,12 +19,14 @@ const CAREERS_TO = 'info@genufy.in';
 
 function Field({ label, name, type = 'text', as = 'input', value, onChange, error, optional, autoComplete, placeholder }) {
   const Cmp = as;
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <label className="block">
-      <span className="mb-2 block text-[10px] uppercase tracking-[0.3em] text-white/45">
+      <span className={`mb-2 block text-[10px] uppercase tracking-[0.3em] ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
         {label}
         {optional ? (
-          <span className="text-white/30"> (optional)</span>
+          <span className={isLight ? 'text-slate-400' : 'text-white/30'}> (optional)</span>
         ) : (
           <span className="text-emerald-300/80"> *</span>
         )}
@@ -37,11 +40,13 @@ function Field({ label, name, type = 'text', as = 'input', value, onChange, erro
         rows={as === 'textarea' ? 5 : undefined}
         placeholder={placeholder || label}
         className={
-          'w-full rounded-xl border bg-white/[0.03] px-4 py-3 text-white placeholder-white/25 outline-none transition ' +
-          'focus:bg-white/[0.06] ' +
+          `w-full rounded-xl border px-4 py-3 outline-none transition ` +
+          (isLight
+            ? 'bg-white text-slate-900 placeholder-slate-400 focus:bg-white '
+            : 'bg-white/[0.03] text-white placeholder-white/25 focus:bg-white/[0.06] ') +
           (error
             ? 'border-rose-400/50 focus:border-rose-300/70'
-            : 'border-white/10 focus:border-cyan-300/60')
+            : isLight ? 'border-slate-300 focus:border-cyan-500' : 'border-white/10 focus:border-cyan-300/60')
         }
       />
       <AnimatePresence>
@@ -77,6 +82,8 @@ export default function CareerForm() {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | sending | sent | error
   const [serverError, setServerError] = useState('');
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const update = (e) => {
     const { name, value } = e.target;
@@ -184,7 +191,7 @@ export default function CareerForm() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease }}
-        className="rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center"
+        className={`rounded-3xl border p-10 text-center ${isLight ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-white/[0.03]'}`}
       >
         <div
           className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full"
@@ -194,15 +201,15 @@ export default function CareerForm() {
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
-        <h3 className="font-display text-2xl font-semibold text-white">Application received</h3>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/60">
+        <h3 className={`font-display text-2xl font-semibold ${isLight ? 'text-slate-900' : 'text-white'}`}>Application received</h3>
+        <p className={`mx-auto mt-3 max-w-md text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-white/60'}`}>
           Thank you for your interest in Genufy. We've received your details, and we'll reach out if a
           suitable opportunity opens up.
         </p>
         <button
           type="button"
           onClick={() => setStatus('idle')}
-          className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-7 py-3 text-sm text-white/85 transition hover:bg-white/[0.08]"
+          className={`mt-8 inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm transition ${isLight ? 'border-slate-300 bg-slate-100 text-slate-700 hover:bg-slate-200' : 'border-white/15 bg-white/[0.04] text-white/85 hover:bg-white/[0.08]'}`}
         >
           Submit another application
         </button>
@@ -213,7 +220,7 @@ export default function CareerForm() {
   return (
     <form
       onSubmit={submit}
-      className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-9 space-y-5"
+      className={`rounded-3xl border p-6 md:p-9 space-y-5 ${isLight ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-white/[0.03]'}`}
     >
       {/* All single-line fields share one uniform 2-column grid so every field
           aligns and sizes exactly like Name/Email. The Cover Message (textarea)
@@ -237,7 +244,7 @@ export default function CareerForm() {
         />
       </div>
 
-      <p className="text-[11px] text-white/40">
+      <p className={`text-[11px] ${isLight ? 'text-slate-400' : 'text-white/40'}`}>
         For the resume, paste a shareable link and make sure its sharing permission allows anyone with
         the link to view.
       </p>
@@ -257,7 +264,7 @@ export default function CareerForm() {
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <span className="text-[11px] text-white/40">We review every application and reply if there's a fit.</span>
+        <span className={`text-[11px] ${isLight ? 'text-slate-400' : 'text-white/40'}`}>We review every application and reply if there's a fit.</span>
         <button
           type="submit"
           disabled={status === 'sending'}

@@ -1,17 +1,24 @@
 import { useRef } from 'react';
 import { m as motion, useScroll, useTransform } from 'framer-motion';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 export default function ClosingCTA() {
   const ref = useRef(null);
   const { openContact } = useContactModal();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 1.05]);
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0.6]);
 
   return (
-    <section ref={ref} className="cv-section relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
+    <section
+      ref={ref}
+      className="cv-section relative py-20 md:py-28 px-6 md:px-12 overflow-hidden"
+      style={{ background: 'var(--c-bg)' }}
+    >
       <motion.div
         aria-hidden
         style={{ y, scale }}
@@ -24,11 +31,14 @@ export default function ClosingCTA() {
       </motion.div>
 
       <motion.div style={{ opacity }} className="relative max-w-5xl mx-auto text-center">
-        <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.02]">
+        <h2
+          className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[1.02]"
+          style={{ color: 'var(--c-text)' }}
+        >
           Build the next era <br />
           with <span className="text-gradient-gt">Genufy</span>.
         </h2>
-        <p className="mt-7 mx-auto max-w-xl text-white/65 text-base md:text-lg">
+        <p className="mt-7 mx-auto max-w-xl text-base md:text-lg" style={{ color: 'var(--c-text-65)' }}>
           A partnership designed for ambitious teams. Tell us where you're going - we'll engineer the system that gets you there.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -43,7 +53,15 @@ export default function ClosingCTA() {
           </button>
           <a
             href="/insights"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-8 py-4 text-sm font-medium text-white/85 hover:bg-white/[0.04] transition"
+            className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-medium transition"
+            style={isLight ? {
+              border: '1px solid rgba(36,186,172,0.25)',
+              color: '#0f5f5a',
+              background: 'rgba(255,255,255,0.85)',
+            } : {
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: 'rgba(255,255,255,0.85)',
+            }}
           >
             Read our insights
           </a>

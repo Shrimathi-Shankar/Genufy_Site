@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Spline from '@splinetool/react-spline/next';
 import ErrorBoundary from './ErrorBoundary.jsx';
 
@@ -43,7 +43,24 @@ function RobotFallback() {
 export default function SplineRobot() {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  // Defer mounting the Spline runtime until the main thread is idle (or after
+  // 2 s on browsers without requestIdleCallback). This keeps the initial paint
+  // and LCP from being blocked by the 2 MB+ Spline runtime download.
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const schedule = window.requestIdleCallback
+      ? (cb) => window.requestIdleCallback(cb, { timeout: 2000 })
+      : (cb) => setTimeout(cb, 200);
+    const id = schedule(() => setMounted(true));
+    return () => {
+      if (window.cancelIdleCallback) window.cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, []);
+
+  if (!mounted) return <LoadingPulse />;
   if (failed) return <RobotFallback />;
 
   return (

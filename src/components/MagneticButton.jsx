@@ -6,7 +6,7 @@ export default function MagneticButton({ children, className, as: Tag = 'button'
   return (
     <Tag
       ref={ref}
-      className={cn('transition-transform duration-300 will-change-transform', className)}
+      className={cn('transition-transform duration-300', className)}
       {...props}
     >
       {children}

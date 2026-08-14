@@ -1,8 +1,14 @@
-import { useRef, useState } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import { m as motion, useScroll, useTransform } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const TEXT =
   'Genufy transforms complex business challenges into seamless digital experiences. We design intelligent platforms, automation systems, and AI-driven solutions that help businesses scale efficiently and operate smarter.';
+
+// Pre-split at module level — TEXT is a constant so this never changes.
+// Splitting inside the component body created a new array on every render,
+// giving all Word children a new array reference and preventing memoization.
+const WORDS = TEXT.split(' ');
 
 /* Official brand logos with a resilient multi-source fallback chain:
      1) simple-icons CDN (official SVG at the brand's hex color)
@@ -76,7 +82,12 @@ const NETWORK_SERVICES = [
   };
 });
 
-function Word({ word, index, total, progress }) {
+// memo prevents re-renders when the parent re-renders. Without it, every
+// parent render called useTransform again, creating new MotionValue objects
+// and breaking the scroll-linked animation continuity (visible as flickering).
+// `progress` is a stable MotionValue reference; `index` and `total` never
+// change after mount — so memo's shallow comparison always passes.
+const Word = memo(function Word({ word, index, total, progress }) {
   const start = index / total;
   const end = (index + 1.4) / total;
   const opacity = useTransform(progress, [start, end], [0.22, 1]);
@@ -86,21 +97,37 @@ function Word({ word, index, total, progress }) {
       {word}
     </motion.span>
   );
-}
+});
 
 /* Animated visual placed inside the left content card (mirrors the reference's mascot position) */
 function CardVisual() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  const spinRef = useRef(null);
+  const [spinning, setSpinning] = useState(false);
+
+  useEffect(() => {
+    if (!spinRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSpinning(entry.isIntersecting),
+      { rootMargin: '100px' }
+    );
+    observer.observe(spinRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="relative h-24 w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 shrink-0">
+    <div ref={spinRef} className="relative h-24 w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 shrink-0">
       {/* Outer rotating gradient frame */}
-      <motion.div
+      <div
         className="absolute inset-0 rounded-2xl"
-        style={{ background: 'conic-gradient(from 0deg, #90eb61, #24baac, #90eb61)' }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+        style={{ background: 'conic-gradient(from 0deg, #90eb61, #24baac, #90eb61)', animation: spinning ? 'spin-cw 14s linear infinite' : 'none', willChange: spinning ? 'transform' : 'auto' }}
       />
-      {/* Inner dark panel */}
-      <div className="absolute inset-[2px] rounded-[14px] bg-black/85 backdrop-blur-xl overflow-hidden">
+      {/* Inner panel — kept intentionally dark in both themes (dark widget = tech accent) */}
+      <div
+        className="absolute inset-[2px] rounded-[14px] backdrop-blur-sm overflow-hidden"
+        style={{ background: isLight ? 'rgba(10,15,35,0.88)' : 'rgba(0,0,0,0.85)' }}
+      >
         {/* Faint grid background */}
         <div
           aria-hidden
@@ -170,37 +197,29 @@ function CardVisual() {
         </svg>
 
         {/* Floating mini chart (top-right) */}
-        <motion.div
+        <div
           className="absolute top-2 right-2 flex items-end gap-0.5"
-          animate={{ y: [0, -2, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ animation: 'chart-float 3.5s ease-in-out infinite' }}
         >
           {[6, 9, 5, 11].map((h, i) => (
-            <motion.span
+            <span
               key={i}
               className="w-[3px] rounded-full"
               style={{
                 height: h,
                 background: 'linear-gradient(180deg, #90eb61, #24baac)',
                 boxShadow: '0 0 6px rgba(36,186,172,0.6)',
-              }}
-              animate={{ scaleY: [1, 1.25, 1] }}
-              transition={{
-                duration: 2.2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: i * 0.15,
+                animation: `hud-blink-hi 2.2s ease-in-out ${i * 0.15}s infinite`,
               }}
             />
           ))}
-        </motion.div>
+        </div>
 
         {/* Floating pie glyph (bottom-left) */}
-        <motion.div
+        <div
           className="absolute bottom-2 left-2 h-3.5 w-3.5 rounded-full overflow-hidden"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
           style={{
+            animation: 'spin-cw 12s linear infinite',
             background:
               'conic-gradient(#90eb61 0% 60%, #24baac 60% 100%)',
             boxShadow: '0 0 8px rgba(144,235,97,0.55)',
@@ -211,32 +230,86 @@ function CardVisual() {
   );
 }
 
-function GlowBackdrop() {
+/* Ambient floating particles for THIS section (light mode). In dark mode the
+   hero's fixed particle field shows through; in light mode that field is hidden
+   by the solid base, so this recreates a similar look on the light background: a
+   mix of small crisp dots and a few larger soft bokeh orbs, in brand teal/green.
+   Positions are deterministic (computed once) and animated via one CSS keyframe. */
+const SECTION_PARTICLES = Array.from({ length: 58 }, (_, i) => {
+  const big = i % 7 === 3;
+  return {
+    left: (i * 37) % 100,
+    top: (i * 53 + 11) % 100,
+    size: big ? 9 + ((i * 5) % 7) : 2 + ((i * 7) % 5) * 0.5,
+    teal: i % 2 === 0,
+    big,
+    dur: 7 + ((i * 11) % 70) / 10,
+    delay: ((i * 17) % 55) / 10,
+    opMax: big ? 0.14 + ((i * 7) % 9) / 100 : 0.5 + ((i * 13) % 33) / 100,
+  };
+});
+
+function SectionParticles() {
   return (
     <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-      <motion.div
+      {SECTION_PARTICLES.map((p, i) => {
+        const glow = p.big ? p.size * 1.2 : p.size * 2.6;
+        const rgb = p.teal ? '36,186,172' : '46,158,94';
+        return (
+          <span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${p.left}%`,
+              top: `${p.top}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              background: `rgba(${rgb},${p.big ? 0.5 : 1})`,
+              boxShadow: `0 0 ${glow.toFixed(1)}px rgba(${rgb},${p.big ? 0.35 : 0.55})`,
+              filter: p.big ? 'blur(2px)' : 'none',
+              opacity: p.opMax,
+              '--p-max': p.opMax,
+              animation: `mani-particle-float ${p.dur.toFixed(1)}s ease-in-out ${p.delay.toFixed(1)}s infinite`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function GlowBackdrop() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+  return (
+    <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div
         className="absolute -left-24 top-16 h-[420px] w-[420px] rounded-full blur-[120px]"
         style={{
-          background:
-            'radial-gradient(circle, rgba(36,186,172,0.14) 0%, rgba(144,235,97,0.05) 45%, transparent 72%)',
+          background: isLight
+            ? 'radial-gradient(circle, rgba(36,186,172,0.07) 0%, rgba(144,235,97,0.03) 45%, transparent 72%)'
+            : 'radial-gradient(circle, rgba(36,186,172,0.14) 0%, rgba(144,235,97,0.05) 45%, transparent 72%)',
+          animation: 'blob-drift-a 14s ease-in-out infinite',
+          willChange: 'transform',
         }}
-        animate={{ x: [0, 16, 0], y: [0, -12, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
+      <div
         className="absolute -right-32 bottom-10 h-[520px] w-[520px] rounded-full blur-[140px]"
         style={{
-          background:
-            'radial-gradient(circle, rgba(144,235,97,0.12) 0%, rgba(36,186,172,0.05) 45%, transparent 72%)',
+          background: isLight
+            ? 'radial-gradient(circle, rgba(144,235,97,0.06) 0%, rgba(36,186,172,0.03) 45%, transparent 72%)'
+            : 'radial-gradient(circle, rgba(144,235,97,0.12) 0%, rgba(36,186,172,0.05) 45%, transparent 72%)',
+          animation: 'blob-drift-b 16s ease-in-out 1s infinite',
+          willChange: 'transform',
         }}
-        animate={{ x: [0, -18, 0], y: [0, 14, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
     </div>
   );
 }
 
 function HolographicMesh() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const CENTER = { x: NETWORK_CX, y: NETWORK_CY };
   // Radial edges - each service connects to the centre point.
   const radialEdges = NETWORK_SERVICES.map((s) => ({
@@ -262,11 +335,15 @@ function HolographicMesh() {
             repainting a blur(30px) layer EVERY frame (a top main-thread cost).
             Now each blob is a pre-blurred layer animated via `x`/`y` transform
             only (composited, off the main thread) — same drifting-glow look. */}
-        <div aria-hidden className="absolute inset-0 opacity-70">
+        <div aria-hidden className={`absolute inset-0 ${isLight ? 'opacity-25' : 'opacity-70'}`}>
           {/* static faint sky-blue centre wash (was the 3rd, non-moving radial) */}
           <div
             className="absolute inset-0"
-            style={{ background: 'radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)' }}
+            style={{
+              background: isLight
+                ? 'radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.10), transparent 80%)'
+                : 'radial-gradient(60% 50% at 50% 50%, rgba(125,211,252,0.18), transparent 80%)',
+            }}
           />
           {/* teal blob */}
           <motion.div
@@ -274,7 +351,9 @@ function HolographicMesh() {
             style={{
               top: '5%',
               left: '-5%',
-              background: 'radial-gradient(circle, rgba(36,186,172,0.55), transparent 70%)',
+              background: isLight
+                ? 'radial-gradient(circle, rgba(36,186,172,0.16), transparent 70%)'
+                : 'radial-gradient(circle, rgba(36,186,172,0.55), transparent 70%)',
               filter: 'blur(30px)',
               willChange: 'transform',
             }}
@@ -287,7 +366,9 @@ function HolographicMesh() {
             style={{
               top: '45%',
               left: '50%',
-              background: 'radial-gradient(circle, rgba(144,235,97,0.45), transparent 70%)',
+              background: isLight
+                ? 'radial-gradient(circle, rgba(144,235,97,0.12), transparent 70%)'
+                : 'radial-gradient(circle, rgba(144,235,97,0.45), transparent 70%)',
               filter: 'blur(30px)',
               willChange: 'transform',
             }}
@@ -300,8 +381,9 @@ function HolographicMesh() {
           aria-hidden
           className="absolute inset-0 opacity-[0.10]"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+            backgroundImage: isLight
+              ? 'linear-gradient(rgba(15,23,42,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.5) 1px, transparent 1px)'
+              : 'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
             backgroundSize: '38px 38px',
             maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 85%)',
@@ -318,23 +400,23 @@ function HolographicMesh() {
             { x: '46%', y: '13%', t: 'Transform', d: 13, dl: 1.5 },
             { x: '62%', y: '62%', t: 'Connect', d: 14, dl: 0.8 },
           ].map((g, i) => (
-            <motion.span
-              key={i} className="absolute" style={{ left: g.x, top: g.y }}
-              animate={{ y: [0, -14, 0], opacity: [0.15, 0.55, 0.15] }}
-              transition={{ duration: g.d, repeat: Infinity, ease: 'easeInOut', delay: g.dl }}
+            <span
+              key={i} className="absolute" style={{ left: g.x, top: g.y, animation: `label-float ${g.d}s ease-in-out ${g.dl}s infinite` }}
             >
               {g.t}
-            </motion.span>
+            </span>
           ))}
         </div>
 
         {/* Scanline sweep - part of the tilted background */}
-        <motion.div
+        <div
           aria-hidden
           className="absolute inset-x-0 h-12"
-          style={{ background: 'linear-gradient(180deg, transparent, rgba(36,186,172,0.18), transparent)', mixBlendMode: 'screen' }}
-          animate={{ y: ['-10%', '120%', '-10%'] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            background: 'linear-gradient(180deg, transparent, rgba(36,186,172,0.18), transparent)',
+            mixBlendMode: isLight ? 'multiply' : 'screen',
+            animation: 'scanline-sweep 9s ease-in-out infinite',
+          }}
         />
       </div>
 
@@ -350,16 +432,19 @@ function HolographicMesh() {
           <line
             key={`e-${i}`}
             x1={e.ax} y1={e.ay} x2={e.bx} y2={e.by}
-            stroke="url(#meshLineG)" strokeWidth="0.22" strokeDasharray="1.2 1.2" opacity="0.75"
+            stroke={isLight ? '#4aa87e' : 'url(#meshLineG)'}
+            strokeWidth={isLight ? '0.28' : '0.14'}
+            strokeDasharray="1.2 1.2"
+            opacity={isLight ? '0.55' : '0.45'}
           />
         ))}
         {ringEdges.map((e, i) => (
           <motion.circle
-            key={`p-${i}`} r="0.7" fill="#90eb61"
+            key={`p-${i}`} r={isLight ? '0.75' : '0.45'} fill={isLight ? '#2e9e5e' : '#90eb61'}
             initial={{ cx: e.ax, cy: e.ay }}
             animate={{ cx: [e.ax, e.bx, e.ax], cy: [e.ay, e.by, e.ay] }}
             transition={{ duration: 4 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-            style={{ filter: 'drop-shadow(0 0 1.8px #24baac)' }}
+            style={{ filter: isLight ? 'drop-shadow(0 0 1.5px #24baac)' : 'drop-shadow(0 0 1px #24baac)' }}
           />
         ))}
       </svg>
@@ -391,16 +476,17 @@ function HolographicMesh() {
               <motion.span
                 aria-hidden
                 className="absolute inset-0 rounded-full"
-                animate={{ scale: [1, 1.55, 1], opacity: [0.55, 0, 0.55] }}
+                animate={{ scale: [1, 1.55, 1], opacity: isLight ? [0.32, 0, 0.32] : [0.55, 0, 0.55] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
-                style={{ boxShadow: '0 0 28px 6px rgba(144,235,97,0.6)' }}
+                style={{ boxShadow: isLight ? '0 0 20px 4px rgba(144,235,97,0.32)' : '0 0 28px 6px rgba(144,235,97,0.6)' }}
               />
               {/* White circular badge - matches the service nodes, slightly larger. */}
               <div
                 className="relative grid h-12 w-12 sm:h-14 sm:w-14 md:h-[72px] md:w-[72px] lg:h-[76px] lg:w-[76px] place-items-center rounded-full bg-white ring-1 ring-white/40 p-1.5 sm:p-2 md:p-2.5 lg:p-3"
                 style={{
-                  boxShadow:
-                    '0 0 26px -2px rgba(144,235,97,0.75), 0 0 60px -10px rgba(36,186,172,0.55), inset 0 1px 0 rgba(255,255,255,0.9)',
+                  boxShadow: isLight
+                    ? '0 0 14px -2px rgba(144,235,97,0.35), 0 0 30px -10px rgba(36,186,172,0.25), inset 0 1px 0 rgba(255,255,255,0.9)'
+                    : '0 0 26px -2px rgba(144,235,97,0.75), 0 0 60px -10px rgba(36,186,172,0.55), inset 0 1px 0 rgba(255,255,255,0.9)',
                 }}
               >
                 <img
@@ -408,6 +494,8 @@ function HolographicMesh() {
                   alt="Genufy"
                   loading="lazy"
                   decoding="async"
+                  width={72}
+                  height={72}
                   className="h-full w-full scale-[1.1] object-contain"
                 />
               </div>
@@ -433,9 +521,9 @@ function HolographicMesh() {
               <motion.span
                 aria-hidden
                 className="absolute inset-0 rounded-full"
-                animate={{ scale: [1, 1.45, 1], opacity: [0.55, 0, 0.55] }}
+                animate={{ scale: [1, 1.45, 1], opacity: isLight ? [0.3, 0, 0.3] : [0.55, 0, 0.55] }}
                 transition={{ duration: 3.2, repeat: Infinity, ease: 'easeOut', delay: i * 0.3 }}
-                style={{ boxShadow: '0 0 22px 4px rgba(144,235,97,0.55)' }}
+                style={{ boxShadow: isLight ? '0 0 16px 3px rgba(144,235,97,0.3)' : '0 0 22px 4px rgba(144,235,97,0.55)' }}
               />
               {/* White circle with the official brand logo - centre sits
                   exactly on (s.x, s.y). Inner padding gives the logo breathing
@@ -443,15 +531,16 @@ function HolographicMesh() {
               <div
                 className="relative grid h-10 w-10 md:h-12 md:w-12 lg:h-[52px] lg:w-[52px] place-items-center rounded-full bg-white ring-1 ring-white/40 p-1.5 md:p-2 lg:p-[9px]"
                 style={{
-                  boxShadow:
-                    '0 0 22px -2px rgba(144,235,97,0.6), 0 0 50px -10px rgba(36,186,172,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
+                  boxShadow: isLight
+                    ? '0 0 12px -2px rgba(144,235,97,0.32), 0 0 26px -10px rgba(36,186,172,0.22), inset 0 1px 0 rgba(255,255,255,0.9)'
+                    : '0 0 22px -2px rgba(144,235,97,0.6), 0 0 50px -10px rgba(36,186,172,0.45), inset 0 1px 0 rgba(255,255,255,0.9)',
                 }}
               >
                 <BrandLogo sources={s.sources} alt={s.label} scale={s.scale} />
               </div>
               {/* Label sits below the circle - hidden on mobile (<md) so only
                   the logos show; visible on tablet/desktop. */}
-              <div className="hidden md:block absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[10px] md:text-[11px] lg:text-xs font-medium tracking-tight text-white/90">
+              <div className={`hidden md:block absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[10px] md:text-[11px] lg:text-xs font-medium tracking-tight ${isLight ? 'text-slate-700' : 'text-white/90'}`}>
                 {s.label}
               </div>
             </motion.div>
@@ -463,12 +552,13 @@ function HolographicMesh() {
 }
 
 export default function Manifesto() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start 0.85', 'end 0.25'],
   });
-  const words = TEXT.split(' ');
 
   return (
     <section
@@ -480,7 +570,16 @@ export default function Manifesto() {
          smooth. Heavier lower sections keep cv-section. */
       className="relative py-16 md:py-20 lg:py-28 px-6 md:px-12 overflow-hidden"
     >
+      {/* Solid section base (light mode). The hero's ParallaxStage backdrop is
+          position:fixed and spans the whole page, so its floating particles and
+          rings bleed through any transparent section. This opaque layer blocks
+          that bleed-through here, keeping this section's background calm. Dark
+          mode is left transparent so its look is unchanged. */}
+      {isLight && (
+        <div aria-hidden className="absolute inset-0" style={{ background: '#f2faf4' }} />
+      )}
       <GlowBackdrop />
+      {isLight && <SectionParticles />}
 
       <div className="relative max-w-7xl mx-auto">
         {/* Heading - top-left */}
@@ -493,10 +592,14 @@ export default function Manifesto() {
           {/* Right visual - anchored right */}
           <div className="lg:w-[60%] lg:ml-auto">
             <div
-              className="relative aspect-[16/10] lg:aspect-[16/9.5] rounded-[1.65rem] overflow-hidden border border-white/10 ring-1 ring-white/5"
-              style={{ boxShadow: '0 26px 65px -18px rgba(0,0,0,0.65)' }}
+              className={`relative aspect-[16/10] lg:aspect-[16/9.5] rounded-[1.65rem] overflow-hidden ${isLight ? 'border border-[rgba(36,186,172,0.18)]' : 'border border-white/10 ring-1 ring-white/5'}`}
+              style={{
+                boxShadow: isLight
+                  ? '0 4px 20px rgba(15,23,42,0.07), 0 0 0 1px rgba(36,186,172,0.12), 0 8px 32px rgba(36,186,172,0.08)'
+                  : '0 26px 65px -18px rgba(0,0,0,0.65)',
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-xl" />
+              <div className={`absolute inset-0 backdrop-blur-sm ${isLight ? 'bg-gradient-to-b from-[#eaf6f0]/95 to-[#d6ece2]/90' : 'bg-gradient-to-b from-white/[0.04] to-white/[0.01]'}`} />
               <HolographicMesh />
             </div>
           </div>
@@ -536,12 +639,12 @@ export default function Manifesto() {
               <div className="relative flex items-center gap-5 md:gap-6 lg:gap-6 min-h-[190px] md:min-h-[215px] lg:min-h-[225px] px-6 md:px-7 lg:px-8 py-7 md:py-8">
                 <CardVisual />
                 <p className="font-display text-sm md:text-[15px] lg:text-base leading-[1.55] tracking-tight text-white">
-                  {words.map((w, i) => (
+                  {WORDS.map((w, i) => (
                     <Word
                       key={i}
                       word={w}
                       index={i}
-                      total={words.length}
+                      total={WORDS.length}
                       progress={scrollYProgress}
                     />
                   ))}

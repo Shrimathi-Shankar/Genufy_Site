@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { m as motion } from 'framer-motion';
 import { CLIENTS } from './clientsManifest.js';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 /* ------------------------------------------------------------------
    Trusted Clients - fully dynamic.
@@ -32,6 +32,8 @@ function ClientLogo({ src, alt = '' }) {
       alt={alt}
       loading="lazy"
       decoding="async"
+      width={150}
+      height={56}
       onError={() => setFailed(true)}
       className="max-h-[56px] max-w-[150px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
     />
@@ -39,15 +41,21 @@ function ClientLogo({ src, alt = '' }) {
 }
 
 export default function Marquee() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   // Duplicate the set once so the -50% animation loops seamlessly.
   const loopClients = [...CLIENTS, ...CLIENTS];
 
   return (
     <section
       className="cv-section relative py-16 overflow-hidden border-y border-white/5"
-      style={{
-        background:
-          'linear-gradient(135deg, rgba(144,235,97,0.04) 0%, rgba(36,186,172,0.06) 100%)',
+      style={isLight ? {
+        background: '#f2faf8',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        borderColor: 'rgba(36,186,172,0.15)',
+      } : {
+        background: 'linear-gradient(135deg, rgba(144,235,97,0.04) 0%, rgba(36,186,172,0.06) 100%)',
       }}
       aria-label="Trusted Clients"
     >
@@ -60,8 +68,14 @@ export default function Marquee() {
       />
 
       {/* Fade masks for smooth left/right edges */}
-      <div className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-48 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-16 sm:w-24 md:w-48 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+      <div
+        className="absolute inset-y-0 left-0 w-16 sm:w-24 md:w-48 z-10 pointer-events-none"
+        style={{ background: `linear-gradient(to right, var(--c-bg), transparent)` }}
+      />
+      <div
+        className="absolute inset-y-0 right-0 w-16 sm:w-24 md:w-48 z-10 pointer-events-none"
+        style={{ background: `linear-gradient(to left, var(--c-bg), transparent)` }}
+      />
 
       {/* Integrated title inside the same marquee container */}
       <div className="relative z-10 flex flex-col items-center mb-8 md:mb-10 px-6 text-center">
@@ -72,10 +86,9 @@ export default function Marquee() {
 
       {/* Infinite auto-scrolling marquee */}
       <div className="relative z-10 flex w-full">
-        <motion.div
+        <div
           className="flex gap-4 sm:gap-6 whitespace-nowrap"
-          animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: SCROLL_DURATION, ease: 'linear', repeat: Infinity }}
+          style={{ animation: `marquee-scroll ${SCROLL_DURATION}s linear infinite`, willChange: 'transform' }}
         >
           {loopClients.map((c, i) => (
             <div
@@ -85,7 +98,7 @@ export default function Marquee() {
               <ClientLogo src={c.src} alt={c.label} />
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

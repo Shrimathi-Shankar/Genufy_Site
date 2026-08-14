@@ -1,22 +1,35 @@
-import { useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useRef, useEffect } from 'react';
 import { m as motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
 
-/* ============================================================
-   PortalTransition (Parallax edition)
-   A multi-layer sticky parallax stage that bridges Manifesto
-   → Salesforce Partnership. Layers drift at different speeds
-   (some horizontal, some vertical) to create depth and motion.
-   No expanding circle.
+/*
+  PortalTransition — Early-reveal cinematic parallax
+  ════════════════════════════════════════════════════
 
-   Layers, back to front:
-     1. Abstract grid + glow blobs        (slowest, soft drift)
-     2. Long horizontal "data streams"    (slow horizontal motion)
-     3. Floating tech / service cards     (medium parallax, mixed XY)
-     4. Vertical particle streams         (fast downward drift)
-     5. Captions fade through the journey
-============================================================ */
+  SCROLL GEOMETRY (height=160vh, offset ['start 80%','end end'])
+    Total scroll range = 140vh.
+    progress=0    → section.top at 80% viewport (section entering, previous
+                    section still partially on screen).
+    progress=0.57 → section.top at viewport.top (sticky pins).
+    progress=1.0  → section.bottom at viewport.bottom (sticky releases).
 
-/* ------------ data - Genufy capabilities, platform-agnostic ------------ */
+  ENTRY phase  [0 → 0.57]
+    Backdrop, blobs, cards and streams fade in as the section rises from below.
+    The previous section is still partially visible during this window.
+
+  PINNED phase [0.57 → 1.0]
+    Caption sequence plays. All ambient layers are already fully revealed.
+
+  SPRING  stiffness:55 / damping:36 / mass:0.8
+    Responsive enough to start the entry reveal immediately (no long lag),
+    inertial enough for cinematic caption transitions.
+
+  CAPTION WINDOWS — remapped into pinned region [0.57, 1.0]
+    cap1: [0.57, 0.62, 0.70, 0.74]
+    cap2: [0.73, 0.77, 0.83, 0.87]
+    cap3: [0.85, 0.90, 0.95, 0.99]
+*/
+
 const TECH_CARDS = [
   { label: 'AI & Machine Learning', sub: 'Models · Copilots', x: 12, y: 22, depth: 0.7 },
   { label: 'Data Engineering', sub: 'Pipelines · Warehouses', x: 78, y: 18, depth: 1.2 },
@@ -38,47 +51,34 @@ const STREAM_BANDS = [
 
 const PARTICLES = Array.from({ length: 26 }, (_, i) => ({
   i,
-  x: ((i * 41) % 100),
-  duration: 5 + (i % 5),
-  delay: (i * 0.27) % 6,
+  x: (i * 41) % 100,
+  duration: 15 + (i % 8),
+  delay: (i * 0.55) % 10,
   size: 0.4 + ((i * 11) % 6) / 10,
   green: i % 2 === 0,
 }));
 
-/* ------------ sub-components ------------ */
-function TechCard({ card, scrollYProgress }) {
-  // Each card drifts a little based on its `depth` (parallax factor).
-  const tx = useTransform(scrollYProgress, [0, 1], [card.depth * 60, card.depth * -60]);
-  const ty = useTransform(scrollYProgress, [0, 1], [card.depth * -30, card.depth * 90]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.75, 0.95], [0, 1, 1, 0]);
-  const blur = useTransform(scrollYProgress, [0, 0.15, 0.78, 0.95], [10, 0, 0, 10]);
-  const filter = useTransform(blur, (v) => `blur(${v}px)`);
+function TechCard({ card, progress }) {
+  const tx = useTransform(progress, [0, 1], [card.depth * 16, card.depth * -16]);
+  const ty = useTransform(progress, [0, 1], [card.depth * -8, card.depth * 24]);
+  const opacity = useTransform(progress, [0.05, 0.22, 0.97, 1.00], [0, 1, 1, 0]);
+  const blurPx = useTransform(progress, [0.05, 0.22, 0.97, 1.00], [10, 0, 0, 10]);
+  const filter = useTransform(blurPx, (v) => `blur(${v}px)`);
 
   return (
     <motion.div
-      style={{
-        left: `${card.x}%`,
-        top: `${card.y}%`,
-        x: tx,
-        y: ty,
-        opacity,
-        filter,
-      }}
+      style={{ left: `${card.x}%`, top: `${card.y}%`, x: tx, y: ty, opacity, filter }}
       className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
     >
       <div
         className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl px-4 py-3 md:px-5 md:py-3.5 min-w-[140px] md:min-w-[170px]"
-        style={{
-          boxShadow:
-            'inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 36px -16px rgba(36,186,172,0.45)',
-        }}
+        style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 36px -16px rgba(36,186,172,0.45)' }}
       >
         <div
           aria-hidden
           className="absolute -inset-px rounded-2xl opacity-50 pointer-events-none"
           style={{
-            background:
-              'linear-gradient(135deg, rgba(144,235,97,0.20), rgba(36,186,172,0.20))',
+            background: 'linear-gradient(135deg, rgba(144,235,97,0.20), rgba(36,186,172,0.20))',
             mask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
             WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
             WebkitMaskComposite: 'xor',
@@ -88,11 +88,7 @@ function TechCard({ card, scrollYProgress }) {
         />
         <div
           className="text-[10px] md:text-[11px] tracking-[0.25em] uppercase"
-          style={{
-            background: 'linear-gradient(90deg,#90eb61,#24baac)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
+          style={{ background: 'linear-gradient(90deg,#90eb61,#24baac)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
         >
           {card.label}
         </div>
@@ -102,29 +98,19 @@ function TechCard({ card, scrollYProgress }) {
   );
 }
 
-function StreamBand({ band, scrollYProgress }) {
-  // Translate horizontally across the section based on scroll, modulated by `speed`.
+function StreamBand({ band, progress }) {
   const x = useTransform(
-    scrollYProgress,
+    progress,
     [0, 1],
     [`${band.speed > 0 ? -30 : 130}%`, `${band.speed > 0 ? 130 : -30}%`]
   );
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, band.opacity, band.opacity, 0]);
+  const opacity = useTransform(progress, [0.05, 0.22, 0.97, 1], [0, band.opacity, band.opacity, 0]);
   return (
-    <motion.div
-      style={{
-        top: `${band.y}%`,
-        x,
-        opacity,
-        width: band.width,
-      }}
-      className="absolute h-px pointer-events-none"
-    >
+    <motion.div style={{ top: `${band.y}%`, x, opacity, width: band.width }} className="absolute h-px pointer-events-none">
       <div
         className="h-full w-full"
         style={{
-          background:
-            'linear-gradient(90deg, transparent, rgba(144,235,97,0.7), rgba(36,186,172,0.55), transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(144,235,97,0.7), rgba(36,186,172,0.55), transparent)',
           filter: 'blur(0.3px)',
         }}
       />
@@ -132,98 +118,113 @@ function StreamBand({ band, scrollYProgress }) {
   );
 }
 
-/* ------------ main component ------------ */
-export default function PortalTransition({ height = '170vh' }) {
+export default function PortalTransition({ height = '300vh' }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
 
+  // Preload HorizontalCapabilities while the user is still scrolling this section.
+  useEffect(() => { window.__loadServicesSection?.(); }, []);
+
+  // height=300vh, offset ['start 80%','end end'] → total range 280vh.
+  // Sticky pins at progress=0.29 (80/280). Pinned region 0.29→1.0 = 200vh.
+  // Each caption gets ~67vh of scroll ≈ one distinct scroll gesture.
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start start', 'end end'],
+    offset: ['start 80%', 'end end'],
   });
 
-  /* Smooth the raw scroll so the caption fades glide instead of snapping. */
-  const progress = useSpring(scrollYProgress, { stiffness: 70, damping: 30, mass: 0.5 });
+  const progress = useSpring(scrollYProgress, { stiffness: 55, damping: 36, mass: 0.8 });
 
-  /* Backdrop layers drift slowly */
+  // Canvas exit using RAW scrollYProgress (not spring).
+  // Spring lags ~0.08 behind raw at normal speed — if we used spring here the
+  // canvas would still be partially opaque when sticky physically releases at
+  // raw=1.0, causing a black flash. Raw guarantees opacity=0 before release.
+  // marginBottom:'-100vh' on the section pulls Services.top to section.top+200vh,
+  // exactly matching the sticky release point, so there is zero document-flow gap.
+  // Cross-fade window: raw [0.86, 1.00].
+  // Canvas fades over 14% of total progress (~39vh) while Services rises beneath.
+  // At raw=0.93 the canvas is at 50% — caption still clearly readable, Services
+  // already half-visible. Both sections overlap for the full fade duration.
+  // TWO-PHASE exit — movement and fade are decoupled:
+  // Phase 1  raw [0.84→0.93] (~25vh): canvas rises while staying fully opaque.
+  //   Services is hidden. cap3 exits naturally upward before anything else appears.
+  // Phase 2  raw [0.93→1.00] (~20vh): canvas fades to 0 while continuing to rise.
+  //   Services fades in simultaneously. At raw=0.965 both sit at ~50% opacity.
+  const stickyOp = useTransform(
+    scrollYProgress,
+    [0.90, 1.00],
+    [1, 0]
+  );
+
+  const stickyY = useTransform(
+    scrollYProgress,
+    [0.90, 1.00],
+    ['0%', '-22%']
+  );
+
+  // Blobs fade in during entry phase, fully visible by the time sticky pins.
+  const blobOp1 = useTransform(progress, [0, 0.22], [0, 0.50]);
+  const blobOp2 = useTransform(progress, [0, 0.22], [0, 0.45]);
   const blobX1 = useTransform(progress, [0, 1], ['-8%', '8%']);
   const blobX2 = useTransform(progress, [0, 1], ['8%', '-8%']);
 
-  const gridY = useTransform(progress, [0, 1], ['0%', '-25%']);
+  // Three equal caption windows inside the pinned region [0.29, 1.0].
+  // Each window spans ~0.237 of total progress (~67vh of scroll).
+  // cap3 intentionally holds until stickyOp fades the whole canvas — no need
+  // for a separate cap3 fade-out because stickyOp multiplies the canvas opacity.
+  const cap1Op = useTransform(progress, [0.29, 0.32, 0.50, 0.53], [0, 1, 1, 0]);
+  const cap2Op = useTransform(progress, [0.53, 0.56, 0.74, 0.77], [0, 1, 1, 0]);
+  // cap3 holds at full opacity through the entire cross-fade. stickyOp fades
+  // the whole canvas including cap3, so no separate fade-out is needed here.
+  const cap3Op = useTransform(progress, [0.77, 0.80, 1.00, 1.00], [0, 1, 1, 0]);
 
-  /* Caption rotation - wider fade/hold windows for a slower, smoother change. */
-  const cap1Op = useTransform(progress, [0.00, 0.12, 0.30, 0.40], [0, 1, 1, 0]);
-  const cap2Op = useTransform(progress, [0.36, 0.46, 0.60, 0.70], [0, 1, 1, 0]);
-  const cap3Op = useTransform(progress, [0.66, 0.76, 0.88, 0.98], [0, 1, 1, 0]);
-
-  if (reduce) {
-    return <div className="h-[40vh] bg-black" aria-hidden />;
-  }
+  if (reduce) return <div className="h-[40vh] bg-black pt-canvas" aria-hidden />;
 
   return (
     <section
       ref={ref}
       aria-label="Parallax transition"
-      className="relative bg-black"
-      style={{ height }}
+      className="relative bg-black pt-canvas"
+      style={{ height, marginBottom: '-60vh' }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* === Layer 1 - abstract backdrop ============================ */}
-        {/* Slow-drifting grid */}
+      <motion.div
+        className="sticky top-0 h-screen overflow-hidden bg-black pt-canvas"
+        style={{
+          opacity: stickyOp,
+          y: stickyY,
+          zIndex: 10,
+          pointerEvents: 'none',
+        }}
+      >
+
+        {/* Glow blobs */}
         <motion.div
           aria-hidden
-          style={{ y: gridY }}
-          className="absolute inset-x-0 -top-1/4 h-[150%] opacity-[0.06] pointer-events-none"
+          style={{ x: blobX1, opacity: blobOp1 }}
+          className="absolute left-[12%] top-[20%] h-[420px] w-[520px] rounded-full blur-[140px] pointer-events-none"
         >
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
-              backgroundSize: '64px 64px',
-              maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 90%)',
-              WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 90%)',
-            }}
-          />
+          <div className="h-full w-full" style={{ background: 'radial-gradient(circle, rgba(36,186,172,0.45), transparent 70%)' }} />
+        </motion.div>
+        <motion.div
+          aria-hidden
+          style={{ x: blobX2, opacity: blobOp2 }}
+          className="absolute right-[10%] bottom-[16%] h-[460px] w-[560px] rounded-full blur-[160px] pointer-events-none"
+        >
+          <div className="h-full w-full" style={{ background: 'radial-gradient(circle, rgba(144,235,97,0.40), transparent 70%)' }} />
         </motion.div>
 
-        {/* Soft glow blobs */}
-        <motion.div
-          aria-hidden
-          style={{ x: blobX1 }}
-          className="absolute left-[12%] top-[20%] h-[420px] w-[520px] rounded-full blur-[140px] opacity-50 pointer-events-none"
-        >
-          <div
-            className="h-full w-full"
-            style={{ background: 'radial-gradient(circle, rgba(36,186,172,0.45), transparent 70%)' }}
-          />
-        </motion.div>
-        <motion.div
-          aria-hidden
-          style={{ x: blobX2 }}
-          className="absolute right-[10%] bottom-[16%] h-[460px] w-[560px] rounded-full blur-[160px] opacity-45 pointer-events-none"
-        >
-          <div
-            className="h-full w-full"
-            style={{ background: 'radial-gradient(circle, rgba(144,235,97,0.40), transparent 70%)' }}
-          />
-        </motion.div>
-
-        {/* Floating / drifting decorative layers (data streams, tech cards,
-            particles) - hidden on mobile (<md) so the Salesforce Partner
-            content stays stable and easy to read; tablet + desktop unchanged. */}
         <div className="hidden md:block" aria-hidden>
-          {/* === Layer 2 - horizontal data streams ===================== */}
+          {/* Layer 2 — data streams */}
           {STREAM_BANDS.map((band, i) => (
-            <StreamBand key={i} band={band} scrollYProgress={scrollYProgress} />
+            <StreamBand key={i} band={band} progress={progress} />
           ))}
 
-          {/* === Layer 3 - floating tech cards with mixed parallax ==== */}
+          {/* Layer 3 — floating cards */}
           {TECH_CARDS.map((c, i) => (
-            <TechCard key={i} card={c} scrollYProgress={scrollYProgress} />
+            <TechCard key={i} card={c} progress={progress} />
           ))}
 
-          {/* === Layer 4 - vertical particle streams ================== */}
+          {/* Layer 4 — particles */}
           {PARTICLES.map((p) => (
             <motion.span
               key={p.i}
@@ -236,21 +237,13 @@ export default function PortalTransition({ height = '170vh' }) {
                 background: p.green ? 'rgba(144,235,97,0.85)' : 'rgba(36,186,172,0.85)',
                 boxShadow: '0 0 8px rgba(144,235,97,0.45)',
               }}
-              animate={{
-                top: ['-2%', '102%'],
-                opacity: [0, 0.85, 0.85, 0],
-              }}
-              transition={{
-                duration: p.duration,
-                repeat: Infinity,
-                ease: 'easeIn',
-                delay: p.delay,
-              }}
+              animate={{ top: ['-2%', '102%'], opacity: [0, 0.85, 0.85, 0] }}
+              transition={{ duration: p.duration, repeat: Infinity, ease: 'linear', delay: p.delay }}
             />
           ))}
         </div>
 
-        {/* === Layer 5 - Salesforce Partner caption sequence ============ */}
+        {/* Layer 5 — caption sequence (pinned region 0.57 → 1.0) */}
         <motion.div
           style={{ opacity: cap1Op }}
           className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none px-6"
@@ -282,14 +275,12 @@ export default function PortalTransition({ height = '170vh' }) {
             sub="Automation, copilots and data-driven journeys engineered as one fabric."
           />
         </motion.div>
-      </div>
+
+      </motion.div>
     </section>
   );
 }
 
-/* Caption shared between the three rotation slots.
-   `title` is rendered white by default. Pass `accent` to wrap to a new line
-   and render that portion with the brand gradient. */
 function Caption({ eyebrow, title, accent, sub }) {
   return (
     <>

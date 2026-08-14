@@ -1,5 +1,6 @@
 import { m as motion } from 'framer-motion';
 import { products as ALL_PRODUCTS } from '../views/products/productData.js';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -63,11 +64,11 @@ function ColLabel({ children }) {
   );
 }
 
-function FLink({ href = '#', children }) {
+function FLink({ href = '#', children, isLight }) {
   return (
     <a
       href={href}
-      className="group flex items-center gap-0 text-[13px] font-medium text-white/90 hover:text-white transition-colors duration-300 w-fit"
+      className={`group flex items-center gap-0 text-[13px] font-medium transition-colors duration-300 w-fit ${isLight ? 'text-slate-700 hover:text-slate-900' : 'text-white/90 hover:text-white'}`}
     >
       {/* sliding accent bar */}
       <span
@@ -102,18 +103,54 @@ const IconPin = () => (
   </svg>
 );
 
+const IconLinkedIn = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.11 20.45H3.56V9h3.55v11.45z" />
+  </svg>
+);
+
+const IconInstagram = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <path d="M17.5 6.5h.01" />
+  </svg>
+);
+
+const IconTwitter = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.9 2H22l-7.2 8.24L23.2 22h-6.7l-5.24-6.86L5.2 22H2.08l7.7-8.8L1 2h6.86l4.74 6.27L18.9 2zm-1.18 18.2h1.86L7.36 3.7H5.36l12.36 16.5z" />
+  </svg>
+);
+
+const IconFacebook = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z" />
+  </svg>
+);
+
+const SOCIAL_LINKS = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/genufy/posts/?feedView=all', icon: <IconLinkedIn /> },
+  { label: 'Instagram', href: 'https://www.instagram.com/genufy_techworks/?hl=en', icon: <IconInstagram /> },
+  { label: 'Twitter / X', href: 'https://x.com/GenufyTW?lang=bn', icon: <IconTwitter /> },
+  { label: 'Facebook', href: 'https://www.facebook.com/p/Genufy-TechWorks-61566770444657/', icon: <IconFacebook /> },
+];
+
 // ─── Contact chip component ────────────────────────────────────────────────────
 
 function ContactChip({ href, icon, label }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <a
       href={href}
-      className="group flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/[0.15] hover:border-white/30 bg-white/[0.05] hover:bg-white/[0.09] transition-all duration-300"
+      className={`group flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all duration-300 ${isLight ? 'bg-white hover:bg-[#f2faf8]' : 'border-white/[0.15] hover:border-white/30 bg-white/[0.05] hover:bg-white/[0.09]'}`}
+      style={isLight ? { borderColor: 'rgba(36,186,172,0.20)', boxShadow: '0 1px 4px rgba(36,186,172,0.08)' } : undefined}
     >
-      <span className="text-white/70 group-hover:text-lime transition-colors duration-300 shrink-0">
+      <span className={`group-hover:text-lime transition-colors duration-300 shrink-0 ${isLight ? 'text-[#24baac]' : 'text-white/70'}`}>
         {icon}
       </span>
-      <span className="text-[12px] font-medium text-white group-hover:text-white transition-colors duration-300 break-all">
+      <span className={`text-[12px] font-medium transition-colors duration-300 break-all ${isLight ? 'text-slate-800 group-hover:text-slate-900' : 'text-white group-hover:text-white'}`}>
         {label}
       </span>
     </a>
@@ -123,19 +160,12 @@ function ContactChip({ href, icon, label }) {
 // ─── Main footer ───────────────────────────────────────────────────────────────
 
 export default function SiteFooter() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
     <footer
       className="cv-section relative overflow-hidden"
-      style={{
-        // Starts near-black at the TOP so it blends seamlessly into the deep
-        // black section above (no hard "box" seam), then the teal glow rises
-        // gently from the lower-center - the same deep-space-with-accents look
-        // as the rest of the page rather than a flat green panel.
-        background:
-          'radial-gradient(85% 75% at 50% 115%, rgba(36,186,172,0.22) 0%, transparent 58%),' +
-          'radial-gradient(55% 45% at 12% 80%, rgba(144,235,97,0.10) 0%, transparent 60%),' +
-          'linear-gradient(180deg, #04090a 0%, #050e0c 45%, #061310 100%)',
-      }}
+      style={{ background: 'var(--c-bg-footer)' }}
     >
 
       {/* ── Dot grid texture ───────────────────────────────────────────── */}
@@ -159,7 +189,12 @@ export default function SiteFooter() {
           className="font-brand font-black tracking-tighter block"
           style={{
             fontSize: 'clamp(72px, 16vw, 220px)',
-            background: 'linear-gradient(180deg, rgba(144,235,97,0.12), rgba(36,186,172,0.06))',
+            // Light theme: dark slate fill so the wordmark reads with real contrast
+            // on the mint footer. Dark theme: brighter lime/teal ghost so it stays
+            // clearly visible against the near-black background.
+            background: isLight
+              ? 'linear-gradient(180deg, rgba(15,23,42,0.45), rgba(15,23,42,0.18))'
+              : 'linear-gradient(180deg, rgba(144,235,97,0.32), rgba(36,186,172,0.16))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -173,14 +208,6 @@ export default function SiteFooter() {
         </span>
       </div>
 
-      {/* ── Soft top accent - fades at the edges so there's no hard box seam ── */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background: 'linear-gradient(90deg, transparent, rgba(36,186,172,0.5) 30%, rgba(144,235,97,0.5) 70%, transparent)',
-        }}
-      />
 
       <div className="relative max-w-7xl mx-auto px-5 sm:px-6 md:px-10 lg:px-14">
 
@@ -190,16 +217,18 @@ export default function SiteFooter() {
           whileInView={{ y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="pt-16 md:pt-20 pb-10 md:pb-14 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-16 items-start border-b border-white/[0.12]"
+          className={`pt-16 md:pt-20 pb-10 md:pb-14 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-16 items-start border-b ${isLight ? 'border-[#c8e8e3]' : 'border-white/[0.12]'}`}
         >
           {/* Left: tagline */}
           <div>
             <h2
-              className="font-display font-bold leading-[1.1] tracking-tight text-white"
+              className={`font-display font-bold leading-[1.1] tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}
               style={{
                 fontSize: 'clamp(24px, 3.5vw, 48px)',
                 maxWidth: '30ch',
-                textShadow: '0 2px 30px rgba(0,0,0,0.6)',
+                // No shadow in the white theme (the dark blur looked muddy on the
+                // mint bg); keep the subtle lift only for the dark theme.
+                textShadow: isLight ? 'none' : '0 2px 30px rgba(0,0,0,0.6)',
               }}
             >
               Powering the next era of{' '}
@@ -247,7 +276,7 @@ export default function SiteFooter() {
             <ul className="space-y-2">
               {services.map((s) => (
                 <li key={s.id}>
-                  <FLink href={`/services/${s.id}`}>{s.label}</FLink>
+                  <FLink href={`/services/${s.id}`} isLight={isLight}>{s.label}</FLink>
                 </li>
               ))}
             </ul>
@@ -265,7 +294,7 @@ export default function SiteFooter() {
             <ul className="space-y-2">
               {products.map((p) => (
                 <li key={p.slug}>
-                  <FLink href={`/products#${p.slug}`}>{p.name}</FLink>
+                  <FLink href={`/products#${p.slug}`} isLight={isLight}>{p.name}</FLink>
                 </li>
               ))}
             </ul>
@@ -290,14 +319,14 @@ export default function SiteFooter() {
                     transition={{ delay: 0.25 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     className="group flex items-start gap-2.5"
                   >
-                    <span className="mt-0.5 shrink-0 text-white/60 group-hover:text-lime transition-colors duration-300">
+                    <span className={`mt-0.5 shrink-0 group-hover:text-lime transition-colors duration-300 ${isLight ? 'text-slate-500' : 'text-white/60'}`}>
                       <IconPin />
                     </span>
                     <div>
-                      <p className="text-[13px] font-semibold text-white group-hover:text-lime transition-colors duration-300 leading-tight">
+                      <p className={`text-[13px] font-semibold group-hover:text-lime transition-colors duration-300 leading-tight ${isLight ? 'text-slate-800' : 'text-white'}`}>
                         {loc.city}
                       </p>
-                      <p className="text-[11px] text-white/75 mt-0.5 leading-snug">
+                      <p className={`text-[11px] mt-0.5 leading-snug ${isLight ? 'text-slate-600' : 'text-white/75'}`}>
                         {loc.region}
                       </p>
                     </div>
@@ -322,7 +351,7 @@ export default function SiteFooter() {
                 { label: 'Careers', href: '/careers' },
               ].map((item) => (
                 <li key={item.label}>
-                  <FLink href={item.href}>{item.label}</FLink>
+                  <FLink href={item.href} isLight={isLight}>{item.label}</FLink>
                 </li>
               ))}
             </ul>
@@ -340,9 +369,26 @@ export default function SiteFooter() {
 
         {/* ── Bottom strip ──────────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-between gap-4 py-5">
-          <span className="text-[11px] font-medium text-white/70 tracking-wide">
+          <span className={`text-[11px] font-medium tracking-wide ${isLight ? 'text-slate-600' : 'text-white/70'}`}>
             © {new Date().getFullYear()} Genufy TechWorks. All rights reserved.
           </span>
+
+          {/* Social links - commented out for now, re-enable when needed
+          <div className="flex items-center gap-2">
+            {SOCIAL_LINKS.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className={`group flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 ${isLight ? 'border-[rgba(36,186,172,0.20)] bg-white text-[#24baac] hover:bg-[#f2faf8]' : 'border-white/[0.15] bg-white/[0.05] text-white/70 hover:border-white/30 hover:bg-white/[0.09] hover:text-lime'}`}
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
+          */}
         </div>
 
       </div>

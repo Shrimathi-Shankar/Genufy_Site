@@ -5,6 +5,7 @@ import { m as motion } from 'framer-motion';
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import { useContactModal } from '../contexts/ContactModalContext.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -50,7 +51,7 @@ const HERO_TECH = [
   { label: 'DevOps', x: '60%', y: '78%', d: 0.3, dur: 10.5 },
 ];
 
-function FloatingTech({ t }) {
+function FloatingTech({ t, isLight }) {
   return (
     <motion.div
       className="absolute"
@@ -63,7 +64,7 @@ function FloatingTech({ t }) {
         y: { duration: t.dur, repeat: Infinity, ease: 'easeInOut' },
       }}
     >
-      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-medium text-white/80 backdrop-blur-md shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)]">
+      <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium backdrop-blur-md shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)] ${isLight ? 'border border-black/10 bg-black/[0.05] text-slate-600' : 'border border-white/10 bg-white/[0.05] text-white/80'}`}>
         <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#90eb61,#24baac)' }} />
         {t.label}
       </span>
@@ -71,7 +72,7 @@ function FloatingTech({ t }) {
   );
 }
 
-function Hero() {
+function Hero({ isLight }) {
   const sp = useSpotlight();
   return (
     <section
@@ -128,7 +129,7 @@ function Hero() {
       {/* floating tech cards - desktop */}
       <div aria-hidden className="absolute inset-0 hidden lg:block">
         {HERO_TECH.map((t) => (
-          <FloatingTech key={t.label} t={t} />
+          <FloatingTech key={t.label} t={t} isLight={isLight} />
         ))}
       </div>
 
@@ -139,7 +140,7 @@ function Hero() {
             initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1, ease, delay: 0.15 }}
-            className="mt-7 text-left font-display text-4xl font-extrabold leading-[1.04] tracking-tight sm:text-5xl md:text-7xl"
+            className={`mt-7 text-left font-display text-4xl font-extrabold leading-[1.04] tracking-tight sm:text-5xl md:text-7xl ${isLight ? 'text-slate-900' : ''}`}
           >
             Built with Purpose.
             <br />
@@ -149,7 +150,7 @@ function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease, delay: 0.45 }}
-            className="mt-7 max-w-xl text-left text-sm leading-relaxed text-white/60 md:text-base"
+            className={`mt-7 max-w-xl text-left text-sm leading-relaxed md:text-base ${isLight ? 'text-slate-500' : 'text-white/60'}`}
           >
             We make world-class technology accessible from anywhere - building AI, Salesforce, Snowflake,
             and Data Engineering solutions while creating meaningful opportunities for talent to grow.
@@ -165,7 +166,7 @@ function Hero() {
             {HERO_TECH.map((t) => (
               <span
                 key={t.label}
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs text-white/75"
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs ${isLight ? 'border border-black/10 bg-black/[0.05] text-slate-600' : 'border border-white/10 bg-white/[0.05] text-white/75'}`}
               >
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#90eb61,#24baac)' }} />
                 {t.label}
@@ -180,15 +181,15 @@ function Hero() {
 
 /* ------------------------------ Our Story ------------------------------ */
 
-function OurStory() {
+function OurStory({ isLight }) {
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-12 md:py-16">
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <motion.div {...fade()}>
-          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+          <h2 className={`font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl ${isLight ? 'text-slate-900' : ''}`}>
             From a simple question to a mission.
           </h2>
-          <div className="mt-6 space-y-4 text-sm leading-relaxed text-white/60 md:text-[15px]">
+          <div className={`mt-6 space-y-4 text-sm leading-relaxed md:text-[15px] ${isLight ? 'text-slate-500' : 'text-white/60'}`}>
             <p>Genufy was born from the real challenges faced by passionate individuals from rural India.</p>
             <p>
               Instead of accepting that opportunities existed only in major cities, we asked a different
@@ -203,7 +204,7 @@ function OurStory() {
 
         <motion.div
           {...fade(0.1)}
-          className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-sm md:p-10"
+          className={`relative overflow-hidden rounded-3xl p-8 backdrop-blur-sm md:p-10 ${isLight ? 'border border-black/10 bg-black/[0.03]' : 'border border-white/10 bg-white/[0.03]'}`}
         >
           <div
             aria-hidden
@@ -211,12 +212,12 @@ function OurStory() {
             style={{ background: 'radial-gradient(circle, rgba(36,186,172,0.6), transparent 70%)' }}
           />
           <div className="relative">
-            <span className="font-display text-5xl leading-none text-lime/40">“</span>
-            <p className="-mt-3 font-display text-2xl font-semibold leading-snug tracking-tight text-white md:text-[26px]">
+            <span className="font-display text-5xl leading-none text-lime/40">"</span>
+            <p className={`-mt-3 font-display text-2xl font-semibold leading-snug tracking-tight md:text-[26px] ${isLight ? 'text-slate-900' : 'text-white'}`}>
               Why should talent move to opportunity when{' '}
               <span className="text-gradient-gt">opportunity can move to talent?</span>
             </p>
-            <p className="mt-6 text-sm text-white/55">That idea became Genufy.</p>
+            <p className={`mt-6 text-sm ${isLight ? 'text-slate-500' : 'text-white/55'}`}>That idea became Genufy.</p>
           </div>
         </motion.div>
       </div>
@@ -233,7 +234,7 @@ const RURAL = [
   { icon: '🌍', title: 'Bridge the Opportunity Gap', desc: 'Connecting rural talent with global opportunities and modern digital careers.' },
 ];
 
-function RuralStep({ s, i }) {
+function RuralStep({ s, i, isLight }) {
   const onLeft = i % 2 === 1;
   return (
     <li className="relative pb-10 last:pb-0">
@@ -246,7 +247,7 @@ function RuralStep({ s, i }) {
             animate={{ opacity: [0.4, 0.85, 0.4], scale: [0.9, 1.16, 0.9] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
           />
-          <div className="relative grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-[#070c0e] text-lg">
+          <div className={`relative grid h-11 w-11 place-items-center rounded-full text-lg ${isLight ? 'border border-black/15 bg-white' : 'border border-white/15 bg-[#070c0e]'}`}>
             {s.icon}
           </div>
         </div>
@@ -256,7 +257,7 @@ function RuralStep({ s, i }) {
         whileInView={{ opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true, margin: '-70px' }}
         transition={{ duration: 0.6, ease }}
-        className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 md:w-[calc(50%-2.75rem)] ${onLeft ? 'md:mr-auto' : 'md:ml-auto'} ml-16 md:ml-0`}
+        className={`group relative overflow-hidden rounded-3xl p-6 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 md:w-[calc(50%-2.75rem)] ${onLeft ? 'md:mr-auto' : 'md:ml-auto'} ml-16 md:ml-0 ${isLight ? 'border border-black/10 bg-black/[0.03]' : 'border border-white/10 bg-white/[0.03]'}`}
       >
         <div
           aria-hidden
@@ -267,19 +268,19 @@ function RuralStep({ s, i }) {
           <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-lime/80">
             {String(i + 1).padStart(2, '0')}
           </div>
-          <h3 className="mt-2 font-display text-lg font-semibold text-white md:text-xl">{s.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-white/55">{s.desc}</p>
+          <h3 className={`mt-2 font-display text-lg font-semibold md:text-xl ${isLight ? 'text-slate-900' : 'text-white'}`}>{s.title}</h3>
+          <p className={`mt-2 text-sm leading-relaxed ${isLight ? 'text-slate-500' : 'text-white/55'}`}>{s.desc}</p>
         </div>
       </motion.div>
     </li>
   );
 }
 
-function WhyRuralMatters() {
+function WhyRuralMatters({ isLight }) {
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-12 md:py-16">
       <motion.div {...fade()} className="text-center">
-        <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        <h2 className={`mx-auto max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl ${isLight ? 'text-slate-900' : ''}`}>
           Great talent exists everywhere. <span className="text-gradient-gt">Opportunity should too.</span>
         </h2>
       </motion.div>
@@ -295,7 +296,7 @@ function WhyRuralMatters() {
           transition={{ duration: 1, ease }}
         />
         {RURAL.map((s, i) => (
-          <RuralStep key={s.title} s={s} i={i} />
+          <RuralStep key={s.title} s={s} i={i} isLight={isLight} />
         ))}
       </ol>
     </section>
@@ -311,7 +312,7 @@ const VALUES = [
   { title: 'Lead With Integrity', desc: 'Trust, transparency, and accountability guide every action.', accent: '#a78bfa' },
 ];
 
-function ValueTile({ v, i }) {
+function ValueTile({ v, i, isLight }) {
   const sp = useSpotlight();
   return (
     <motion.div
@@ -319,7 +320,7 @@ function ValueTile({ v, i }) {
       onMouseMove={sp.onMouseMove}
       onMouseLeave={sp.onMouseLeave}
       {...fade(i * 0.08)}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-sm md:p-8"
+      className={`group relative overflow-hidden rounded-3xl p-7 backdrop-blur-sm md:p-8 ${isLight ? 'border border-black/10 bg-black/[0.03]' : 'border border-white/10 bg-white/[0.03]'}`}
     >
       <div
         aria-hidden
@@ -333,32 +334,32 @@ function ValueTile({ v, i }) {
       />
       <div className="relative flex items-start gap-4">
         <div
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-white/10 font-display text-lg font-bold"
+          className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl font-display text-lg font-bold ${isLight ? 'border border-black/10' : 'border border-white/10'}`}
           style={{ background: `linear-gradient(135deg, ${v.accent}26, transparent)`, color: v.accent }}
         >
           {String(i + 1).padStart(2, '0')}
         </div>
         <div>
-          <h3 className="font-display text-lg font-semibold text-white md:text-xl">{v.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-white/55">{v.desc}</p>
+          <h3 className={`font-display text-lg font-semibold md:text-xl ${isLight ? 'text-slate-900' : 'text-white'}`}>{v.title}</h3>
+          <p className={`mt-2 text-sm leading-relaxed ${isLight ? 'text-slate-500' : 'text-white/55'}`}>{v.desc}</p>
         </div>
       </div>
     </motion.div>
   );
 }
 
-function OurValues() {
+function OurValues({ isLight }) {
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-12 md:py-16">
       <motion.div {...fade()} className="text-center">
-        <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">What we stand for</h2>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/55 md:text-[15px]">
+        <h2 className={`font-display text-3xl font-bold tracking-tight md:text-4xl ${isLight ? 'text-slate-900' : ''}`}>What we stand for</h2>
+        <p className={`mx-auto mt-4 max-w-xl text-sm leading-relaxed md:text-[15px] ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
           The principles that guide every decision, partnership, and innovation.
         </p>
       </motion.div>
       <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
         {VALUES.map((v, i) => (
-          <ValueTile key={v.title} v={v} i={i} />
+          <ValueTile key={v.title} v={v} i={i} isLight={isLight} />
         ))}
       </div>
     </section>
@@ -374,7 +375,7 @@ const CHOOSE = [
   { icon: '⏱️', title: 'On-Time Delivery', desc: 'Consistent execution backed by transparent communication and dependable timelines.', accent: '#fbbf24' },
 ];
 
-function ChooseCard({ c, i }) {
+function ChooseCard({ c, i, isLight }) {
   const sp = useSpotlight();
   return (
     <motion.div
@@ -382,7 +383,7 @@ function ChooseCard({ c, i }) {
       onMouseMove={sp.onMouseMove}
       onMouseLeave={sp.onMouseLeave}
       {...fade(i * 0.07)}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
+      className={`group relative overflow-hidden rounded-3xl p-6 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 ${isLight ? 'border border-black/10 bg-black/[0.03]' : 'border border-white/10 bg-white/[0.03]'}`}
     >
       <div
         aria-hidden
@@ -402,33 +403,33 @@ function ChooseCard({ c, i }) {
       />
       <div className="relative">
         <div
-          className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 text-xl"
+          className={`grid h-12 w-12 place-items-center rounded-2xl text-xl ${isLight ? 'border border-black/10' : 'border border-white/10'}`}
           style={{ background: `linear-gradient(135deg, ${c.accent}26, transparent)` }}
         >
           {c.icon}
         </div>
-        <h3 className="mt-5 font-display text-lg font-semibold text-white">{c.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-white/55">{c.desc}</p>
+        <h3 className={`mt-5 font-display text-lg font-semibold ${isLight ? 'text-slate-900' : 'text-white'}`}>{c.title}</h3>
+        <p className={`mt-2 text-sm leading-relaxed ${isLight ? 'text-slate-500' : 'text-white/55'}`}>{c.desc}</p>
       </div>
     </motion.div>
   );
 }
 
-function WhyChoose() {
+function WhyChoose({ isLight }) {
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-12 md:py-16">
       <motion.div {...fade()} className="text-center">
-        <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold tracking-tight md:text-4xl">
+        <h2 className={`mx-auto max-w-2xl font-display text-3xl font-bold tracking-tight md:text-4xl ${isLight ? 'text-slate-900' : ''}`}>
           Why organizations choose Genufy
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/55 md:text-[15px]">
+        <p className={`mx-auto mt-4 max-w-2xl text-sm leading-relaxed md:text-[15px] ${isLight ? 'text-slate-500' : 'text-white/55'}`}>
           We combine technology expertise, business understanding, and a people-first mindset to deliver
           solutions that create measurable impact.
         </p>
       </motion.div>
       <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {CHOOSE.map((c, i) => (
-          <ChooseCard key={c.title} c={c} i={i} />
+          <ChooseCard key={c.title} c={c} i={i} isLight={isLight} />
         ))}
       </div>
     </section>
@@ -437,13 +438,13 @@ function WhyChoose() {
 
 /* ------------------------------ Closing CTA ---------------------------- */
 
-function ClosingCTA() {
+function ClosingCTA({ isLight }) {
   const { openContact } = useContactModal();
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-12 md:py-16">
       <motion.div
         {...fade()}
-        className="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center md:px-12 md:py-20"
+        className={`relative overflow-hidden rounded-[2rem] px-6 py-16 text-center md:px-12 md:py-20 ${isLight ? 'border border-black/10' : 'border border-white/10'}`}
         style={{
           background:
             'radial-gradient(80% 120% at 50% 0%, rgba(36,186,172,0.22), transparent 60%),' +
@@ -456,11 +457,11 @@ function ClosingCTA() {
           className="absolute inset-x-0 top-0 h-px"
           style={{ background: 'linear-gradient(90deg, transparent, rgba(36,186,172,0.6) 30%, rgba(144,235,97,0.6) 70%, transparent)' }}
         />
-        <h2 className="mx-auto max-w-3xl font-display text-3xl font-extrabold leading-tight tracking-tight md:text-5xl">
+        <h2 className={`mx-auto max-w-3xl font-display text-3xl font-extrabold leading-tight tracking-tight md:text-5xl ${isLight ? 'text-slate-900' : ''}`}>
           Technology is what we build.{' '}
           <span className="text-gradient-gt">Opportunities are what we create.</span>
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/60 md:text-base">
+        <p className={`mx-auto mt-6 max-w-2xl text-sm leading-relaxed md:text-base ${isLight ? 'text-slate-500' : 'text-white/60'}`}>
           Whether you're looking to transform your business, scale your digital capabilities, or build
           the future with us, Genufy is ready to help you move forward.
         </p>
@@ -483,16 +484,19 @@ function ClosingCTA() {
 /* -------------------------------- Page --------------------------------- */
 
 export default function AboutUs() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   return (
     <>
       <Header />
-      <main className="relative z-10 overflow-hidden bg-ink">
-        <Hero />
-        <OurStory />
-        <WhyRuralMatters />
-        <OurValues />
-        <WhyChoose />
-        <ClosingCTA />
+      <main className={`relative z-10 overflow-hidden ${isLight ? 'bg-white' : 'bg-ink'}`}>
+        <Hero isLight={isLight} />
+        <OurStory isLight={isLight} />
+        <WhyRuralMatters isLight={isLight} />
+        <OurValues isLight={isLight} />
+        <WhyChoose isLight={isLight} />
+        <ClosingCTA isLight={isLight} />
       </main>
       <SiteFooter />
     </>

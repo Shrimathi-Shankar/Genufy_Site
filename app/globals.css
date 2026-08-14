@@ -2,10 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────
+   THEME TOKEN SYSTEM
+   Applied via data-theme="dark|light" on <html>.
+   All theme-sensitive inline styles should reference these vars.
+   Tailwind utility classes are overridden via the selectors below.
+───────────────────────────────────────────────────────────────────── */
 :root {
   color-scheme: dark;
   --lime: #90eb61;
   --teal: #24baac;
+
+  /* Page backgrounds */
+  --c-bg:          #05070a;
+  --c-bg-alt:      #000000;
+  --c-bg-footer:   linear-gradient(180deg, #04090a 0%, #050e0c 45%, #061310 100%);
+
+  /* Surfaces / cards */
+  --c-surface:     rgba(255,255,255,0.025);
+  --c-surface-md:  rgba(255,255,255,0.04);
+  --c-surface-hi:  rgba(255,255,255,0.06);
+
+  /* Borders */
+  --c-border:      rgba(255,255,255,0.07);
+  --c-border-md:   rgba(255,255,255,0.10);
+  --c-border-hi:   rgba(255,255,255,0.14);
+
+  /* Text */
+  --c-text:        #ffffff;
+  --c-text-90:     rgba(255,255,255,0.90);
+  --c-text-80:     rgba(255,255,255,0.80);
+  --c-text-70:     rgba(255,255,255,0.70);
+  --c-text-65:     rgba(255,255,255,0.65);
+  --c-text-55:     rgba(255,255,255,0.55);
+  --c-text-50:     rgba(255,255,255,0.50);
+  --c-text-45:     rgba(255,255,255,0.45);
+  --c-text-40:     rgba(255,255,255,0.40);
+  --c-text-35:     rgba(255,255,255,0.35);
+  --c-text-30:     rgba(255,255,255,0.30);
+  --c-text-25:     rgba(255,255,255,0.25);
+
+  /* Navigation dropdown */
+  --c-dropdown-bg:     rgba(9,9,11,0.96);
+  --c-dropdown-border: rgba(255,255,255,0.08);
+  --c-dropdown-shadow: 0 24px 64px -12px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.03);
+  --c-dropdown-item-hover: rgba(255,255,255,0.06);
+
+  /* Dot grid dot color */
+  --c-dot: rgba(255,255,255,0.9);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── Page backgrounds ── */
+  --c-bg:          #f2faf4;
+  --c-bg-alt:      #e8f5ee;
+  --c-bg-footer:   #d8e8df;
+
+  /* ── Surfaces / cards — slightly lighter mint on mint bg ── */
+  --c-surface:     #f7fcf9;
+  --c-surface-md:  #f2faf4;
+  --c-surface-hi:  #d6f0e3;
+
+  /* ── Borders — teal scale ── */
+  --c-border:      #c8e8e3;
+  --c-border-md:   #a8d8d2;
+  --c-border-hi:   #6dbfb8;
+  --c-glow-teal:   rgba(36,186,172,0.18);
+  --c-glow-lime:   rgba(144,235,97,0.14);
+
+  /* ── Text — crisp Slate hex values, not opacity ── */
+  --c-text:        #0f172a;    /* Slate 900 — primary headings */
+  --c-text-90:     #1e293b;    /* Slate 800 */
+  --c-text-80:     #334155;    /* Slate 700 */
+  --c-text-70:     #475569;    /* Slate 600 — body */
+  --c-text-65:     #475569;
+  --c-text-55:     #64748b;    /* Slate 500 — secondary */
+  --c-text-50:     #64748b;
+  --c-text-45:     #64748b;
+  --c-text-40:     #94a3b8;    /* Slate 400 — muted */
+  --c-text-35:     #94a3b8;
+  --c-text-30:     #cbd5e1;    /* Slate 300 — very muted / decorative */
+  --c-text-25:     #cbd5e1;
+
+  /* ── Shadow scale ── */
+  --c-shadow-sm:   0 1px 3px rgba(15,23,42,0.05), 0 1px 2px rgba(36,186,172,0.06);
+  --c-shadow-md:   0 4px 12px rgba(15,23,42,0.07), 0 2px 4px rgba(36,186,172,0.08);
+  --c-shadow-lg:   0 10px 28px rgba(15,23,42,0.08), 0 4px 8px rgba(36,186,172,0.10);
+  --c-shadow-xl:   0 20px 48px rgba(15,23,42,0.10), 0 8px 16px rgba(36,186,172,0.12);
+
+  /* ── Navigation dropdown ── */
+  --c-dropdown-bg:     rgba(242,250,244,0.97);
+  --c-dropdown-border: #b4e4d4;
+  --c-dropdown-shadow: 0 8px 32px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.05), 0 0 0 1px rgba(36,186,172,0.12);
+  --c-dropdown-item-hover: #d6f0e3;
+
+  /* ── Dot grid ── */
+  --c-dot: rgba(15,23,42,0.35);
 }
 
 html, body { height: 100%; }
@@ -58,8 +152,8 @@ body { -ms-overflow-style: none; }
 
 /* Aurora background */
 @keyframes aurora {
-  0%, 100% { background-position: 0% 50%; }
-  50%       { background-position: 100% 50%; }
+  0%, 100% { opacity: 0.9; }
+  50%       { opacity: 0.5; }
 }
 
 .aurora-layer {
@@ -85,6 +179,7 @@ body { -ms-overflow-style: none; }
     transparent 98%
   );
   background-size: 350% 100%;
+  background-position: 0% 50%;
   animation: aurora 10s ease-in-out infinite;
   /* Many closely-spaced stops starting from the centre give a perceptually smooth
      ramp to zero - no visible elliptical edge where the aurora "ends". It hugs the
@@ -207,3 +302,450 @@ body { -ms-overflow-style: none; }
     mix-blend-mode: normal !important;
   }
 }
+
+/* HUD particle and SVG element CSS animations — replaces 16+ JS-driven Framer
+   Motion animations (motion.span / motion.line / motion.path) with GPU-composited
+   CSS keyframes. Identical visual output, zero JS overhead per frame. */
+@keyframes hud-rise {
+  0%   { transform: translateY(0);      opacity: 0; }
+  10%  { opacity: 0.85; }
+  90%  { opacity: 0.85; }
+  100% { transform: translateY(-520px); opacity: 0; }
+}
+@keyframes hud-blink-hi {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.85; }
+}
+@keyframes hud-blink-scan {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.65; }
+}
+@keyframes hud-blink-lo {
+  0%, 100% { opacity: 0.1; }
+  50%       { opacity: 0.5; }
+}
+.hud-particle {
+  animation: hud-rise var(--dur, 4.5s) linear var(--delay, 0s) infinite;
+}
+.hud-corner {
+  animation: hud-blink-hi 2.8s ease-in-out infinite;
+}
+.hud-scan-l {
+  animation: hud-blink-scan var(--dur, 2s) ease-in-out var(--delay, 0s) infinite;
+}
+.hud-scan-r {
+  animation: hud-blink-lo var(--dur, 2s) ease-in-out var(--delay, 0s) infinite;
+}
+
+/* ── Compositor-thread CSS keyframes (replaces Framer Motion JS RAF loops) ── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes blob-drift-a {
+  0%   { transform: translate(0%, 0%); }
+  33%  { transform: translate(70%, 0%); }
+  66%  { transform: translate(30%, 60%); }
+  100% { transform: translate(0%, 0%); }
+}
+@keyframes blob-drift-b {
+  0%   { transform: translate(0%, 0%); }
+  33%  { transform: translate(-60%, 0%); }
+  66%  { transform: translate(20%, -55%); }
+  100% { transform: translate(0%, 0%); }
+}
+@keyframes spin-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes scanline-sweep {
+  0%, 100% { transform: translateY(-10%); }
+  50%       { transform: translateY(120%); }
+}
+@keyframes label-float {
+  0%, 100% { transform: translateY(0px);   opacity: 0.15; }
+  50%       { transform: translateY(-14px); opacity: 0.55; }
+}
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(0px); }
+  50%       { transform: translateX(2px); }
+}
+@keyframes chart-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-2px); }
+}
+/* ── PortalTransition cloud glows — CSS replaces Framer Motion JS loops ── */
+@keyframes cloud-glow-a {
+  0%, 100% { opacity: 0.5; transform: scale(0.88); }
+  50%      { opacity: 1;   transform: scale(1.07); }
+}
+@keyframes cloud-glow-b {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.65; }
+}
+@keyframes portal-text-fadein {
+  from { opacity: 0; }
+  to   { opacity: 0.88; }
+}
+/* Pause all decorative portal animations while the user is actively scrolling.
+   Eliminates 21 concurrent compositor layers during the scroll-driven phase.
+   One-shot animations (border draw-in, text fade) do NOT get pt-deco, so they
+   are unaffected and complete naturally. */
+.pt-scrolling .pt-deco { animation-play-state: paused !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   LIGHT THEME — FULL OVERRIDE LAYER
+   Scoped under [data-theme="light"]. Goal: premium enterprise SaaS
+   (Stripe / Linear / Vercel / OpenAI) — designed from scratch for light,
+   not inverted from dark.
+═══════════════════════════════════════════════════════════════════ */
+html { transition: background-color 280ms ease, color 280ms ease; }
+body { transition: background-color 280ms ease, color 280ms ease; }
+
+/* Set the bg on <html> too so the mint canvas covers the overscroll/rubber-band
+   area and short pages — styling <body> alone leaves the root element plain white. */
+[data-theme="light"] html {
+  background-color: var(--c-bg);
+}
+[data-theme="light"] body {
+  background-color: var(--c-bg);
+  color: var(--c-text);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PAGE BACKGROUNDS
+   Hardcoded dark hex bg classes → Slate-50 / white canvas.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-\[\#05070a\]    { background-color: var(--c-bg)     !important; }
+[data-theme="light"] .bg-\[\#080a0e\]    { background-color: var(--c-bg)     !important; }
+[data-theme="light"] .bg-\[\#050a0f\]    { background-color: var(--c-bg)     !important; }
+[data-theme="light"] .bg-black           { background-color: var(--c-bg-alt) !important; }
+[data-theme="light"] .bg-ink             { background-color: var(--c-bg)     !important; }
+
+/* bg-black/x overlays
+   Low opacities dissolve cleanly on the light canvas.
+   Mid-high opacities (85/90) intentionally kept dark — components that use
+   them as design accents (Manifesto CardVisual, AnimatedGlyph) now apply
+   an inline-style override so the CSS value here only serves as a fallback
+   for any other incidental uses (where near-dark is a reasonable default). */
+[data-theme="light"] .bg-black\/40   { background-color: rgba(14,20,48,0.022) !important; }
+[data-theme="light"] .bg-black\/50   { background-color: rgba(14,20,48,0.028) !important; }
+[data-theme="light"] .bg-black\/75   { background-color: rgba(14,20,48,0.48)  !important; }
+[data-theme="light"] .bg-black\/85   { background-color: rgba(14,20,48,0.82)  !important; }
+[data-theme="light"] .bg-black\/90   { background-color: rgba(14,20,48,0.88)  !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   GRADIENT FADE MASKS (Marquee, section edge fades)
+   from-black → from page-bg so edge fades dissolve into the canvas.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .from-black {
+  --tw-gradient-from: var(--c-bg) var(--tw-gradient-from-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   TEXT COLORS — navy-blue tinted scale via CSS tokens.
+   Blue tint reads as "premium tech" vs flat grey (Stripe, Linear).
+   Token values live in the [data-theme="light"] block above.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .text-white      { color: var(--c-text)    !important; }
+[data-theme="light"] .text-white\/90  { color: var(--c-text-90) !important; }
+[data-theme="light"] .text-white\/85  { color: var(--c-text-90) !important; }
+[data-theme="light"] .text-white\/80  { color: var(--c-text-80) !important; }
+[data-theme="light"] .text-white\/75  { color: var(--c-text-80) !important; }
+[data-theme="light"] .text-white\/72  { color: var(--c-text-70) !important; }
+[data-theme="light"] .text-white\/70  { color: var(--c-text-70) !important; }
+[data-theme="light"] .text-white\/68  { color: var(--c-text-70) !important; }
+[data-theme="light"] .text-white\/65  { color: var(--c-text-65) !important; }
+[data-theme="light"] .text-white\/60  { color: var(--c-text-65) !important; }
+[data-theme="light"] .text-white\/58  { color: var(--c-text-55) !important; }
+[data-theme="light"] .text-white\/55  { color: var(--c-text-55) !important; }
+[data-theme="light"] .text-white\/52  { color: var(--c-text-55) !important; }
+[data-theme="light"] .text-white\/50  { color: var(--c-text-50) !important; }
+[data-theme="light"] .text-white\/48  { color: var(--c-text-45) !important; }
+[data-theme="light"] .text-white\/45  { color: var(--c-text-45) !important; }
+[data-theme="light"] .text-white\/40  { color: var(--c-text-40) !important; }
+[data-theme="light"] .text-white\/38  { color: var(--c-text-40) !important; }
+[data-theme="light"] .text-white\/35  { color: var(--c-text-35) !important; }
+[data-theme="light"] .text-white\/30  { color: var(--c-text-30) !important; }
+[data-theme="light"] .text-white\/28  { color: var(--c-text-30) !important; }
+[data-theme="light"] .text-white\/25  { color: var(--c-text-25) !important; }
+[data-theme="light"] .text-white\/20  { color: #d0d8e8          !important; }
+[data-theme="light"] .text-white\/15  { color: #dce3ef          !important; }
+[data-theme="light"] .text-white\/10  { color: #e8edf5          !important; }
+
+/* Lime (#90eb61) near-invisible on light bg → brand teal accent (matches the light-theme teal system) */
+[data-theme="light"] .text-lime       { color: #0f766e !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   SURFACES & CARDS
+   Core of the premium-light look: white cards on Slate-50 canvas,
+   with layered shadows replacing glass glows.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-white\/\[0\.004\]  { background-color: #f2faf4 !important; }
+[data-theme="light"] .bg-white\/\[0\.025\]  {
+  background-color: #f7fcf9 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 1px 2px rgba(36,186,172,0.06) !important;
+}
+[data-theme="light"] .bg-white\/\[0\.03\]   {
+  background-color: #f7fcf9 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 1px 2px rgba(36,186,172,0.06) !important;
+}
+[data-theme="light"] .bg-white\/\[0\.04\]   { background-color: #f2faf4 !important; }
+[data-theme="light"] .bg-white\/\[0\.05\]   { background-color: #e8f5ee !important; }
+[data-theme="light"] .bg-white\/\[0\.06\]   { background-color: #dff2e8 !important; }
+[data-theme="light"] .bg-white\/\[0\.07\]   { background-color: #d6efe2 !important; }
+[data-theme="light"] .bg-white\/\[0\.08\]   { background-color: #cdeadc !important; }
+[data-theme="light"] .bg-white\/\[0\.09\]   { background-color: #c4e5d6 !important; }
+[data-theme="light"] .bg-white\/95          { background-color: rgba(242,250,244,0.97) !important; }
+
+/* gradient-to-b from-white/[0.06] to-white/[0.01] — service cards */
+[data-theme="light"] .from-white\/\[0\.06\] {
+  --tw-gradient-from: rgba(36,186,172,0.06) var(--tw-gradient-from-position) !important;
+}
+[data-theme="light"] .to-white\/\[0\.01\] {
+  --tw-gradient-to: rgba(255,255,255,0) var(--tw-gradient-to-position) !important;
+}
+[data-theme="light"] .from-white\/\[0\.04\] {
+  --tw-gradient-from: rgba(36,186,172,0.04) var(--tw-gradient-from-position) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   BORDERS
+   White/opacity border classes → solid Slate values.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .border-white\/\[0\.03\]  { border-color: #daf2ee !important; }
+[data-theme="light"] .border-white\/\[0\.04\]  { border-color: #d0ecea !important; }
+[data-theme="light"] .border-white\/\[0\.05\]  { border-color: #c8e8e3 !important; }
+[data-theme="light"] .border-white\/5          { border-color: #c8e8e3 !important; }
+[data-theme="light"] .border-white\/\[0\.06\]  { border-color: #c8e8e3 !important; }
+[data-theme="light"] .border-white\/\[0\.07\]  { border-color: #c0e3de !important; }
+[data-theme="light"] .border-white\/\[0\.08\]  { border-color: #a8d8d2 !important; }
+[data-theme="light"] .border-white\/\[0\.09\]  { border-color: #a8d8d2 !important; }
+[data-theme="light"] .border-white\/\[0\.1\]   { border-color: #a8d8d2 !important; }
+[data-theme="light"] .border-white\/10         { border-color: #a8d8d2 !important; }
+[data-theme="light"] .border-white\/\[0\.12\]  { border-color: #88cac3 !important; }
+[data-theme="light"] .border-white\/\[0\.14\]  { border-color: #7ac3bc !important; }
+[data-theme="light"] .border-white\/\[0\.15\]  { border-color: #6dbfb8 !important; }
+[data-theme="light"] .border-white\/15         { border-color: #6dbfb8 !important; }
+[data-theme="light"] .border-white\/\[0\.18\]  { border-color: #52b0a8 !important; }
+[data-theme="light"] .border-white\/\[0\.20\]  { border-color: #40a89f !important; }
+[data-theme="light"] .border-white\/20         { border-color: #40a89f !important; }
+[data-theme="light"] .border-white\/30         { border-color: #2a9590 !important; }
+[data-theme="light"] .border-y.border-white\/5 { border-color: #c8e8e3 !important; }
+
+/* Divide */
+[data-theme="light"] .divide-white\/\[0\.06\] > * + * { border-color: #c8e8e3 !important; }
+[data-theme="light"] .divide-white\/\[0\.08\] > * + * { border-color: #a8d8d2 !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   AURORA
+   Desaturated, soft pastel wash — preserves brand colors but toned
+   for a light background without neon bleed.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .aurora-layer {
+  background-image: linear-gradient(
+    105deg,
+    transparent        0%,
+    rgba(144,235,97,0.18)  12%,
+    rgba(36,186,172,0.14)  26%,
+    rgba(99,102,241,0.06)  44%,
+    rgba(36,186,172,0.12)  62%,
+    rgba(144,235,97,0.12)  80%,
+    transparent        98%
+  );
+  opacity: 0.80;
+  filter: blur(72px);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   NOISE OVERLAY — multiply blend, near-invisible opacity.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .noise {
+  mix-blend-mode: multiply;
+  opacity: 0.02;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   INPUTS / TEXTAREAS / SELECTS
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  color: #0f172a !important;
+  background-color: #f2faf4 !important;
+  border-color: #b4e4d4 !important;
+}
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus {
+  border-color: #94a3b8 !important;
+  box-shadow: 0 0 0 3px rgba(148,163,184,0.20) !important;
+  outline: none !important;
+}
+[data-theme="light"] ::placeholder { color: #94a3b8 !important; }
+.contact-overlay ::placeholder      { color: rgba(255,255,255,0.38) !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] { scrollbar-color: #cbd5e1 transparent; }
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOW / BOX-SHADOW OVERRIDES
+   Dark neon glows look terrible on white — replace with subtle
+   directional shadows that feel premium (Stripe/Linear style).
+───────────────────────────────────────────────────────────────── */
+
+/* Ring-glow utility used by some cards */
+[data-theme="light"] .ring-glow {
+  box-shadow:
+    0 0 0 1px rgba(36,186,172,0.15),
+    0 8px 24px -4px rgba(36,186,172,0.12) !important;
+}
+
+/* Drop-shadow on headings — replace bright teal glow with soft slate */
+[data-theme="light"] .drop-shadow-\[0_0_30px_rgba\(36\,186\,172\,0\.25\)\] {
+  filter: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   MANIFESTO / HOLOGRAPHIC MESH CARD SECTION
+   The right visual card has backdrop-blur and bg-gradient overlays.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .backdrop-blur-xl.bg-gradient-to-b {
+  background: rgba(242,250,244,0.80) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+/* The right card outer border/shadow */
+[data-theme="light"] .border.border-white\/10.ring-1.ring-white\/5 {
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.04) !important;
+  --tw-ring-color: rgba(15,23,42,0.04) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   FOOTER
+   Footer ContactChip and column separators.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] footer .border-white\/\[0\.12\] {
+  border-color: #e2e8f0 !important;
+}
+[data-theme="light"] footer .bg-white\/\[0\.05\] {
+  background-color: #f2faf4 !important;
+  border-color: #b4e4d4 !important;
+}
+[data-theme="light"] footer .hover\:bg-white\/\[0\.09\]:hover {
+  background-color: #dff2e8 !important;
+}
+[data-theme="light"] footer .border-white\/\[0\.15\] {
+  border-color: #e2e8f0 !important;
+}
+/* ColLabel text shadow */
+[data-theme="light"] footer [style*="textShadow"] {
+  text-shadow: none !important;
+}
+[data-theme="light"] footer .text-lime { color: #0f766e !important; }
+
+/* Small ambient particles for the Manifesto section (light mode).
+   Only transform + opacity animate (compositor-friendly). */
+@keyframes mani-particle-float {
+  0%, 100% { transform: translateY(0); opacity: 0.25; }
+  50%      { transform: translateY(-9px); opacity: var(--p-max, 0.6); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GRADIENT VIA COLORS (section separators, scan lines)
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .via-white\/10 {
+  --tw-gradient-via: rgba(15,23,42,0.07) !important;
+}
+[data-theme="light"] .via-white\/\[0\.10\] {
+  --tw-gradient-via: rgba(15,23,42,0.07) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PRODUCTS PAGE — ChapterRail progress line
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-white\/\[0\.07\] { background-color: #e2e8f0 !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   HORIZONTAL CAPABILITIES CARDS
+   Service cards use dark image overlays intentionally (image + dark
+   gradient for text contrast). Keep them dark — premium SaaS sites
+   commonly use dark-on-light cards (e.g. Stripe features).
+   Only adapt the card chrome (border, glow, button).
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .focus\:ring-white\/30:focus {
+  --tw-ring-color: rgba(36,186,172,0.30) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PORTAL TRANSITION SECTION
+   "We are an Official Salesforce Partner".
+   The section paints itself with `bg-black`, which the global light-theme rule
+   maps to --c-bg-alt (#e8f5ee) — a mint one shade darker than the #f2faf4 page
+   canvas. That produced a visible horizontal seam where this section meets the
+   Services section below. Scope it back to the page bg so the sections blend.
+   (.pt-canvas.bg-black is more specific than the global .bg-black rule, so this
+   wins without touching bg-black anywhere else on the site.)
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .pt-canvas.bg-black { background-color: var(--c-bg) !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   BACKDROP-BLUR PANELS (Header mobile menu, InsightsDropdown)
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-white\/95.backdrop-blur-2xl {
+  background-color: rgba(242,250,244,0.97) !important;
+  border-color: #b4e4d4 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   MARQUEE LOGO CARDS
+   In light mode these already use bg-white/95 which looks great.
+   Just fix the border and hover shadow to be light-appropriate.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .hover\:shadow-\[0_0_26px_rgba\(36\,186\,172\,0\.28\)\]:hover {
+  box-shadow: 0 4px 20px rgba(36,186,172,0.18), 0 1px 4px rgba(15,23,42,0.06) !important;
+}
+[data-theme="light"] .shadow-\[0_8px_30px_-12px_rgba\(0\,0\,0\,0\.5\)\] {
+  box-shadow: 0 4px 12px rgba(15,23,42,0.08), 0 1px 3px rgba(15,23,42,0.05) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SERVICE FULLSCREEN OVERLAY
+   The overlay is always dark (bg-ink + dark image). Force-restore
+   white text/border/bg utilities so light-theme overrides don't
+   bleed into the service detail pages.
+───────────────────────────────────────────────────────────────── */
+[data-theme="light"] .svc-overlay .text-white      { color: #ffffff !important; }
+[data-theme="light"] .svc-overlay .text-white\/90  { color: rgba(255,255,255,0.90) !important; }
+[data-theme="light"] .svc-overlay .text-white\/85  { color: rgba(255,255,255,0.85) !important; }
+[data-theme="light"] .svc-overlay .text-white\/80  { color: rgba(255,255,255,0.80) !important; }
+[data-theme="light"] .svc-overlay .text-white\/75  { color: rgba(255,255,255,0.75) !important; }
+[data-theme="light"] .svc-overlay .text-white\/70  { color: rgba(255,255,255,0.70) !important; }
+[data-theme="light"] .svc-overlay .text-white\/65  { color: rgba(255,255,255,0.65) !important; }
+[data-theme="light"] .svc-overlay .text-white\/60  { color: rgba(255,255,255,0.60) !important; }
+[data-theme="light"] .svc-overlay .text-white\/55  { color: rgba(255,255,255,0.55) !important; }
+[data-theme="light"] .svc-overlay .text-white\/50  { color: rgba(255,255,255,0.50) !important; }
+[data-theme="light"] .svc-overlay .text-white\/45  { color: rgba(255,255,255,0.45) !important; }
+[data-theme="light"] .svc-overlay .text-white\/40  { color: rgba(255,255,255,0.40) !important; }
+[data-theme="light"] .svc-overlay .text-white\/35  { color: rgba(255,255,255,0.35) !important; }
+[data-theme="light"] .svc-overlay .text-white\/30  { color: rgba(255,255,255,0.30) !important; }
+[data-theme="light"] .svc-overlay .text-white\/25  { color: rgba(255,255,255,0.25) !important; }
+[data-theme="light"] .svc-overlay .text-white\/20  { color: rgba(255,255,255,0.20) !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.025\] { background-color: rgba(255,255,255,0.025) !important; box-shadow: none !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.03\]  { background-color: rgba(255,255,255,0.03)  !important; box-shadow: none !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.04\]  { background-color: rgba(255,255,255,0.04)  !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.05\]  { background-color: rgba(255,255,255,0.05)  !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.06\]  { background-color: rgba(255,255,255,0.06)  !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.08\]  { background-color: rgba(255,255,255,0.08)  !important; }
+[data-theme="light"] .svc-overlay .bg-white\/\[0\.10\]  { background-color: rgba(255,255,255,0.10)  !important; }
+[data-theme="light"] .svc-overlay .bg-black           { background-color: #000000 !important; }
+[data-theme="light"] .svc-overlay .bg-ink             { background-color: #05070a !important; }
+[data-theme="light"] .svc-overlay .border-white\/\[0\.08\] { border-color: rgba(255,255,255,0.08) !important; }
+[data-theme="light"] .svc-overlay .border-white\/\[0\.10\] { border-color: rgba(255,255,255,0.10) !important; }
+[data-theme="light"] .svc-overlay .border-white\/10       { border-color: rgba(255,255,255,0.10) !important; }
+[data-theme="light"] .svc-overlay .border-white\/15       { border-color: rgba(255,255,255,0.15) !important; }
+[data-theme="light"] .svc-overlay .border-white\/20       { border-color: rgba(255,255,255,0.20) !important; }
+[data-theme="light"] .svc-overlay .border-white\/30       { border-color: rgba(255,255,255,0.30) !important; }

@@ -1,9 +1,12 @@
 import { useScroll, useTransform, m as motion } from 'framer-motion';
 import { useRef } from 'react';
 import Particles from './Particles.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 export default function ParallaxStage() {
   const ref = useRef(null);
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { scrollY } = useScroll();
 
   const yFar = useTransform(scrollY, [0, 800], [0, -60]);
@@ -16,7 +19,8 @@ export default function ParallaxStage() {
     <motion.div
       ref={ref}
       style={{ opacity }}
-      className="fixed inset-0 -z-10 overflow-hidden bg-ink"
+      className={isLight ? 'fixed inset-0 -z-10 overflow-hidden' : 'fixed inset-0 -z-10 overflow-hidden bg-ink'}
+      style={isLight ? { background: 'linear-gradient(160deg, #f2faf4 0%, #eaf5ef 50%, #f2faf4 100%)' } : undefined}
       aria-hidden="true"
     >
       {/* Base radial wash */}
@@ -38,8 +42,9 @@ export default function ParallaxStage() {
         <div
           className="absolute inset-0 opacity-[0.18]"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundImage: isLight
+              ? 'linear-gradient(rgba(15,23,42,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.07) 1px, transparent 1px)'
+              : 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
             backgroundSize: '56px 56px',
             maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
@@ -90,7 +95,11 @@ export default function ParallaxStage() {
       {/* Vignette */}
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.85) 100%)' }}
+        style={{
+          background: isLight
+            ? 'radial-gradient(ellipse at center, transparent 50%, rgba(248,250,252,0.55) 100%)'
+            : 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.85) 100%)',
+        }}
       />
     </motion.div>
   );

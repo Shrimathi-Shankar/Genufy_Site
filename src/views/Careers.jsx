@@ -4,10 +4,11 @@ import { m as motion } from 'framer-motion';
 import Header from '../components/Header.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
 import CareerForm from '../components/careers/CareerForm.jsx';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 
-function Backdrop() {
+function Backdrop({ isLight }) {
   return (
     <>
       <div
@@ -23,7 +24,9 @@ function Backdrop() {
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1px)',
+          backgroundImage: isLight
+            ? 'radial-gradient(circle, rgba(15,23,42,0.45) 1px, transparent 1px)'
+            : 'radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1px)',
           backgroundSize: '46px 46px',
           maskImage: 'radial-gradient(ellipse 70% 45% at 50% 12%, black 20%, transparent 80%)',
           WebkitMaskImage: 'radial-gradient(ellipse 70% 45% at 50% 12%, black 20%, transparent 80%)',
@@ -34,12 +37,18 @@ function Backdrop() {
 }
 
 export default function Careers() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   return (
     <>
       <Header />
 
-      <main className="relative z-10 overflow-hidden">
-        <Backdrop />
+      <main
+        className="relative z-10 overflow-hidden"
+        style={{ background: 'var(--c-bg)' }}
+      >
+        <Backdrop isLight={isLight} />
 
         <div className="relative mx-auto max-w-6xl px-6 pt-32 pb-20 md:pt-40 md:pb-28">
           {/* Hero */}
@@ -49,11 +58,16 @@ export default function Careers() {
             transition={{ duration: 0.8, ease }}
             className="mx-auto max-w-3xl text-center"
           >
-            <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.5em] text-lime">Careers</p>
-            <h1 className="font-display text-4xl font-extrabold leading-[1.08] tracking-tight md:text-6xl">
+            <p
+              className="mb-5 text-[11px] font-bold uppercase tracking-[0.5em]"
+              style={{ color: isLight ? '#15803d' : '#90eb61' }}
+            >
+              Careers
+            </p>
+            <h1 className="font-display text-4xl font-extrabold leading-[1.08] tracking-tight md:text-6xl" style={{ color: 'var(--c-text)' }}>
               Career Opportunities at <span className="text-gradient-gt">Genufy</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-white/60 md:text-base">
+            <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed md:text-base" style={{ color: 'var(--c-text-55)' }}>
               We build intelligent digital platforms with people who care about craft, curiosity, and
               impact. If that sounds like you, we'd love to hear from you.
             </p>
@@ -70,14 +84,14 @@ export default function Careers() {
             <h2 className="mx-auto max-w-xl font-display text-2xl font-semibold leading-tight tracking-tight text-gradient-gt md:text-[28px]">
               No open positions right now - but the best connections start early.
             </h2>
-            <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-white/60 md:text-[15px]">
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed md:text-[15px]" style={{ color: 'var(--c-text-55)' }}>
               Great opportunities start with great connections. Share your profile, and we'll reach out when the right role opens.
             </p>
           </motion.div>
 
           {/* Application form */}
           <section id="apply" className="mx-auto mt-16 max-w-3xl md:mt-24">
-            <h2 className="mb-6 text-center font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
+            <h2 className="mb-6 text-center font-display text-2xl font-semibold tracking-tight md:text-3xl" style={{ color: 'var(--c-text)' }}>
               Tell us about yourself
             </h2>
             <CareerForm />

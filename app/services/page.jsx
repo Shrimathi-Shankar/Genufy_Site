@@ -1,4 +1,4 @@
-import Services from '../../src/views/Services.jsx';
+import Home from '../../src/views/Home.jsx';
 
 export const metadata = {
   title: 'Services',
@@ -21,6 +21,8 @@ export const metadata = {
   },
 };
 
+// Render the full Home experience, starting at the Services section.
+// This gives a clean /services URL while preserving all cinematic animations.
 export default function Page() {
-  return <Services />;
+  return <Home intentSection="services" />;
 }

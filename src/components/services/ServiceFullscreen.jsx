@@ -103,7 +103,7 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[80] bg-ink overflow-hidden"
+      className="svc-overlay fixed inset-0 z-[80] bg-ink overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby={`svc-h-${service.id}`}
@@ -153,9 +153,10 @@ export default function ServiceFullscreen({ service, onClose, idPrefix = 'svc' }
         transition={{ duration: 0.5, delay: 0.55 }}
         onClick={closeNow}
         aria-label="Close"
-        className="group absolute top-6 right-6 z-30 grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-black/40 backdrop-blur-xl text-white/85 hover:bg-black/60 hover:border-white/40 transition"
+        className="group absolute top-6 right-6 z-30 grid h-12 w-12 place-items-center rounded-full border border-[rgba(144,235,97,0.35)] bg-[rgba(10,20,15,0.65)] backdrop-blur-xl text-white hover:border-[rgba(144,235,97,0.65)] hover:bg-[rgba(10,20,15,0.85)] hover:scale-105 active:scale-95 transition-all duration-200"
+        style={{ boxShadow: '0 0 0 1px rgba(144,235,97,0.10), 0 4px 24px rgba(0,0,0,0.45), 0 0 18px rgba(144,235,97,0.12)' }}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#ffffff" strokeWidth="2">
           <line x1="1" y1="1" x2="13" y2="13" />
           <line x1="13" y1="1" x2="1" y2="13" />
         </svg>

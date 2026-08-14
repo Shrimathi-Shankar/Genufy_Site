@@ -1,19 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 /* Gate heavy visual effects (the Spline 3D robot, canvas particle fields) so
    they only run on capable devices - keeping mobiles and low-end laptops from
    freezing.
 
    Starts `false` so the server-prerendered HTML and the first client paint
-   match (no hydration mismatch); upgrades to `true` after mount only when the
-   device is a wide screen, has enough CPU cores, and the user hasn't asked for
-   reduced motion. */
+   match (no hydration mismatch); upgrades to `true` synchronously via
+   useLayoutEffect — which runs before the browser paints — so desktop users
+   never see the lightweight fallback glow flash before the robot appears.
+
+   useLayoutEffect is not available during SSR/prerender; we fall back to
+   useEffect on the server so the module import never throws. */
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export default function useEnhancedMotion() {
   const [enhanced, setEnhanced] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const reduced =
       window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
     const wideEnough = window.innerWidth >= 1024;

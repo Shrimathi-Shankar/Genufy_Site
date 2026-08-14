@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from '../../contexts/ThemeContext.jsx';
 import {
   m as motion,
   useMotionValue,
@@ -48,24 +49,28 @@ function RevealWords({ text, className, once = true, gradient = false }) {
 }
 
 function Eyebrow({ children }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <div className="flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase text-white/45">
-      <span className="h-px w-10 bg-white/30" />
+    <div className={`flex items-center gap-3 text-[10px] tracking-[0.45em] uppercase ${isLight ? 'text-slate-500' : 'text-white/45'}`}>
+      <span className={`h-px w-10 ${isLight ? 'bg-slate-300' : 'bg-white/30'}`} />
       {children}
     </div>
   );
 }
 
 function FeatureItem({ children, accent }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <li className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4 backdrop-blur-sm">
+    <li className={`flex items-start gap-4 rounded-2xl border px-5 py-4 backdrop-blur-sm ${isLight ? 'border-slate-200 bg-slate-100' : 'border-white/10 bg-white/[0.025]'}`}>
       <span
         className="mt-1 grid h-5 w-5 flex-none place-items-center rounded-full text-[10px] font-bold text-black"
         style={{ background: `linear-gradient(135deg, #90eb61, ${accent})` }}
       >
         ✓
       </span>
-      <span className="text-white/85 text-[15px] md:text-base leading-relaxed">{children}</span>
+      <span className={`text-[15px] md:text-base leading-relaxed ${isLight ? 'text-slate-700' : 'text-white/85'}`}>{children}</span>
     </li>
   );
 }
@@ -236,6 +241,8 @@ function NetworkMesh({ accent }) {
 /* ---------------- Hero ---------------- */
 
 function HeroScene({ service }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const letters = Array.from('MULESOFT');
   const ref = useRef(null);
   const mx = useMotionValue(0);
@@ -848,6 +855,8 @@ function ScrollDots({ scrollRef }) {
 
 export default function MuleSoftExperience({ service, onClose, scrollRef }) {
   const accent = service.accent || '#90eb61';
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   return (
     <>
@@ -855,7 +864,7 @@ export default function MuleSoftExperience({ service, onClose, scrollRef }) {
 
       <HeroScene service={service} />
 
-      <div className="bg-ink relative z-10">
+      <div className={`${isLight ? 'bg-slate-50' : 'bg-ink'} relative z-10`}>
         <ExperienceSection
           num="01"
           eyebrow="Integration Blueprint"
