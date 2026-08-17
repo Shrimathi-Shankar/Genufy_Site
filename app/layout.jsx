@@ -1,5 +1,6 @@
 import './globals.css';
 import { Inter, Poppins, Space_Grotesk } from 'next/font/google';
+import Script from 'next/script';
 import Providers from './providers.jsx';
 
 // Self-hosted at build time (no render-blocking Google Fonts request, no layout
@@ -250,6 +251,19 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Providers>{children}</Providers>
+        {/* Google Analytics (GA4) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-66XC18EDLX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-66XC18EDLX');
+          `}
+        </Script>
       </body>
     </html>
   );

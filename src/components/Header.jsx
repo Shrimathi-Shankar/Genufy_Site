@@ -406,6 +406,22 @@ export default function Header() {
   const router = useRouter();
   const { openContact } = useContactModal();
 
+  // Close mobile menu when user clicks/taps outside the header
+  useEffect(() => {
+    if (!open) return;
+    const handleOutsideClick = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('touchstart', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [open]);
+
   useEffect(() => {
     const onScroll = (e) => {
       // Skip if a frame is already queued — fires at most once per rAF tick.
@@ -594,31 +610,51 @@ export default function Header() {
           </div>
         </nav>
 
+        {/* Full-screen backdrop — tap anywhere outside the menu to close it */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="mobile-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[-1] md:hidden"
+              style={{ cursor: 'default' }}
+              onClick={() => setOpen(false)}
+              aria-hidden
+            />
+          )}
+        </AnimatePresence>
+
         {/* Mobile dropdown */}
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-auto md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/98 backdrop-blur-md p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
-          >
-            {links.map((item) =>
-              // item.label === 'Insights' ? (
-              //   <MobileInsightsAccordion key="Insights" onNavigate={() => setOpen(false)} router={router} />
-              // ) : (
-                <a
-                  key={item.label}
-                  href={item.hash || item.route}
-                  onClick={(e) => { e.preventDefault(); handleNav(item); }}
-                  className="px-4 py-3 rounded-full text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-900/[0.05] transition"
-                >
-                  {item.label}
-                </a>
-              // )
-            )}
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="pointer-events-auto md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/98 backdrop-blur-md p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
+            >
+              {links.map((item) =>
+                // item.label === 'Insights' ? (
+                //   <MobileInsightsAccordion key="Insights" onNavigate={() => setOpen(false)} router={router} />
+                // ) : (
+                  <a
+                    key={item.label}
+                    href={item.hash || item.route}
+                    onClick={(e) => { e.preventDefault(); handleNav(item); }}
+                    className="px-4 py-3 rounded-full text-sm text-gray-600 hover:text-white hover:bg-gray-900/[0.05] transition"
+                  >
+                    {item.label}
+                  </a>
+                // )
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.header>
   );
