@@ -598,14 +598,23 @@ export default function Header() {
             <button
               aria-label="Toggle menu"
               onClick={() => setOpen((v) => !v)}
-              className="md:hidden h-9 w-9 grid place-items-center rounded-full bg-transparent transition hover:bg-gray-900/[0.06]"
+              className="md:hidden h-10 w-10 grid place-items-center rounded-full transition"
+              style={{
+                background: '#0a0f0d',
+                boxShadow: '0 0 0 6px rgba(144,235,97,0.12), 0 4px 14px -4px rgba(0,0,0,0.4)',
+              }}
             >
-              <span
-                className={`block h-[1.5px] w-4 bg-gray-700 transition ${open ? 'translate-y-[3px] rotate-45' : ''}`}
-              />
-              <span
-                className={`block h-[1.5px] w-4 bg-gray-700 mt-1 transition ${open ? '-translate-y-[3px] -rotate-45' : ''}`}
-              />
+              <span className="flex flex-col gap-[3px]">
+                <span
+                  className={`block h-[1.5px] w-4 bg-white transition ${open ? 'translate-y-[4.5px] rotate-45' : ''}`}
+                />
+                <span
+                  className={`block h-[1.5px] w-4 bg-white transition ${open ? 'opacity-0' : ''}`}
+                />
+                <span
+                  className={`block h-[1.5px] w-4 bg-white transition ${open ? '-translate-y-[4.5px] -rotate-45' : ''}`}
+                />
+              </span>
             </button>
           </div>
         </nav>
@@ -636,9 +645,12 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-auto md:hidden mt-2 rounded-3xl border border-gray-200/70 bg-white/98 backdrop-blur-md p-3 flex flex-col shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15)]"
+              className="pointer-events-auto md:hidden mt-2 rounded-2xl border border-gray-200/60 flex flex-col shadow-[0_16px_48px_-8px_rgba(0,0,0,0.18)] overflow-hidden"
+              style={{
+                background: '#ffffff',
+              }}
             >
-              {links.map((item) =>
+              {links.map((item, i) =>
                 // item.label === 'Insights' ? (
                 //   <MobileInsightsAccordion key="Insights" onNavigate={() => setOpen(false)} router={router} />
                 // ) : (
@@ -646,7 +658,7 @@ export default function Header() {
                     key={item.label}
                     href={item.hash || item.route}
                     onClick={(e) => { e.preventDefault(); handleNav(item); }}
-                    className="px-4 py-3 rounded-full text-sm text-gray-600 hover:text-white hover:bg-gray-900/[0.05] transition"
+                    className={`px-6 py-4 text-base font-medium text-gray-800 transition-colors duration-200 hover:text-[#1a7a3a] ${i > 0 ? 'border-t border-gray-100' : ''}`}
                   >
                     {item.label}
                   </a>
